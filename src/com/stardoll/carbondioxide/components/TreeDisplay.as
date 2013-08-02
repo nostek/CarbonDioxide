@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
@@ -101,13 +102,7 @@ package com.stardoll.carbondioxide.components {
 
 				holder.scaleX = holder.scaleY = 1;
 
-				var d:DisplayObject;
-
-				if( !Drawer.isLoaded || (item.asset == null || item.asset == "") ) {
-					d = drawShape( item );
-				} else {
-					d = drawGraphics( item );
-				}
+				var d:DisplayObject = drawFromData( item );
 
 				holder.removeChildren();
 
@@ -170,13 +165,7 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function draw( item:CDItem, parent:DisplayObjectContainer ):void {
-			var d:DisplayObject;
-
-			if( !Drawer.isLoaded || (item.asset == null || item.asset == "") ) {
-				d = drawShape( item );
-			} else {
-				d = drawGraphics( item );
-			}
+			var d:DisplayObject = drawFromData( item );
 
 			var s:ItemModel = new ItemModel( item, d );
 
@@ -199,6 +188,19 @@ package com.stardoll.carbondioxide.components {
 
 			_allowed.push( item );
 		}
+		
+		private function drawFromData( item:CDItem ):DisplayObject {
+			if( !Drawer.isLoaded || (item.asset == null || item.asset == "") ) {
+				return drawShape( item );
+			} else {
+				if( item is CDText ) {
+					return drawText( item as CDText );
+				}
+				return drawGraphics( item );
+			}
+			
+			return null;
+		}
 
 		private function drawShape( item:CDItem, color:uint=0x000000 ):DisplayObject {
 			var s:Shape = new Shape();
@@ -218,6 +220,14 @@ package com.stardoll.carbondioxide.components {
 			}
 
 			return new Bitmap( Drawer.draw( item.asset, item.width, item.height ) );
+		}
+		
+		private function drawText( item:CDText ):DisplayObject {
+			if( !Drawer.haveFrame(item.asset) ){
+				return drawShape( item, 0xff0000);
+			}
+
+			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width ) );
 		}
 
 		////////////
@@ -374,6 +384,9 @@ package com.stardoll.carbondioxide.components {
 			if( _state & STATE_BOTTOM ) {
 				_selection.height = _selection.save_height + diffy;
 			}
+			
+			_selection.width = Math.max( 0, _selection.width );
+			_selection.height = Math.max( 0, _selection.height );
 
 			updateSelection( false );
 
@@ -409,12 +422,13 @@ package com.stardoll.carbondioxide.components {
 						const currW:int = item.width;
 						const currH:int = item.height;
 
-						trace("pre", currX, currY, currW, currH);
-
 						item.x 		= currX + deltaX;
 						item.y 		= currY + deltaY;
 						item.width 	= currW + deltaWidth;
 						item.height = currH + deltaHeight;
+						
+						item.width = Math.max( 0, item.width );
+						item.height = Math.max( 0, item.height );
 
 						DataModel.itemChanged( d );
 					} else {
@@ -422,6 +436,9 @@ package com.stardoll.carbondioxide.components {
 						d.y = item.y + deltaY;
 						d.width = d.save_holder_width + deltaWidth;
 						d.height = d.save_holder_height + deltaHeight;
+						
+						d.width = Math.max( 0, d.width );
+						d.height = Math.max( 0, d.height );
 					}
 				}
 			}

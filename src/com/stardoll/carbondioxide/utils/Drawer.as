@@ -390,7 +390,7 @@ package com.stardoll.carbondioxide.utils {
 
 		///////
 
-		public function applyFont( t:TextField, frame:Object, fmtoptions:TextFormat=null ):void {
+		public static function applyFont( t:TextField, frame:Object, fmtoptions:TextFormat=null ):void {
 			var model:FrameModel = getFrame( frame );
 			if( model != null ) {
 				if( model.text != null ) {
@@ -421,7 +421,7 @@ package com.stardoll.carbondioxide.utils {
 			target.drawWithQuality(draw, _matrix, null, null, null, true, QUALITY);
 		}
 
-		private function getTextField( frame:Object, fmt:TextFormat ):TextField {
+		private static function getTextField( frame:Object, fmt:TextFormat ):TextField {
 			if( frame == null ) {
 				var tf:TextField = new TextField();
 				tf.autoSize = TextFieldAutoSize.LEFT;
@@ -437,7 +437,7 @@ package com.stardoll.carbondioxide.utils {
 			return _textField;
 		}
 
-		public function drawText( text:String, frame:Object, height:int, width:int=0, fmt:TextFormat=null ):BitmapData {
+		public static function drawText( text:String, frame:Object, height:int, width:int=0, fmt:TextFormat=null ):BitmapData {
 			const hasAlign:Boolean = (fmt != null && fmt.align != null);
 
 			var tf:TextField = getTextField(frame, fmt);

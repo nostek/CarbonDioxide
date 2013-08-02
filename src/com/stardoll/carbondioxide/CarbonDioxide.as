@@ -64,7 +64,7 @@ package com.stardoll.carbondioxide {
 			test();
 
 //			DataModel.setResolution(1000, 700);
-//			DataModel.setView( ViewsManager.getViewByName("main") );
+			DataModel.setView( ViewsManager.getViewByName("main") );
 
 //			DataModel.setLayer( ViewsManager.getViewByName("main").getChildByName("test") );
 		}

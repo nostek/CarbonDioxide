@@ -7,6 +7,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
+	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.utils.Drawer;
 
 	import flash.geom.Rectangle;
@@ -93,7 +94,11 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
 				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio: " + CDAspectRatio.toString( item.aspectRatio )});
 				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset});
-
+				
+				if( item is CDText ) {
+					_properties.addItem({data:[false, "text"],	label:"text: " + (item as CDText).text});
+				}
+				
 //				_properties.addItem({data:[false, "null"], label:"::-- Object Properties --::"});
 //				for( var key:String in model.parameters ) {
 //					_properties.addItem({	data: [true, key],
@@ -165,6 +170,10 @@ package com.stardoll.carbondioxide.dialogues {
 						DataModel.onItemChanged.dispatch( holder );
 					break;
 
+					case "text":
+						input = new InputDialogue("Edit parameters", "Text:", (item as CDText).text);
+					break;
+
 //					case "visible":
 //						item.display.visible = (item.display.visible) ? false : true;
 //						onRefreshProperties();
@@ -204,8 +213,10 @@ package com.stardoll.carbondioxide.dialogues {
 			} else {
 				switch( _type[1] ) {
 					case "name":
-						if( checkName(input.text, DataModel.SELECTED[0].item) ) {
+						item = DataModel.SELECTED[0];
+						if( checkName(input.text, item.item) ) {
 							item.item.name = input.text;
+							DataModel.onItemChanged.dispatch( item );
 						} else {
 							new PopupDialogue("ERROR", "ERROR: Name is already in use.");
 						}
@@ -245,6 +256,12 @@ package com.stardoll.carbondioxide.dialogues {
 								DataModel.onItemChanged.dispatch( item );
 							}
 						}
+					break;
+					
+					case "text":
+						item = DataModel.SELECTED[0];
+						(item.item as CDText).text = input.text;
+						DataModel.onItemChanged.dispatch( item );
 					break;
 
 //					case "r":

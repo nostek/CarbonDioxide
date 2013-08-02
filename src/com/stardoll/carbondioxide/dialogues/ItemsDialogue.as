@@ -1,13 +1,14 @@
 package com.stardoll.carbondioxide.dialogues {
-	import com.stardoll.carbondioxide.components.TreeDisplay;
 	import fl.controls.Button;
 	import fl.controls.List;
 	import fl.events.ListEvent;
 
+	import com.stardoll.carbondioxide.components.TreeDisplay;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
+	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.models.resolutions.ResolutionsModel;
 
 	import flash.events.Event;
@@ -17,12 +18,16 @@ package com.stardoll.carbondioxide.dialogues {
 	 * @author simonrodriguez
 	 */
 	public class ItemsDialogue extends BaseDialogue {
+		private static const ADD_ITEM:int = 0;
+		private static const ADD_TEXT:int = 1;
+		
 		private var _lastData:Array;
 		private var _data:Array;
 
 		private var _list:List;
 
 		private var _addItem:Button;
+		private var _addText:Button;
 		private var _delItem:Button;
 
 		private var _upItem:Button;
@@ -32,6 +37,8 @@ package com.stardoll.carbondioxide.dialogues {
 		private var _collapse:Button;
 
 		private var _ignore:Boolean;
+		
+		private var _addType:int;
 
 		public function ItemsDialogue( fullSize:Boolean=true ) {
 			const WIDTH:int = 300;
@@ -51,6 +58,11 @@ package com.stardoll.carbondioxide.dialogues {
 			_addItem.label = "Add Item";
 			_addItem.addEventListener(MouseEvent.CLICK, onAddItemButton);
 			container.addChild(_addItem);
+			
+			_addText = new Button();
+			_addText.label = "Add text";
+			_addText.addEventListener(MouseEvent.CLICK, onAddItemButton);
+			container.addChild(_addText);
 
 			_delItem = new Button();
 			_delItem.label = "Delete";
@@ -97,9 +109,11 @@ package com.stardoll.carbondioxide.dialogues {
 			_expand.x = div+div;
 			_collapse.x = div+div+div;
 
-			_addItem.width = _delItem.width = width/2;
-			_delItem.x = width/2;
-			_addItem.y = _delItem.y = height-_addItem.height;
+			const div3:int = width/3;
+			_addItem.width = _addText.width = _delItem.width = div3;
+			_addText.x = div3;
+			_delItem.x = div3+div3;
+			_addItem.y = _addText.y = _delItem.y = height-_addItem.height;
 
 			_list.y = _upItem.height+10;
 			_list.width = width;
@@ -285,6 +299,11 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onAddItemButton(e:Event):void {
+			_addType = ADD_ITEM;
+			if( e.target == _addText ) {
+				_addType = ADD_TEXT;
+			}
+			
 			if( DataModel.currentView == null ) {
 				new PopupDialogue("ERROR", "Add a view first.");
 			}
@@ -298,7 +317,18 @@ package com.stardoll.carbondioxide.dialogues {
 				return;
 
 			if( checkName(input.text) ) {
-				var item:CDItem = DataModel.currentLayer.addChild( new CDItem(DataModel.currentLayer, input.text) );
+				var item:CDItem;
+				
+				switch( _addType ) {
+					case ADD_ITEM:
+				 		item = DataModel.currentLayer.addChild( new CDItem(DataModel.currentLayer, input.text) );
+					break;
+					
+					case ADD_TEXT:
+						item = DataModel.currentLayer.addChild( new CDText(DataModel.currentLayer, input.text) );
+					break;
+				}
+				
 				item.x = 0;
 				item.y = 0;
 				item.width = 100;
