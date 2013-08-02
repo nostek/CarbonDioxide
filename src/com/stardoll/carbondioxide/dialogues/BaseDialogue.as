@@ -30,7 +30,7 @@ package com.stardoll.carbondioxide.dialogues {
 		private var _bw:Number;
 		private var _bh:Number;
 
-		public function BaseDialogue( width:int, height:int, caption:String, canMinimize:Boolean, disableStage:Boolean, canScale:Boolean, canClose:Boolean ) {
+		public function BaseDialogue( caption:String, canMinimize:Boolean, disableStage:Boolean, canScale:Boolean, canClose:Boolean ) {
 			super();
 
 			var stage:Stage = BaseDialogue.DIALOGUES.stage;

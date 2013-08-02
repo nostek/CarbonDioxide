@@ -20,7 +20,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 200;
 			const HEIGHT:int = 100;
 
-			super(WIDTH, HEIGHT, "Zoom", true, false, true, true);
+			super("Zoom", true, false, true, true);
 
 			_magnify = new CheckBox();
 			_magnify.selected = false;

@@ -37,7 +37,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 450;
 
-			super(WIDTH, HEIGHT, "Items", true, false, true, true);
+			super("Items", true, false, true, true);
 
 			_ignore = false;
 
@@ -209,7 +209,7 @@ package com.stardoll.carbondioxide.dialogues {
 			}
 
 			var data:Object = 	{
-									label:tabspace + node.label,
+									label:tabspace + node["label"],
 									parentnode:(node["children"] != null) ? node : null
 								} ;
 

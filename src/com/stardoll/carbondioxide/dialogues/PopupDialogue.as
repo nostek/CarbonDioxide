@@ -18,7 +18,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 150;
 
-			super(WIDTH, HEIGHT, caption, false, true, false, false);
+			super(caption, false, true, false, false);
 
 			var fmt:TextFormat = new TextFormat("Verdana", 10, 0xffffffff, null, true, null, null, null, TextFormatAlign.CENTER);
 

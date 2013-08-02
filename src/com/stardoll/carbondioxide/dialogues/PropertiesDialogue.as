@@ -25,7 +25,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 400;
 
-			super(WIDTH, HEIGHT, "Properties", true, false, true, true);
+			super("Properties", true, false, true, true);
 
 			//Properties
 			_properties = new List();
@@ -67,6 +67,8 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onSetItems( itm:ItemModel=null ):void {
+			itm;
+			
 			_properties.removeAll();
 
 			if( DataModel.SELECTED.length == 0 ) {

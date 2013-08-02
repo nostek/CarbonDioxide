@@ -51,7 +51,7 @@ package com.stardoll.carbondioxide {
 			_tree = new TreeDisplay();
 			addChild(_tree);
 
-			_status = new StatusBar( stage, true );
+			_status = new StatusBar( stage );
 			addChild(_status);
 
 			BaseDialogue.DIALOGUES = new Sprite();

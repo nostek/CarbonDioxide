@@ -33,7 +33,7 @@ package com.stardoll.carbondioxide.components {
 		private var _addView:Button;
 		private var _manageViews:Button;
 
-		public function StatusBar( stage:Stage, setFirstResolution:Boolean=true ) {
+		public function StatusBar( stage:Stage ) {
 			_bg = new Bitmap( DataModel.BG.bitmapData );
 			addChild(_bg);
 

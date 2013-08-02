@@ -45,7 +45,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 400;
 
-			super( WIDTH, HEIGHT, "Assets", true, false, true, true );
+			super( "Assets", true, false, true, true );
 
 			_loadSwf = new Button();
 			_loadSwf.label = "Load Assets";

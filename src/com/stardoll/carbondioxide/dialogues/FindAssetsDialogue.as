@@ -19,7 +19,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 450;
 
-			super(WIDTH, HEIGHT, "Find", true, false, true, true);
+			super("Find", true, false, true, true);
 
 			_list = new List();
 			container.addChild( _list );

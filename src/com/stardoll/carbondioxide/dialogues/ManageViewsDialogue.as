@@ -20,7 +20,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 400;
 			const HEIGHT:int = 500;
 
-			super(WIDTH, HEIGHT, "Manage Views", false, true, true, true);
+			super("Manage Views", false, true, true, true);
 
 			_rename = new Button();
 			_rename.label = "Rename";
