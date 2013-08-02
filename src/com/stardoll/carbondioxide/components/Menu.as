@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import flash.display.NativeWindow;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
@@ -72,6 +73,27 @@ package com.stardoll.carbondioxide.components {
 						},
 					]
 				},
+				
+				{
+					name: "Zoom",
+					children: [
+						{
+							name: "Magnify",
+							callback: onZoomMagnify,
+							shortcut: "m"
+						},
+						{
+							name: "-",
+							callback: onZoomMinus,
+							shortcut: ","
+						},
+						{
+							name: "+",
+							callback: onZoomPlus,
+							shortcut: "."
+						},
+					]
+				},
 
 				{
 					name: "Window",
@@ -96,7 +118,13 @@ package com.stardoll.carbondioxide.components {
 				setupMenuRect( obj, menu );
 			}
 
-			NativeApplication.nativeApplication.menu = menu;
+			if( NativeApplication.supportsMenu ) {
+				NativeApplication.nativeApplication.menu = menu;
+			}
+			
+			if( NativeWindow.supportsMenu ) {
+				_stage.nativeWindow.menu = menu;
+			}
 		}
 
 		private function setupMenuRect( struct:Object, parent:NativeMenu ):void {
@@ -159,6 +187,19 @@ package com.stardoll.carbondioxide.components {
 
 		private function onZoomDlg( e:Event ):void {
 			new ZoomDialogue();
+		}
+		
+		private function onZoomMagnify( e:Event ):void {
+			ZoomDialogue.doMagnify = !ZoomDialogue.doMagnify;
+			ZoomDialogue.doZoom();	
+		}
+		private function onZoomMinus( e:Event ):void {
+			ZoomDialogue.doPercent = Math.min( 1, ZoomDialogue.doPercent + 0.1 );
+			ZoomDialogue.doZoom();	
+		}
+		private function onZoomPlus( e:Event ):void {
+			ZoomDialogue.doPercent = Math.max( 0, ZoomDialogue.doPercent - 0.1 );
+			ZoomDialogue.doZoom();	
 		}
 	}
 }

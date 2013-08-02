@@ -4,6 +4,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import fl.events.ScrollEvent;
 
 	import com.stardoll.carbondioxide.components.TreeDisplay;
+	import com.stardoll.carbondioxide.utils.MathEx;
 
 	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
@@ -13,6 +14,15 @@ package com.stardoll.carbondioxide.dialogues {
 	 * @author simonrodriguez
 	 */
 	public class ZoomDialogue extends BaseDialogue {
+		public static var doMagnify:Boolean = true;
+		public static var doPercent:Number = 1;
+		
+		public static function doZoom():void {
+			TreeDisplay.doZoom.dispatch( (doMagnify) ? 1 + 5 * (1-doPercent) : doPercent );
+		}
+		
+		/////
+		 
 		private var _magnify:CheckBox;
 		private var _zoomSlider:UIScrollBar;
 
@@ -23,7 +33,7 @@ package com.stardoll.carbondioxide.dialogues {
 			super("Zoom", true, false, true, true);
 
 			_magnify = new CheckBox();
-			_magnify.selected = false;
+			_magnify.selected = ZoomDialogue.doMagnify;
 			_magnify.label = "Magnify";
 			_magnify.textField.autoSize = TextFieldAutoSize.LEFT;
 				var fmt:TextFormat = _magnify.textField.defaultTextFormat;
@@ -36,6 +46,7 @@ package com.stardoll.carbondioxide.dialogues {
 			_zoomSlider.direction = "horizontal";
 			_zoomSlider.minScrollPosition = 0;
 			_zoomSlider.maxScrollPosition = 100;
+			_zoomSlider.scrollPosition = MathEx.lerp(0, 100, doPercent);
 			_zoomSlider.addEventListener(ScrollEvent.SCROLL, onZoomScreen);
 			container.addChild(_zoomSlider);
 
@@ -48,13 +59,13 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onMagnify(e:Event):void {
-			onZoomScreen(null);
+			doMagnify = !doMagnify;
+			doZoom();
 		}
 
 		private function onZoomScreen(e:ScrollEvent):void {
-			var t:Number = ((100-_zoomSlider.scrollPosition)/_zoomSlider.maxScrollPosition);
-
-			TreeDisplay.doZoom.dispatch( (_magnify.selected) ? 1 + 5 * (1-t) : t );
+			doPercent = ((100-_zoomSlider.scrollPosition)/_zoomSlider.maxScrollPosition);
+			doZoom();
 		}
 	}
 }
