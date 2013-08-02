@@ -348,8 +348,8 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onMouseMove( e:MouseEvent ):void {
-			var diffx:int = e.stageX - _global.x;
-			var diffy:int = e.stageY - _global.y;
+			var diffx:int = (e.stageX - _global.x) * (1/this.scaleX);
+			var diffy:int = (e.stageY - _global.y) * (1/this.scaleY);
 
 			if( _state == STATE_MOVE ) {
 				_selection.x = _selection.save_x + diffx;
