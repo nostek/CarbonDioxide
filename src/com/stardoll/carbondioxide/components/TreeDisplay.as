@@ -307,11 +307,16 @@ package com.stardoll.carbondioxide.components {
 		private static const STATE_RIGHT:uint 	= 1 << 3;
 		private static const STATE_TOP:uint 	= 1 << 4;
 		private static const STATE_BOTTOM:uint 	= 1 << 5;
+		
+		private static const DIR_NONE:int 		= 0;
+		private static const DIR_HORIZONTAL:int = 1;
+		private static const DIR_VERTICAL:int 	= 2;
 
 		private var _local:Point;
 		private var _global:Point;
 		private var _state:uint;
 		private var _ascale:Boolean;
+		private var _mdir:int;
 
 		private function onDblClick( e:MouseEvent ):void {
 			if( DataModel.SELECTED.length == 1 ) {
@@ -337,6 +342,8 @@ package com.stardoll.carbondioxide.components {
 			_state = 0;
 
 			_ascale = DataModel.SHIFT_KEY;
+			
+			_mdir = DIR_NONE;
 
 			if( _local.x <= SCALE_BORDER ) {
 				_state |= STATE_LEFT;
@@ -362,6 +369,17 @@ package com.stardoll.carbondioxide.components {
 			var diffy:int = (e.stageY - _global.y) * (1/this.scaleY);
 
 			if( _state == STATE_MOVE ) {
+				if( DataModel.SHIFT_KEY && _mdir == DIR_NONE ) {
+					_mdir = ( Math.abs(diffx) > Math.abs(diffy) ) ? DIR_HORIZONTAL : DIR_VERTICAL;
+				}
+				
+				if( _mdir == DIR_HORIZONTAL ) {
+					diffy = 0;
+				}
+				if( _mdir == DIR_VERTICAL ) {
+					diffx = 0;
+				}
+				
 				_selection.x = _selection.save_x + diffx;
 				_selection.y = _selection.save_y + diffy;
 			}
@@ -369,7 +387,7 @@ package com.stardoll.carbondioxide.components {
 			if( _ascale ) {
 				diffx = diffy = Math.min( diffx, diffy );
 			}
-
+			
 			if( _state & STATE_LEFT ) {
 				_selection.x = _selection.save_x + diffx;
 				_selection.width = _selection.save_width - diffx;

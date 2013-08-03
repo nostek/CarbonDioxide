@@ -1,11 +1,11 @@
 package com.stardoll.carbondioxide {
-	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
+	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
@@ -13,7 +13,6 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
 	import com.stardoll.carbondioxide.models.cd.CDView;
 
-	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -40,8 +39,8 @@ package com.stardoll.carbondioxide {
 			var bg:Bitmap = new Bitmap( DataModel.BG.bitmapData );
 			addChild(bg);
 
-			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 10000);
+			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
 
 			new Menu( stage );
 
@@ -117,7 +116,9 @@ package com.stardoll.carbondioxide {
 			res.height 	= CDItem.toPercent(50, 600);
 			ch2.addResolution(res);
 
-			item.aspectRatio = CDAspectRatio.BOTTOM_RIGHT;
+			item.aspectRatio = CDAspectRatio.CENTER;
+			ch1.aspectRatio = CDAspectRatio.TOP_LEFT;
+			ch2.aspectRatio = CDAspectRatio.TOP_RIGHT;
 
 			item.asset = "overlay_big_suiteshop_bg";
 			ch1.asset = "avatar_180x180";
