@@ -1,14 +1,15 @@
 package com.stardoll.carbondioxide.components {
-	import flash.display.NativeWindow;
-	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
+	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
+	import com.stardoll.carbondioxide.utils.SaveLoad;
 
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeMenu;
 	import flash.display.NativeMenuItem;
+	import flash.display.NativeWindow;
 	import flash.display.Stage;
 	import flash.events.Event;
 	/**
@@ -30,7 +31,8 @@ package com.stardoll.carbondioxide.components {
 						},
 						{
 							name: "Save",
-							shortcut: "s"
+							shortcut: "s",
+							callback: onSave
 						},
 						{
 							name: "Save As"
@@ -200,6 +202,10 @@ package com.stardoll.carbondioxide.components {
 		private function onZoomPlus( e:Event ):void {
 			ZoomDialogue.doPercent = Math.max( 0, ZoomDialogue.doPercent - 0.1 );
 			ZoomDialogue.doZoom();	
+		}
+		
+		private function onSave( e:Event ):void {
+			SaveLoad.save();
 		}
 	}
 }

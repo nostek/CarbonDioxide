@@ -11,6 +11,18 @@ package com.stardoll.carbondioxide.models.cd {
 			text = "DEFAULT";
 		}
 		
+		override public function get type():int {
+			return TYPE_TEXT;
+		}
+
 		public var text:String;
+		
+		override public function save():Object {
+			var data:Object = super.save();
+			
+			data["text"] = this.text;
+			
+			return data;
+		}
 	}
 }

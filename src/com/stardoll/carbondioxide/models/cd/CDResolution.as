@@ -19,5 +19,20 @@ package com.stardoll.carbondioxide.models.cd {
 		public var y:Number;
 		public var width:Number;
 		public var height:Number;
+		
+		///////////////////////////////////
+		// Save & Load
+		
+		public function save():Object {
+			return {
+				screenWidth: 	_screenWidth,
+				screenHeight: 	_screenHeight,
+				
+				x:	this.x,
+				y: 	this.y,
+				w:	this.width,
+				h: 	this.height
+			};
+		}
 	}
 }

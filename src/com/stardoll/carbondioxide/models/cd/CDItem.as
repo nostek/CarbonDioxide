@@ -4,6 +4,12 @@ package com.stardoll.carbondioxide.models.cd {
 	 * @author simonrodriguez
 	 */
 	public class CDItem {
+		public static const TYPE_VIEW:int = 0;
+		public static const TYPE_ITEM:int = 1;
+		public static const TYPE_TEXT:int = 2;
+		
+		///
+		
 		private var _parent:CDItem;
 
 		private var _children:Vector.<CDItem>;
@@ -22,10 +28,15 @@ package com.stardoll.carbondioxide.models.cd {
 			_children = new Vector.<CDItem>();
 			_resolutions = new Vector.<CDResolution>();
 		}
+		
+		public function get type():int {
+			return TYPE_ITEM;
+		}
 
 		//////////////
 
 		public var name:String;
+		
 		public var asset:String;
 
 		public var aspectRatio:int = CDAspectRatio.NONE;
@@ -302,6 +313,44 @@ package com.stardoll.carbondioxide.models.cd {
 			}
 
 			return finds[1];
+		}
+		
+		///////////////////////////////////
+		// Save & Load
+		
+		public function save():Object {
+			var i:int;
+			
+			var data:Object = {
+				type: 	this.type,
+				name: 	this.name,
+				asset: 	this.asset,
+				ar: 	this.aspectRatio
+			};
+			
+			if( _resolutions.length > 0 ) {
+				var resolutions:Array = [];
+				
+				const rlen:int = _resolutions.length;
+				for( i = 0; i < rlen; i++ ) {
+					resolutions.push( _resolutions[i].save() );
+				}
+				
+				data["resolutions"] = resolutions;
+			}
+			
+			if( _children.length > 0 ) {
+				var children:Array = [];
+				
+				const clen:int = _children.length;
+				for( i = 0; i < clen; i++ ) {
+					children.push( _children[i].save() );
+				}
+				
+				data["children"] = children;
+			}
+			
+			return data;
 		}
 	}
 }
