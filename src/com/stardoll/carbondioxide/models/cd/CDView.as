@@ -41,25 +41,5 @@ package com.stardoll.carbondioxide.models.cd {
 		override public function toString() : String {
 			return "CDView( " + width + " " + height + " )";
 		}
-		
-		///////////////////////////////////
-		// Save & Load
-		
-		override public function save():Object {
-			var indata:Object = super.save();
-			
-			if( indata["children"] == null ) {
-				return {
-					type: this.type,
-					name: this.name
-				};
-			}
-			
-			return {
-				type: this.type,
-				name: this.name,
-				children: indata["children"]
-			};
-		}
 	}
 }

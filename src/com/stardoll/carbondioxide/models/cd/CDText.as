@@ -1,5 +1,5 @@
 package com.stardoll.carbondioxide.models.cd {
-	import com.stardoll.carbondioxide.models.cd.CDItem;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 
 	/**
 	 * @author Simon
@@ -16,13 +16,26 @@ package com.stardoll.carbondioxide.models.cd {
 		}
 
 		public var text:String;
+
+		///////////////////////////////////
+		// Save & Load
+		
+		private static const KEY_TEXT:String = "text";
 		
 		override public function save():Object {
 			var data:Object = super.save();
 			
-			data["text"] = this.text;
+			data[ KEY_TEXT ] = this.text;
 			
 			return data;
+		}
+		
+		override public function load( version:int, data:Object ):void {
+			if( version >= 1 ) {
+				this.text = ObjectEx.select( data, KEY_TEXT, null );
+			}
+			
+			super.load( version, data );
 		}
 	}
 }

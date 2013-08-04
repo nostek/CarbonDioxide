@@ -60,10 +60,10 @@ package com.stardoll.carbondioxide {
 			new ItemsDialogue( false );
 			new PropertiesDialogue( false );
 
-			test();
+//			test();
 
 //			DataModel.setResolution(1000, 700);
-			DataModel.setView( ViewsManager.getViewByName("main") );
+//			DataModel.setView( ViewsManager.getViewByName("main") );
 
 //			DataModel.setLayer( ViewsManager.getViewByName("main").getChildByName("test") );
 		}

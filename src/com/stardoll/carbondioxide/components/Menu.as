@@ -27,7 +27,8 @@ package com.stardoll.carbondioxide.components {
 
 					children: [
 						{
-							name: "Open"
+							name: "Open",
+							callback: onOpen
 						},
 						{
 							name: "Save",
@@ -202,6 +203,10 @@ package com.stardoll.carbondioxide.components {
 		private function onZoomPlus( e:Event ):void {
 			ZoomDialogue.doPercent = Math.max( 0, ZoomDialogue.doPercent - 0.1 );
 			ZoomDialogue.doZoom();	
+		}
+		
+		private function onOpen( e:Event ):void {
+			SaveLoad.load();
 		}
 		
 		private function onSave( e:Event ):void {

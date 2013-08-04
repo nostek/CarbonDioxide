@@ -19,6 +19,10 @@ package com.stardoll.carbondioxide.managers {
 		public static function get onViewsChanged():Signal { return _onViewsChanged; }
 
 		public static function get views():Vector.<CDView> { return _views; }
+		
+		public static function clearViews():void {
+			_views = new Vector.<CDView>();
+		}
 
 		public static function addView( view:CDView ):CDView {
 			_views.push( view );

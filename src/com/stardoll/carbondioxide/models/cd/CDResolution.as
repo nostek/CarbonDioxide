@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.models.cd {
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -33,6 +34,18 @@ package com.stardoll.carbondioxide.models.cd {
 				w:	this.width,
 				h: 	this.height
 			};
+		}
+		
+		public function load( version:int, data:Object):void {
+			if( version >= 1 ) {
+				_screenWidth 	= ObjectEx.select(data, "screenWidth", 0);
+				_screenHeight 	= ObjectEx.select(data, "screenHeight", 0);
+				
+				this.x 		= ObjectEx.select(data, "x", 0);
+				this.y 		= ObjectEx.select(data, "y", 0);
+				this.width 	= ObjectEx.select(data, "w", 0);
+				this.height = ObjectEx.select(data, "h", 0);
+			}
 		}
 	}
 }

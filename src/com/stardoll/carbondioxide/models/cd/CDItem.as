@@ -1,12 +1,15 @@
 package com.stardoll.carbondioxide.models.cd {
+	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 	import com.stardoll.carbondioxide.models.DataModel;
 	/**
 	 * @author simonrodriguez
 	 */
 	public class CDItem {
-		public static const TYPE_VIEW:int = 0;
-		public static const TYPE_ITEM:int = 1;
-		public static const TYPE_TEXT:int = 2;
+		public static const TYPE_UNKNOWN:int 	= -1;
+		public static const TYPE_VIEW:int 		= 0;
+		public static const TYPE_ITEM:int 		= 1;
+		public static const TYPE_TEXT:int 		= 2;
 		
 		///
 		
@@ -318,15 +321,28 @@ package com.stardoll.carbondioxide.models.cd {
 		///////////////////////////////////
 		// Save & Load
 		
+		private static const KEY_TYPE:String 		= "type";
+		private static const KEY_NAME:String 		= "name";
+		private static const KEY_ASSET:String 		= "asset";
+		private static const KEY_ASPECTRATIO:String = "ar";
+		private static const KEY_RESOLUTIONS:String = "resolutions";
+		private static const KEY_CHILDREN:String 	= "children";
+		
 		public function save():Object {
 			var i:int;
 			
-			var data:Object = {
-				type: 	this.type,
-				name: 	this.name,
-				asset: 	this.asset,
-				ar: 	this.aspectRatio
-			};
+			var data:Object = {};
+			
+			data[ KEY_TYPE ] = this.type;
+			data[ KEY_NAME ] = this.name;
+			
+			if( this.asset != null ) {
+				data[ KEY_ASSET ] = this.asset;
+			}
+			
+			if( this.aspectRatio != CDAspectRatio.NONE ) {
+				data[ KEY_ASPECTRATIO ] = this.aspectRatio;
+			}
 			
 			if( _resolutions.length > 0 ) {
 				var resolutions:Array = [];
@@ -336,7 +352,7 @@ package com.stardoll.carbondioxide.models.cd {
 					resolutions.push( _resolutions[i].save() );
 				}
 				
-				data["resolutions"] = resolutions;
+				data[ KEY_RESOLUTIONS ] = resolutions;
 			}
 			
 			if( _children.length > 0 ) {
@@ -347,10 +363,64 @@ package com.stardoll.carbondioxide.models.cd {
 					children.push( _children[i].save() );
 				}
 				
-				data["children"] = children;
+				data[ KEY_CHILDREN ] = children;
 			}
 			
 			return data;
+		}
+		
+		public function load( version:int, data:Object ):void {
+			var i:int;
+			
+			if( version >= 1 ) {
+				 this.name = ObjectEx.select(data, KEY_NAME, null);
+				 
+				 this.asset = ObjectEx.select(data, KEY_ASSET, null);
+				 
+				 this.aspectRatio = ObjectEx.select(data, KEY_ASPECTRATIO, CDAspectRatio.NONE);
+				 
+				 if( data[ KEY_RESOLUTIONS ] != null ) {
+					const resolutions:Array = data[ KEY_RESOLUTIONS ];
+					const rlen:int = resolutions.length;
+					var res:CDResolution;
+					for( i = 0; i < rlen; i++ ) {
+						res = new CDResolution(0, 0);
+						res.load(version, resolutions[i]);
+						addResolution( res );
+					}
+				 }
+				 
+				 if( data[ KEY_CHILDREN ] != null ) {
+					const children:Array = data[ KEY_CHILDREN ];
+					const clen:int = children.length;
+					var type:int;
+					var item:CDItem;
+					for( i = 0; i < clen; i++ ) {
+						type = ObjectEx.select( children[i], KEY_TYPE, TYPE_UNKNOWN );
+						
+						item = null;
+						
+						switch( type ) {
+							case TYPE_ITEM:
+								item = new CDItem(this, null);
+							break;
+							
+							case TYPE_TEXT:
+								item = new CDText(this, null);
+							break;
+							
+							default:
+								new PopupDialogue("ERROR", "Unknown type: " + type.toString());
+							break;
+						}
+						
+						if( item != null ) {
+							item.load(version, children[i]);
+							addChild(item);
+						}
+					}
+				 }
+			}
 		}
 	}
 }
