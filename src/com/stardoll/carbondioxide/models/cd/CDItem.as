@@ -10,9 +10,9 @@ package com.stardoll.carbondioxide.models.cd {
 		public static const TYPE_VIEW:int 		= 0;
 		public static const TYPE_ITEM:int 		= 1;
 		public static const TYPE_TEXT:int 		= 2;
-		
+
 		///
-		
+
 		private var _parent:CDItem;
 
 		private var _children:Vector.<CDItem>;
@@ -31,7 +31,7 @@ package com.stardoll.carbondioxide.models.cd {
 			_children = new Vector.<CDItem>();
 			_resolutions = new Vector.<CDResolution>();
 		}
-		
+
 		public function get type():int {
 			return TYPE_ITEM;
 		}
@@ -39,7 +39,7 @@ package com.stardoll.carbondioxide.models.cd {
 		//////////////
 
 		public var name:String;
-		
+
 		public var asset:String;
 
 		public var aspectRatio:int = CDAspectRatio.NONE;
@@ -317,68 +317,27 @@ package com.stardoll.carbondioxide.models.cd {
 
 			return finds[1];
 		}
-		
+
 		///////////////////////////////////
 		// Save & Load
-		
+
 		private static const KEY_TYPE:String 		= "type";
 		private static const KEY_NAME:String 		= "name";
 		private static const KEY_ASSET:String 		= "asset";
 		private static const KEY_ASPECTRATIO:String = "ar";
 		private static const KEY_RESOLUTIONS:String = "resolutions";
 		private static const KEY_CHILDREN:String 	= "children";
-		
-		public function save():Object {
-			var i:int;
-			
-			var data:Object = {};
-			
-			data[ KEY_TYPE ] = this.type;
-			data[ KEY_NAME ] = this.name;
-			
-			if( this.asset != null ) {
-				data[ KEY_ASSET ] = this.asset;
-			}
-			
-			if( this.aspectRatio != CDAspectRatio.NONE ) {
-				data[ KEY_ASPECTRATIO ] = this.aspectRatio;
-			}
-			
-			if( _resolutions.length > 0 ) {
-				var resolutions:Array = [];
-				
-				const rlen:int = _resolutions.length;
-				for( i = 0; i < rlen; i++ ) {
-					resolutions.push( _resolutions[i].save() );
-				}
-				
-				data[ KEY_RESOLUTIONS ] = resolutions;
-			}
-			
-			if( _children.length > 0 ) {
-				var children:Array = [];
-				
-				const clen:int = _children.length;
-				for( i = 0; i < clen; i++ ) {
-					children.push( _children[i].save() );
-				}
-				
-				data[ KEY_CHILDREN ] = children;
-			}
-			
-			return data;
-		}
-		
+
 		public function load( version:int, data:Object ):void {
 			var i:int;
-			
+
 			if( version >= 1 ) {
 				 this.name = ObjectEx.select(data, KEY_NAME, null);
-				 
+
 				 this.asset = ObjectEx.select(data, KEY_ASSET, null);
-				 
+
 				 this.aspectRatio = ObjectEx.select(data, KEY_ASPECTRATIO, CDAspectRatio.NONE);
-				 
+
 				 if( data[ KEY_RESOLUTIONS ] != null ) {
 					const resolutions:Array = data[ KEY_RESOLUTIONS ];
 					const rlen:int = resolutions.length;
@@ -389,7 +348,7 @@ package com.stardoll.carbondioxide.models.cd {
 						addResolution( res );
 					}
 				 }
-				 
+
 				 if( data[ KEY_CHILDREN ] != null ) {
 					const children:Array = data[ KEY_CHILDREN ];
 					const clen:int = children.length;
@@ -397,23 +356,23 @@ package com.stardoll.carbondioxide.models.cd {
 					var item:CDItem;
 					for( i = 0; i < clen; i++ ) {
 						type = ObjectEx.select( children[i], KEY_TYPE, TYPE_UNKNOWN );
-						
+
 						item = null;
-						
+
 						switch( type ) {
 							case TYPE_ITEM:
 								item = new CDItem(this, null);
 							break;
-							
+
 							case TYPE_TEXT:
 								item = new CDText(this, null);
 							break;
-							
+
 							default:
 								new PopupDialogue("ERROR", "Unknown type: " + type.toString());
 							break;
 						}
-						
+
 						if( item != null ) {
 							item.load(version, children[i]);
 							addChild(item);
