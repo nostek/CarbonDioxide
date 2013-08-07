@@ -53,8 +53,7 @@ package com.stardoll.carbondioxide {
 			_status = new StatusBar( stage );
 			addChild(_status);
 
-			BaseDialogue.DIALOGUES = new Sprite();
-			addChild(BaseDialogue.DIALOGUES);
+			BaseDialogue.DIALOGUES = addChild( new Sprite() ) as Sprite;
 
 			new AssetsDialogue( false );
 			new ItemsDialogue( false );

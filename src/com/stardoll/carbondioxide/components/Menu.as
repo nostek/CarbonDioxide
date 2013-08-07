@@ -4,8 +4,8 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
+	import com.stardoll.carbondioxide.saveload.Load;
 	import com.stardoll.carbondioxide.saveload.Save;
-	import com.stardoll.carbondioxide.saveload.SaveLoad;
 
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeMenu;
@@ -207,7 +207,7 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onOpen( e:Event ):void {
-			SaveLoad.load();
+			Load.run();
 		}
 
 		private function onSave( e:Event ):void {

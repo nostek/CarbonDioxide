@@ -1,6 +1,4 @@
 package com.stardoll.carbondioxide.models.cd {
-	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
-	import com.stardoll.carbondioxide.utils.ObjectEx;
 	import com.stardoll.carbondioxide.models.DataModel;
 	/**
 	 * @author simonrodriguez
@@ -316,70 +314,6 @@ package com.stardoll.carbondioxide.models.cd {
 			}
 
 			return finds[1];
-		}
-
-		///////////////////////////////////
-		// Save & Load
-
-		private static const KEY_TYPE:String 		= "type";
-		private static const KEY_NAME:String 		= "name";
-		private static const KEY_ASSET:String 		= "asset";
-		private static const KEY_ASPECTRATIO:String = "ar";
-		private static const KEY_RESOLUTIONS:String = "resolutions";
-		private static const KEY_CHILDREN:String 	= "children";
-
-		public function load( version:int, data:Object ):void {
-			var i:int;
-
-			if( version >= 1 ) {
-				 this.name = ObjectEx.select(data, KEY_NAME, null);
-
-				 this.asset = ObjectEx.select(data, KEY_ASSET, null);
-
-				 this.aspectRatio = ObjectEx.select(data, KEY_ASPECTRATIO, CDAspectRatio.NONE);
-
-				 if( data[ KEY_RESOLUTIONS ] != null ) {
-					const resolutions:Array = data[ KEY_RESOLUTIONS ];
-					const rlen:int = resolutions.length;
-					var res:CDResolution;
-					for( i = 0; i < rlen; i++ ) {
-						res = new CDResolution(0, 0);
-						res.load(version, resolutions[i]);
-						addResolution( res );
-					}
-				 }
-
-				 if( data[ KEY_CHILDREN ] != null ) {
-					const children:Array = data[ KEY_CHILDREN ];
-					const clen:int = children.length;
-					var type:int;
-					var item:CDItem;
-					for( i = 0; i < clen; i++ ) {
-						type = ObjectEx.select( children[i], KEY_TYPE, TYPE_UNKNOWN );
-
-						item = null;
-
-						switch( type ) {
-							case TYPE_ITEM:
-								item = new CDItem(this, null);
-							break;
-
-							case TYPE_TEXT:
-								item = new CDText(this, null);
-							break;
-
-							default:
-								new PopupDialogue("ERROR", "Unknown type: " + type.toString());
-							break;
-						}
-
-						if( item != null ) {
-							item.load(version, children[i]);
-							addChild(item);
-						}
-					}
-				 }
-			}
 		}
 	}
 }
