@@ -1,4 +1,4 @@
 
 .DS_Store
 bin/CarbonDioxide.swf
-.settings/com.powerflasher.fdt.core.prefs
+.settings/*
