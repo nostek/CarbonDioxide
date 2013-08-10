@@ -1,5 +1,4 @@
 package com.stardoll.carbondioxide.dialogues {
-	import fl.controls.Button;
 	import fl.controls.List;
 	import fl.events.ListEvent;
 
@@ -17,8 +16,6 @@ package com.stardoll.carbondioxide.dialogues {
 	 */
 	public class PropertiesDialogue extends BaseDialogue {
 		private var _properties:List;
-		private var _add:Button;
-		private var _del:Button;
 
 		private var _type:Array;
 
@@ -34,16 +31,6 @@ package com.stardoll.carbondioxide.dialogues {
 			_properties.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onEditProperties);
 			container.addChild(_properties);
 
-			_add = new Button();
-			_add.label = "Add Property";
-//			_addProperty.addEventListener(MouseEvent.CLICK, onAddPropety);
-			container.addChild(_add);
-
-			_del = new Button();
-			_del.label = "Delete";
-//			_delProperty.addEventListener(MouseEvent.CLICK, onDelProperty);
-			container.addChild(_del);
-
 			init( WIDTH, HEIGHT );
 
 			this.x = 820;
@@ -58,18 +45,13 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		override protected function onResize( width:int, height:int ):void {
-			_add.y = _del.y = height - _add.height;
-			_add.width = int(width*0.75);
-			_del.width = int(width*0.25);
-			_del.x = _add.width;
-
 			_properties.width = width;
-			_properties.height = _add.y - 10;
+			_properties.height = height;
 		}
 
 		private function onSetItems( itm:ItemModel=null ):void {
 			itm;
-			
+
 			_properties.removeAll();
 
 			if( DataModel.SELECTED.length == 0 ) {
@@ -94,16 +76,10 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
 				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio: " + CDAspectRatio.toString( item.aspectRatio )});
 				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset});
-				
+
 				if( item is CDText ) {
 					_properties.addItem({data:[false, "text"],	label:"text: " + (item as CDText).text});
 				}
-				
-//				_properties.addItem({data:[false, "null"], label:"::-- Object Properties --::"});
-//				for( var key:String in model.parameters ) {
-//					_properties.addItem({	data: [true, key],
-//											label:key + ": " + model.parameters[key] });
-//				}
 			} else {
 				_properties.addItem({data:[false, "x"], label:"x: (-)"});
 				_properties.addItem({data:[false, "y"], label:"y: (-)"});
@@ -133,7 +109,6 @@ package com.stardoll.carbondioxide.dialogues {
 			const bounds:Rectangle = ( !multiple && Drawer.isLoaded && item.asset != null ) ? Drawer.getBounds(item.asset) : new Rectangle();
 
 			if( data[0] == true ) {
-//				input = new InputDialogue("Edit parameter", "Enter parameter value:", item.parameters[ data[1] as String ]);
 			} else {
 				switch( data[1] ) {
 					case "name":
@@ -186,11 +161,10 @@ package com.stardoll.carbondioxide.dialogues {
 //						DataModel.onItemStateChanged.dispatch();
 //					break;
 
-//todo
-//					case "ar":
-//						var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
-//						alignDlg.addEventListener(AspectRatioDialogue.EVENT_OK, onAlignSelected);
-//					break;
+					case "ar":
+						var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
+						alignDlg.onSelect.addOnce( onAlignSelected );
+					break;
 
 					default : break;
 				}
@@ -208,8 +182,6 @@ package com.stardoll.carbondioxide.dialogues {
 			var item:ItemModel;
 
 			if( _type[0] == true ) {
-//				item.parameters[data[1] as String] = input.text;
-//				onRefreshProperties();
 			} else {
 				switch( _type[1] ) {
 					case "name":
@@ -257,7 +229,7 @@ package com.stardoll.carbondioxide.dialogues {
 							}
 						}
 					break;
-					
+
 					case "text":
 						item = DataModel.SELECTED[0];
 						(item.item as CDText).text = input.text;
@@ -284,6 +256,17 @@ package com.stardoll.carbondioxide.dialogues {
 			}
 
 			return true;
+		}
+
+		private function onAlignSelected( dlg:AspectRatioDialogue ):void {
+			const ar:int = dlg.aspectRatio;
+
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				item.item.aspectRatio = ar;
+				DataModel.onItemChanged.dispatch( item );
+			}
 		}
 	}
 }
