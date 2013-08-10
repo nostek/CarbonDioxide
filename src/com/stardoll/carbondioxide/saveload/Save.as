@@ -11,11 +11,30 @@ package com.stardoll.carbondioxide.saveload {
 	public class Save {
 		public static const CURRENT_VERSION:int = 1;
 
+		private static var TEXTDB:Array;
+		
+		private static function text( txt:String ):int {
+			var index:int = TEXTDB.indexOf( txt );
+			
+			if( index >= 0 ) {
+				return index;
+			} else {
+				index = TEXTDB.length;
+				TEXTDB.push( txt );
+			}
+			
+			return index;
+		}
+		
+		///
+
 		public static function run():void {
-			var data:Object = {
-				key: "cbdd",
-				version: CURRENT_VERSION
-			};
+			TEXTDB = [];
+			
+			var data:Object = {};
+			
+			data[ SLKeys.MAIN_KEY ] = "cbdd";
+			data[ SLKeys.MAIN_VERSION ] = CURRENT_VERSION;
 
 			var v:Array = [];
 
@@ -26,7 +45,11 @@ package com.stardoll.carbondioxide.saveload {
 				v.push( saveView( views[i]) );
 			}
 
-			data[ SLKeys.VIEWS ] = v;
+			data[ SLKeys.MAIN_VIEWS ] = v;
+			
+			data[ SLKeys.MAIN_TEXTS ] = TEXTDB;
+			
+			TEXTDB = null;
 
 			trace( JSON.stringify(data) );
 		}
@@ -34,8 +57,8 @@ package com.stardoll.carbondioxide.saveload {
 		private static function saveView( view:CDView ):Object {
 			var data:Object = {};
 
-			data[ SLKeys.TYPE ] = CDItem.TYPE_VIEW;
-			data[ SLKeys.NAME ] = view.name;
+			data[ SLKeys.ITEM_TYPE ] = CDItem.TYPE_VIEW;
+			data[ SLKeys.ITEM_NAME ] = text( view.name );
 
 			const children:Vector.<CDItem> = view.children;
 			const clen:int = children.length;
@@ -46,7 +69,7 @@ package com.stardoll.carbondioxide.saveload {
 					c.push( saveItem( children[i] ) );
 				}
 
-				data[ SLKeys.CHILDREN ] = c;
+				data[ SLKeys.ITEM_CHILDREN ] = c;
 			}
 
 			return data;
@@ -55,19 +78,19 @@ package com.stardoll.carbondioxide.saveload {
 		private static function saveItem( item:CDItem ):Object {
 			var data:Object = {};
 
-			data[ SLKeys.TYPE ] = item.type;
-			data[ SLKeys.NAME ] = item.name;
+			data[ SLKeys.ITEM_TYPE ] = item.type;
+			data[ SLKeys.ITEM_NAME ] = text( item.name );
 
 			if( item is CDText ) {
-				data[ SLKeys.TEXT ] = (item as CDText).text;
+				data[ SLKeys.ITEM_TEXT ] = text( (item as CDText).text );
 			}
 
 			if( item.asset != null ) {
-				data[ SLKeys.ASSET ] = item.asset;
+				data[ SLKeys.ITEM_ASSET ] = text( item.asset );
 			}
 
 			if( item.aspectRatio != CDAspectRatio.NONE ) {
-				data[ SLKeys.ASPECTRATIO ] = item.aspectRatio;
+				data[ SLKeys.ITEM_ASPECTRATIO ] = item.aspectRatio;
 			}
 
 			var i:int;
@@ -81,7 +104,7 @@ package com.stardoll.carbondioxide.saveload {
 					r.push( saveResolutions( resolutions[i] ) );
 				}
 
-				data[ SLKeys.RESOLUTIONS ] = r;
+				data[ SLKeys.ITEM_RESOLUTIONS ] = r;
 			}
 
 			const children:Vector.<CDItem> = item.children;
@@ -93,24 +116,21 @@ package com.stardoll.carbondioxide.saveload {
 					c.push( saveItem( children[i] ) );
 				}
 
-				data[ SLKeys.CHILDREN ] = c;
+				data[ SLKeys.ITEM_CHILDREN ] = c;
 			}
 
 			return data;
 		}
 
-		private static function saveResolutions( res:CDResolution ):Object {
-			var data:Object = {};
-
-			data[ SLKeys.SCREENWIDTH ] 	= res.screenWidth;
-			data[ SLKeys.SCREENHEIGHT ] = res.screenHeight;
-
-			data[ SLKeys.X ] = res.x;
-			data[ SLKeys.Y ] = res.y;
-			data[ SLKeys.W ] = res.width;
-			data[ SLKeys.H ] = res.height;
-
-			return data;
+		private static function saveResolutions( res:CDResolution ):Array {
+			return [
+				res.screenWidth,
+				res.screenHeight,
+				res.x,
+				res.y,
+				res.width,
+				res.height
+			];
 		}
 	}
 }
