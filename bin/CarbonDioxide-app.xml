@@ -197,5 +197,14 @@
   <!-- </android> -->
   <!-- End of the schema for adding the android specific tags in AndroidManifest.xml file -->
   <supportedProfiles>desktop extendedDesktop</supportedProfiles>
+  <icon>
+    <image128x128>AppIcons/128x128-CarbonIcon_128.png</image128x128>
+    <image16x16>AppIcons/16x16-CarbonIcon_16.png</image16x16>
+    <image72x72>AppIcons/72x72-CarbonIcon_72.png</image72x72>
+    <image114x114>AppIcons/114x114-CarbonIcon_114.png</image114x114>
+    <image48x48>AppIcons/48x48-CarbonIcon_48.png</image48x48>
+    <image32x32>AppIcons/32x32-CarbonIcon_32.png</image32x32>
+    <image36x36>AppIcons/36x36-CarbonIcon_36.png</image36x36>
+  </icon>
 </application>
 
