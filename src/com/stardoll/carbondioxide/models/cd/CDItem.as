@@ -102,6 +102,18 @@ package com.stardoll.carbondioxide.models.cd {
 		public function get worldY():int {
 			return _parent.worldY + y;
 		}
+		
+		public function setXYWH( x:int, y:int, width:int, height:int ):void {
+			currentResolution.x 			= toPercent( x, _parent.width );
+			currentResolution.y 			= toPercent( y, _parent.height );
+			currentResolution.width 		= toPercent( width, _parent.width );
+			currentResolution.height 		= toPercent( height, _parent.height );
+			currentResolution.aspectRatio 	= width / height;
+
+			updateDisplayProperties();
+
+			itemChanged();
+		}
 
 		public function set x( value:int ):void {
 			currentResolution.x = toPercent( value, _parent.width );
@@ -121,6 +133,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set width( value:int ):void {
 			currentResolution.width = toPercent( value, _parent.width );
+			currentResolution.aspectRatio = width / height;
 
 			updateDisplayProperties();
 
@@ -129,6 +142,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set height( value:int ):void {
 			currentResolution.height = toPercent( value, _parent.height );
+			currentResolution.aspectRatio = width / height;
 
 			updateDisplayProperties();
 
@@ -223,9 +237,6 @@ package com.stardoll.carbondioxide.models.cd {
 		//////////////
 
 		public function updateDisplayProperties():void {
-			const screenWidth:int 	= DataModel.SCREEN_WIDTH;
-			const screenHeight:int 	= DataModel.SCREEN_HEIGHT;
-
 			var state:CDResolution = getInterpolatedState();
 
 			_x = state.x;
@@ -235,23 +246,18 @@ package com.stardoll.carbondioxide.models.cd {
 			_height = state.height;
 
 			if( aspectRatio != 0 ) {
-				const sx:Number = screenWidth / state.screenWidth;
-				const sy:Number = screenHeight / state.screenHeight;
-				const sa:Number = (sx < sy) ? sx : sy;
-
-				const tx:Number = state.screenWidth / screenWidth;
-				const ty:Number = state.screenHeight / screenHeight;
-
-				const oldwidth:int = width;
+				const oldwidth:int 	= width;
 				const oldheight:int = height;
-					_width *= tx * sa;
-					_height *= ty * sa;
-				const newwidth:int = width;
-				const newheight:int = height;
 
-				trace( name, screenWidth, screenHeight, state.screenWidth, state.screenHeight );
-				trace( oldwidth, "x", oldheight, "|", newwidth, "x", newheight );
-				trace( oldwidth/oldheight, newwidth/newheight );
+				var newwidth:int 	= height * state.aspectRatio;
+				var newheight:int 	= height;
+				
+				const sa:Number = Math.min( oldwidth/newwidth, oldheight/newheight );
+				newwidth 	*= sa;
+				newheight 	*= sa;
+				
+				_width 	= toPercent( newwidth, _parent.width );
+				_height = toPercent( newheight, _parent.height );
 
 				switch( aspectRatio ) {
 					case CDAspectRatio.TOP_LEFT:

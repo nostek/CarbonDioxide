@@ -19,5 +19,7 @@ package com.stardoll.carbondioxide.models.cd {
 		public var y:Number;
 		public var width:Number;
 		public var height:Number;
+		
+		public var aspectRatio:Number = 1.5;
 	}
 }

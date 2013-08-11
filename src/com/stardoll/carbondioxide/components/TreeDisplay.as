@@ -447,14 +447,13 @@ package com.stardoll.carbondioxide.components {
 						const currY:int = item.y;
 						const currW:int = item.width;
 						const currH:int = item.height;
-
-						item.x 		= currX + deltaX;
-						item.y 		= currY + deltaY;
-						item.width 	= currW + deltaWidth;
-						item.height = currH + deltaHeight;
-
-						item.width = Math.max( 0, item.width );
-						item.height = Math.max( 0, item.height );
+						
+						item.setXYWH( 	
+							currX + deltaX, 
+							currY + deltaY, 
+							Math.max( 0, currW + deltaWidth ), 
+							Math.max( 0, currH + deltaHeight )
+						);
 					} else {
 						d.x = item.x + deltaX;
 						d.y = item.y + deltaY;

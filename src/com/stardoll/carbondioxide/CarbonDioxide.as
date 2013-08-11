@@ -97,6 +97,7 @@ package com.stardoll.carbondioxide {
 			res.y 		= CDItem.toPercent(50, 700);
 			res.width 	= CDItem.toPercent(900, 1000);
 			res.height 	= CDItem.toPercent(600, 700);
+			res.aspectRatio = 900/600;
 			item.addResolution(res);
 
 			var ch1:CDItem = item.addChild( new CDItem(item, "child1") );
@@ -105,6 +106,7 @@ package com.stardoll.carbondioxide {
 			res.y 		= CDItem.toPercent(10, 600);
 			res.width 	= CDItem.toPercent(50, 900);
 			res.height 	= CDItem.toPercent(50, 600);
+			res.aspectRatio = 50/50;
 			ch1.addResolution(res);
 
 			var ch2:CDItem = item.addChild( new CDItem(item, "child2") );
@@ -113,11 +115,12 @@ package com.stardoll.carbondioxide {
 			res.y 		= CDItem.toPercent(10, 600);
 			res.width 	= CDItem.toPercent(50, 900);
 			res.height 	= CDItem.toPercent(50, 600);
+			res.aspectRatio = 50/50;
 			ch2.addResolution(res);
 
 			item.aspectRatio = CDAspectRatio.CENTER;
-//			ch1.aspectRatio = CDAspectRatio.TOP_LEFT;
-//			ch2.aspectRatio = CDAspectRatio.TOP_RIGHT;
+			ch1.aspectRatio = CDAspectRatio.TOP_LEFT;
+			ch2.aspectRatio = CDAspectRatio.TOP_RIGHT;
 
 			item.asset = "overlay_big_suiteshop_bg";
 			ch1.asset = "avatar_180x180";

@@ -329,10 +329,7 @@ package com.stardoll.carbondioxide.dialogues {
 					break;
 				}
 				
-				item.x = 0;
-				item.y = 0;
-				item.width = 100;
-				item.height = 100;
+				item.setXYWH(0, 0, 100, 100);
 
 				DataModel.layerUpdated();
 			} else {
