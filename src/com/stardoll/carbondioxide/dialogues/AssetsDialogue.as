@@ -217,8 +217,6 @@ package com.stardoll.carbondioxide.dialogues {
 					if( frame != null ) {
 						for each( var item:ItemModel in DataModel.SELECTED ) {
 							item.item.asset = frame;
-
-							DataModel.itemChanged( item );
 						}
 					}
 				}

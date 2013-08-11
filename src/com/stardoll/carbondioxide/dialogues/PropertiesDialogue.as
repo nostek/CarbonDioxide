@@ -49,7 +49,7 @@ package com.stardoll.carbondioxide.dialogues {
 			_properties.height = height;
 		}
 
-		private function onSetItems( itm:ItemModel=null ):void {
+		private function onSetItems( itm:CDItem=null ):void {
 			itm;
 
 			_properties.removeAll();
@@ -137,12 +137,10 @@ package com.stardoll.carbondioxide.dialogues {
 
 					case "ow":
 						item.width = bounds.width;
-						DataModel.onItemChanged.dispatch( holder );
 					break;
 
 					case "oh":
 						item.height = bounds.height;
-						DataModel.onItemChanged.dispatch( holder );
 					break;
 
 					case "text":
@@ -188,7 +186,6 @@ package com.stardoll.carbondioxide.dialogues {
 						item = DataModel.SELECTED[0];
 						if( checkName(input.text, item.item) ) {
 							item.item.name = input.text;
-							DataModel.onItemChanged.dispatch( item );
 						} else {
 							new PopupDialogue("ERROR", "ERROR: Name is already in use.");
 						}
@@ -198,7 +195,6 @@ package com.stardoll.carbondioxide.dialogues {
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
 								item.item.x = Number(input.text);
-								DataModel.onItemChanged.dispatch( item );
 							}
 						}
 					break;
@@ -207,7 +203,6 @@ package com.stardoll.carbondioxide.dialogues {
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
 								item.item.y = Number(input.text);
-								DataModel.onItemChanged.dispatch( item );
 							}
 						}
 					break;
@@ -216,7 +211,6 @@ package com.stardoll.carbondioxide.dialogues {
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
 								item.item.width = Number(input.text);
-								DataModel.onItemChanged.dispatch( item );
 							}
 						}
 					break;
@@ -225,7 +219,6 @@ package com.stardoll.carbondioxide.dialogues {
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
 								item.item.height = Number(input.text);
-								DataModel.onItemChanged.dispatch( item );
 							}
 						}
 					break;
@@ -233,7 +226,6 @@ package com.stardoll.carbondioxide.dialogues {
 					case "text":
 						item = DataModel.SELECTED[0];
 						(item.item as CDText).text = input.text;
-						DataModel.onItemChanged.dispatch( item );
 					break;
 
 //					case "r":
@@ -265,7 +257,6 @@ package com.stardoll.carbondioxide.dialogues {
 
 			for each( item in DataModel.SELECTED ) {
 				item.item.aspectRatio = ar;
-				DataModel.onItemChanged.dispatch( item );
 			}
 		}
 	}

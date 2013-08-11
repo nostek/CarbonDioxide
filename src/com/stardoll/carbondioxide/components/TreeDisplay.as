@@ -96,10 +96,20 @@ package com.stardoll.carbondioxide.components {
 			onResize(null);
 		}
 
-		private function onItemChanged( holder:ItemModel ):void {
-			if( _allowed.indexOf( holder ) >= 0  ) {
-				var item:CDItem = holder.item;
+		private function findHolder( item:CDItem ):ItemModel {
+			const len:int = _allowed.length;
+			for( var i:int = 0; i < len; i++ ) {
+				if( _allowed[i].item == item ) {
+					return _allowed[i];
+				}
+			}
 
+			return null;
+		}
+
+		private function onItemChanged( item:CDItem ):void {
+			var holder:ItemModel = findHolder( item );
+			if( holder != null ) {
 				holder.scaleX = holder.scaleY = 1;
 
 				var d:DisplayObject = drawFromData( item );
@@ -445,8 +455,6 @@ package com.stardoll.carbondioxide.components {
 
 						item.width = Math.max( 0, item.width );
 						item.height = Math.max( 0, item.height );
-
-						DataModel.itemChanged( d );
 					} else {
 						d.x = item.x + deltaX;
 						d.y = item.y + deltaY;

@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.models.cd {
+	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	/**
 	 * @author simonrodriguez
@@ -21,10 +22,16 @@ package com.stardoll.carbondioxide.models.cd {
 		private var _width:Number;
 		private var _height:Number;
 
+		private var _name:String;
+		private var _asset:String;
+		private var _aspectRatio:int;
+
 		public function CDItem( parent:CDItem, name:String ) {
 			_parent = parent;
 
-			this.name = name;
+			_name = name;
+
+			_aspectRatio = CDAspectRatio.NONE;
 
 			_children = new Vector.<CDItem>();
 			_resolutions = new Vector.<CDResolution>();
@@ -34,13 +41,41 @@ package com.stardoll.carbondioxide.models.cd {
 			return TYPE_ITEM;
 		}
 
+		protected function itemChanged():void {
+			EventManager.add( this );
+		}
+
 		//////////////
 
-		public var name:String;
+		public function get name():String {
+			return _name;
+		}
 
-		public var asset:String;
+		public function set name( name:String ):void {
+			_name = name;
 
-		public var aspectRatio:int = CDAspectRatio.NONE;
+			itemChanged();
+		}
+
+		public function get asset():String {
+			return _asset;
+		}
+
+		public function set asset( asset:String ):void {
+			_asset = asset;
+
+			itemChanged();
+		}
+
+		public function get aspectRatio():int {
+			return _aspectRatio;
+		}
+
+		public function set aspectRatio( ar:int ):void {
+			_aspectRatio = ar;
+
+			itemChanged();
+		}
 
 		//////////////
 
@@ -72,30 +107,41 @@ package com.stardoll.carbondioxide.models.cd {
 			currentResolution.x = toPercent( value, _parent.width );
 
 			updateDisplayProperties();
+
+			itemChanged();
 		}
 
 		public function set y( value:int ):void {
 			currentResolution.y = toPercent( value, _parent.height );
 
 			updateDisplayProperties();
+
+			itemChanged();
 		}
 
 		public function set width( value:int ):void {
 			currentResolution.width = toPercent( value, _parent.width );
 
 			updateDisplayProperties();
+
+			itemChanged();
 		}
 
 		public function set height( value:int ):void {
 			currentResolution.height = toPercent( value, _parent.height );
 
 			updateDisplayProperties();
+
+			itemChanged();
 		}
 
 		//////////////
 
 		public function addResolution( res:CDResolution ):CDResolution {
 			_resolutions.push( res );
+
+			itemChanged();
+
 			return res;
 		}
 
@@ -103,6 +149,8 @@ package com.stardoll.carbondioxide.models.cd {
 			const index:int = _resolutions.indexOf( res );
 			if( _resolutions.length > 1 && index >= 0 ) {
 				_resolutions.splice( index, 1 );
+
+				itemChanged();
 			}
 			return res;
 		}
@@ -130,6 +178,9 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function addChild( item:CDItem ):CDItem {
 			_children.push( item );
+
+			itemChanged();
+
 			return item;
 		}
 
@@ -137,6 +188,8 @@ package com.stardoll.carbondioxide.models.cd {
 			const index:int = _children.indexOf( item );
 			if( index >= 0 ) {
 				_children.splice(index, 1);
+
+				itemChanged();
 			}
 			return item;
 		}
@@ -195,6 +248,10 @@ package com.stardoll.carbondioxide.models.cd {
 					_height *= ty * sa;
 				const newwidth:int = width;
 				const newheight:int = height;
+
+				trace( name, screenWidth, screenHeight, state.screenWidth, state.screenHeight );
+				trace( oldwidth, "x", oldheight, "|", newwidth, "x", newheight );
+				trace( oldwidth/oldheight, newwidth/newheight );
 
 				switch( aspectRatio ) {
 					case CDAspectRatio.TOP_LEFT:

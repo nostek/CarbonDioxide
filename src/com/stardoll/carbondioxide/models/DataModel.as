@@ -87,11 +87,7 @@ package com.stardoll.carbondioxide.models {
 		}
 
 		//Item
-		public static var onItemChanged:Signal = new Signal( ItemModel );
-
-		public static function itemChanged( item:ItemModel ):void {
-			onItemChanged.dispatch( item );
-		}
+		public static var onItemChanged:Signal = new Signal( CDItem );
 
 		//Selected
 		public static var SELECTED:Vector.<ItemModel> = new Vector.<ItemModel>();

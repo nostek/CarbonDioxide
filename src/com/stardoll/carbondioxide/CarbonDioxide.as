@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide {
+	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
@@ -35,6 +36,7 @@ package com.stardoll.carbondioxide {
 			stage.doubleClickEnabled = true;
 
 			new DataModel();
+			new EventManager( stage );
 
 			var bg:Bitmap = new Bitmap( DataModel.BG.bitmapData );
 			addChild(bg);
@@ -59,12 +61,10 @@ package com.stardoll.carbondioxide {
 			new ItemsDialogue( false );
 			new PropertiesDialogue( false );
 
-//			test();
+			test();
+			DataModel.setView( ViewsManager.getViewByName("main") );
 
 //			DataModel.setResolution(1000, 700);
-//			DataModel.setView( ViewsManager.getViewByName("main") );
-
-//			DataModel.setLayer( ViewsManager.getViewByName("main").getChildByName("test") );
 		}
 
 		private function onKeyDown(e:KeyboardEvent):void {
@@ -116,8 +116,8 @@ package com.stardoll.carbondioxide {
 			ch2.addResolution(res);
 
 			item.aspectRatio = CDAspectRatio.CENTER;
-			ch1.aspectRatio = CDAspectRatio.TOP_LEFT;
-			ch2.aspectRatio = CDAspectRatio.TOP_RIGHT;
+//			ch1.aspectRatio = CDAspectRatio.TOP_LEFT;
+//			ch2.aspectRatio = CDAspectRatio.TOP_RIGHT;
 
 			item.asset = "overlay_big_suiteshop_bg";
 			ch1.asset = "avatar_180x180";
