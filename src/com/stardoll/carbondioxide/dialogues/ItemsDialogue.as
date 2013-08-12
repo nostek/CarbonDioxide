@@ -91,6 +91,7 @@ package com.stardoll.carbondioxide.dialogues {
 
 			DataModel.onLayerChanged.add( onSetItems );
 			DataModel.onSelectedChanged.add( onSelectItems );
+			DataModel.onItemChanged.add( onUpdate );
 
 			init(WIDTH, HEIGHT);
 
@@ -120,6 +121,13 @@ package com.stardoll.carbondioxide.dialogues {
 			_list.height = (_addItem.y - 10) - _list.y;
 		}
 
+		private function onUpdate( itm:CDItem ):void {
+			itm;
+			
+			onSetItems();
+			onSelectItems();
+		}
+		
 		private function onSetItems():void {
 			buildLast();
 
@@ -168,12 +176,12 @@ package com.stardoll.carbondioxide.dialogues {
 			for each( var item:CDItem in list ) {
 				name = item.name + " ";
 
-//				if( item.display.visible ) {
-//					name += "[V]";
-//				}
-//				if( item.display.enabled ) {
-//					name += "[E]";
-//				}
+				if( item.visible ) {
+					name += "[V]";
+				}
+				if( item.enabled ) {
+					name += "[E]";
+				}
 
 				node = { label:name, object: item, children:[] };
 
@@ -265,8 +273,6 @@ package com.stardoll.carbondioxide.dialogues {
 				var model:CDItem = item["object"];
 
 				model.removeResolution( screen );
-
-				DataModel.layerUpdated();
 			}
 		}
 
@@ -330,8 +336,6 @@ package com.stardoll.carbondioxide.dialogues {
 				}
 				
 				item.setXYWH(0, 0, 100, 100);
-
-				DataModel.layerUpdated();
 			} else {
 				new PopupDialogue("ERROR", "ERROR: Name is already in use.");
 			}
@@ -357,8 +361,6 @@ package com.stardoll.carbondioxide.dialogues {
 			for each( var item:ItemModel in DataModel.SELECTED ) {
 				item.item.parent.removeChild( item.item );
 			}
-
-			DataModel.layerUpdated();
 		}
 
 		private function onSelectItems():void {

@@ -117,7 +117,13 @@ package com.stardoll.carbondioxide.components {
 				holder.removeChildren();
 
 				holder.update( d );
-
+				
+				holder.visible = item.visible;
+				
+				if( !item.enabled || !item.visible ) {
+					removeFromSelection(holder);
+				}
+				
 				drawChildren( item, holder );
 
 				drawSelection();
@@ -181,6 +187,8 @@ package com.stardoll.carbondioxide.components {
 
 			s.x = item.x;
 			s.y = item.y;
+			
+			s.visible = item.visible;
 
 			if( item.parent == DataModel.currentLayer ) {
 				addEventListeners( s );
@@ -268,7 +276,13 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onClick( e:MouseEvent ):void {
-			addToSelection( e.target as ItemModel, e.shiftKey );
+			const model:ItemModel = e.target as ItemModel;
+			
+			if( model == null || !model.item.visible || !model.item.enabled ) {
+				return;
+			}
+			
+			addToSelection( model, e.shiftKey );
 
 			e.stopPropagation();
 		}
@@ -287,6 +301,18 @@ package com.stardoll.carbondioxide.components {
 			drawSelection();
 
 			DataModel.onSelectedChanged.dispatch();
+		}
+		
+		private function removeFromSelection( item:ItemModel ):void {
+			const index:int = DataModel.SELECTED.indexOf( item );
+			
+			if( index >= 0 ) {
+				DataModel.SELECTED.splice( index, 1 );
+				
+				drawSelection();
+	
+				DataModel.onSelectedChanged.dispatch();
+			}
 		}
 
 		private function drawSelection():void {

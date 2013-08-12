@@ -80,12 +80,6 @@ package com.stardoll.carbondioxide.models {
 			onLayerChanged.dispatch();
 		}
 
-		public static function layerUpdated():void {
-			if( _currentLayer != null ) {
-				onLayerChanged.dispatch();
-			}
-		}
-
 		//Item
 		public static var onItemChanged:Signal = new Signal( CDItem );
 

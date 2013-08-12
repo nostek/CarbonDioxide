@@ -26,6 +26,9 @@ package com.stardoll.carbondioxide.models.cd {
 		private var _name:String;
 		private var _asset:String;
 		private var _aspectRatio:int;
+		
+		private var _enabled:Boolean;
+		private var _visible:Boolean;
 
 		public function CDItem( parent:CDItem, name:String ) {
 			_parent = parent;
@@ -33,6 +36,8 @@ package com.stardoll.carbondioxide.models.cd {
 			_name = name;
 
 			_aspectRatio = CDAspectRatio.NONE;
+			
+			_enabled = _visible = true;
 
 			_children = new Vector.<CDItem>();
 			_resolutions = new Vector.<CDResolution>();
@@ -82,6 +87,28 @@ package com.stardoll.carbondioxide.models.cd {
 			itemChanged();
 		}
 
+		//////////////
+		
+		public function get enabled():Boolean {
+			return _enabled;
+		}
+		
+		public function set enabled( value:Boolean ):void {
+			_enabled = value;
+			
+			itemChanged();
+		}
+		
+		public function get visible():Boolean {
+			return _visible;
+		}
+		
+		public function set visible( value:Boolean ):void {
+			_visible = value;
+			
+			itemChanged();
+		}
+		
 		//////////////
 
 		public function get x():int {

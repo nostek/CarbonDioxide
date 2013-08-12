@@ -70,8 +70,8 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "w"], 	label:"width: " + item.width.toString()});
 				_properties.addItem({data:[false, "h"], 	label:"height: " + item.height.toString()});
 //				_properties.addItem({data:[false, "r"], label:"rotation: " + sprite.rotation.toString()});
-//				_properties.addItem({data:[false, "visible"], label:"visible: " + ((sprite.visible) ? "true" : "false")});
-//				_properties.addItem({data:[false, "enabled"], label:"enabled: " + ((sprite.enabled) ? "true" : "false")});
+				_properties.addItem({data:[false, "visible"], label:"visible: " + ((item.visible) ? "true" : "false")});
+				_properties.addItem({data:[false, "enabled"], label:"enabled: " + ((item.enabled) ? "true" : "false")});
 				_properties.addItem({data:[false, "ow"], 	label:"original width: " + bounds.width.toString()});
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
 				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio: " + CDAspectRatio.toString( item.aspectRatio )});
@@ -86,8 +86,8 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "w"], label:"width: (-)"});
 				_properties.addItem({data:[false, "h"], label:"height: (-)"});
 //				_properties.addItem({data:[false, "r"], label:"rotation: (-)"});
-//				_properties.addItem({data:[false, "visible"], label:"visible: (-)"});
-//				_properties.addItem({data:[false, "enabled"], label:"enabled: (-)"});
+				_properties.addItem({data:[false, "visible"], label:"visible: (-)"});
+				_properties.addItem({data:[false, "enabled"], label:"enabled: (-)"});
 				_properties.addItem({data:[false, "ar"], label:"aspect ratio: (-)"});
 			}
 		}
@@ -147,17 +147,17 @@ package com.stardoll.carbondioxide.dialogues {
 						input = new InputDialogue("Edit parameters", "Text:", (item as CDText).text);
 					break;
 
-//					case "visible":
-//						item.display.visible = (item.display.visible) ? false : true;
-//						onRefreshProperties();
-//						DataModel.onItemStateChanged.dispatch();
-//					break;
+					case "visible":
+						for each( holder in DataModel.SELECTED ) {
+							holder.item.visible = !holder.item.visible;
+						}
+					break;
 
-//					case "enabled":
-//						item.display.enabled = (item.display.enabled) ? false : true;
-//						onRefreshProperties();
-//						DataModel.onItemStateChanged.dispatch();
-//					break;
+					case "enabled":
+						for each( holder in DataModel.SELECTED ) {
+							holder.item.enabled = !holder.item.enabled;
+						}
+					break;
 
 					case "ar":
 						var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
