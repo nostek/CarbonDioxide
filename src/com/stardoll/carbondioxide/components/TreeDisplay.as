@@ -1,8 +1,8 @@
 package com.stardoll.carbondioxide.components {
-	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
+	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.utils.Drawer;
 
 	import org.osflash.signals.Signal;
@@ -24,10 +24,13 @@ package com.stardoll.carbondioxide.components {
 		private static var _doSelectItems:Signal;
 		private static var _doZoom:Signal;
 
-		private var _selection:SelectionItem;
-
 		private var _allowed:Vector.<ItemModel>;
-
+		
+		private var _selection:SelectionItem;
+		
+		private var _box:SelectionBox;
+		private var _start:Point;
+		
 		private var _dragging:Boolean;
 
 		public function TreeDisplay() {
@@ -45,6 +48,8 @@ package com.stardoll.carbondioxide.components {
 			_selection = new SelectionItem();
 			_selection.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
 			_selection.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick, false, 0, true);
+			
+			_box = new SelectionBox();
 
 			this.addEventListener(MouseEvent.CLICK, onDeselect, false, 0, true);
 
@@ -60,6 +65,7 @@ package com.stardoll.carbondioxide.components {
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onContainerStart);
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, onContainerMove);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onContainerStop);
 
 			stage.addEventListener(Event.RESIZE, onResize);
@@ -74,6 +80,16 @@ package com.stardoll.carbondioxide.components {
 				this.startDrag();
 				this.mouseEnabled = this.mouseChildren = false;
 				return;
+			} else {
+				if( e.target == this || e.target == stage ) {
+					_start = new Point( this.mouseX, this.mouseY );
+				}
+			}
+		}
+
+		private function onContainerMove(e:MouseEvent):void {
+			if( _start != null ) {
+				updateSelectionBox( false );
 			}
 		}
 
@@ -82,6 +98,11 @@ package com.stardoll.carbondioxide.components {
 				_dragging = false;
 				this.stopDrag();
 				this.mouseEnabled = this.mouseChildren = true;
+			}
+			
+			if( _start != null ) {
+				updateSelectionBox( true );
+				_start = null;
 			}
 		}
 
@@ -150,6 +171,7 @@ package com.stardoll.carbondioxide.components {
 			addToSelection(null);
 
 			addChild( _selection );
+			addChild( _box );
 
 			onResize(null);
 		}
@@ -249,6 +271,8 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		////////////
+		
+		private static const PZERO:Point = new Point();
 
 		private function onSelectItems( items:Array ):void {
 			addToSelection(null);
@@ -286,6 +310,36 @@ package com.stardoll.carbondioxide.components {
 
 			e.stopPropagation();
 		}
+		
+		private function updateSelectionBox( end:Boolean ):void {
+			const cx:int = this.mouseX;
+			const cy:int = this.mouseY;
+			
+			var box:Rectangle = new Rectangle();
+			box.x = Math.min( cx, _start.x );
+			box.y = Math.min( cy, _start.y );
+			box.width = Math.max( cx, _start.x ) - box.x;
+			box.height = Math.max( cy, _start.y ) - box.y;
+			
+			_box.rect = end ? null : box;
+			
+			addToSelection(null);
+			
+			var item:ItemModel;
+			var rect:Rectangle;
+			var pt:Point;
+			
+			for each( item in _allowed ) {
+				if( item != null ) {
+					pt = this.globalToLocal(item.localToGlobal(PZERO));
+					rect = new Rectangle( pt.x, pt.y, item.width, item.height );
+					
+					if( box.intersects( rect ) ) {
+						addToSelection(item, true);
+					}
+				}
+			}			
+		}
 
 		private function addToSelection( item:ItemModel, addToList:Boolean=false ):void {
 			if( item != null ) {
@@ -322,7 +376,7 @@ package com.stardoll.carbondioxide.components {
 
 			for each( item in DataModel.SELECTED ) {
 				if( item != null ) {
-					pt = this.globalToLocal(item.localToGlobal(new Point()));
+					pt = this.globalToLocal(item.localToGlobal(PZERO));
 					if( rect == null ) {
 						rect = new Rectangle( pt.x, pt.y, item.width, item.height );
 					} else {
@@ -497,8 +551,8 @@ package com.stardoll.carbondioxide.components {
 
 
 
-import flash.events.MouseEvent;
 import flash.display.Sprite;
+import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 
 
@@ -602,6 +656,54 @@ internal class SelectionItem extends Sprite {
 					lineTo(width, height);
 				}
 			}
+		}
+
+		this.scrollRect = new Rectangle(0,0,width,height);
+	}
+}
+
+
+
+internal class SelectionBox extends Sprite {
+	private var _width:int;
+	private var _height:int;
+	
+	public function SelectionBox() {
+		this.mouseEnabled = this.mouseChildren = false;
+	}
+	
+	public function set rect( rect:Rectangle ):void {
+		this.graphics.clear();
+
+		this.scaleX = this.scaleY = 1;
+
+		if( rect == null ) {
+			return;
+		}
+
+		this.x = rect.x;
+		this.y = rect.y;
+
+		draw( rect.width, rect.height);
+	}
+
+	private function draw( width:int, height:int ):void {
+		this.graphics.clear();
+
+		_width = width;
+		_height = height;
+
+		with( this.graphics ) {
+			beginFill(0x000000, 0.1);
+			drawRect(0, 0, width, height);
+			endFill();
+
+			lineStyle(2, 0x00ff00, 0.8);
+			moveTo(0, 0);
+			lineTo(width, 0);
+			lineTo(width, height);
+			lineTo(0, height);
+			lineTo(0, 0);
 		}
 
 		this.scrollRect = new Rectangle(0,0,width,height);
