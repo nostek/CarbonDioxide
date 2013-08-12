@@ -129,6 +129,12 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onItemChanged( item:CDItem ):void {
+			if( item == DataModel.currentLayer ) {
+				onViewChanged();
+				
+				return;
+			}
+			
 			var holder:ItemModel = findHolder( item );
 			if( holder != null ) {
 				holder.scaleX = holder.scaleY = 1;
