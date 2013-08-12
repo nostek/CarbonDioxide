@@ -89,6 +89,9 @@ package com.stardoll.carbondioxide.saveload {
 			item.asset 			= text( ObjectEx.select(data, SLKeys.ITEM_ASSET, -1), item.asset );
 			item.aspectRatio	= ObjectEx.select(data, SLKeys.ITEM_ASPECTRATIO, item.aspectRatio);
 			
+			item.enabled = ObjectEx.select(data, SLKeys.ITEM_ENABLED, true) as Boolean;
+			item.visible = ObjectEx.select(data, SLKeys.ITEM_VISIBLE, true) as Boolean;
+			
 			var i:int;
 			
 			var resolutions:Array = ObjectEx.select(data, SLKeys.ITEM_RESOLUTIONS, null);

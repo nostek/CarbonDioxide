@@ -92,6 +92,14 @@ package com.stardoll.carbondioxide.saveload {
 			if( item.aspectRatio != CDAspectRatio.NONE ) {
 				data[ SLKeys.ITEM_ASPECTRATIO ] = item.aspectRatio;
 			}
+			
+			if( item.enabled == false ) {
+				data[ SLKeys.ITEM_ENABLED ] = false;
+			}
+			
+			if( item.visible == false ) {
+				data[ SLKeys.ITEM_VISIBLE ] = false;
+			}
 
 			var i:int;
 

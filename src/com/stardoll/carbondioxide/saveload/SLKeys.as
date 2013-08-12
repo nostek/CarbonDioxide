@@ -15,6 +15,8 @@ package com.stardoll.carbondioxide.saveload {
 		public static const ITEM_ASSET:String 		= "a";
 		public static const ITEM_ASPECTRATIO:String = "ar";
 		public static const ITEM_RESOLUTIONS:String = "r";
+		public static const ITEM_ENABLED:String 	= "e";
+		public static const ITEM_VISIBLE:String 	= "v";
 		
 		public static const RES_SCREENWIDTH:int 	= 0;
 		public static const RES_SCREENHEIGHT:int 	= 1;
