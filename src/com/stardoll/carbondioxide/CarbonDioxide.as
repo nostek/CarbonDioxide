@@ -1,5 +1,4 @@
 package com.stardoll.carbondioxide {
-	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
@@ -7,6 +6,8 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
+	import com.stardoll.carbondioxide.managers.EventManager;
+	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
@@ -37,6 +38,7 @@ package com.stardoll.carbondioxide {
 
 			new DataModel();
 			new EventManager( stage );
+			new UndoManager();
 
 			var bg:Bitmap = new Bitmap( DataModel.BG.bitmapData );
 			addChild(bg);

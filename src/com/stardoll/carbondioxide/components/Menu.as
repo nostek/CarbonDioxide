@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
@@ -48,6 +49,23 @@ package com.stardoll.carbondioxide.components {
 							name: "Exit",
 							callback: onExit,
 							shortcut: "q"
+						},
+					]
+				},
+
+				{
+					name: "Edit",
+
+					children: [
+						{
+							name: "Undo",
+							shortcut: "z",
+							callback: onUndo
+						},
+						{
+							name: "Redo",
+							shortcut: "y",
+							callback: onRedo
 						},
 					]
 				},
@@ -212,6 +230,14 @@ package com.stardoll.carbondioxide.components {
 
 		private function onSave( e:Event ):void {
 			Save.run();
+		}
+		
+		private function onUndo( e:Event ):void {
+			UndoManager.runUndo();
+		}
+		
+		private function onRedo( e:Event ):void {
+			UndoManager.runRedo();
 		}
 	}
 }
