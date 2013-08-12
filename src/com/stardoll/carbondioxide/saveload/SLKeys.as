@@ -22,5 +22,6 @@ package com.stardoll.carbondioxide.saveload {
 		public static const RES_Y:int 				= 3;
 		public static const RES_W:int 				= 4;
 		public static const RES_H:int 				= 5;
+		public static const RES_ASPECTRATIO:int		= 6;
 	}
 }

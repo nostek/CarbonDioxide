@@ -129,7 +129,8 @@ package com.stardoll.carbondioxide.saveload {
 				res.x,
 				res.y,
 				res.width,
-				res.height
+				res.height,
+				res.aspectRatio
 			];
 		}
 	}

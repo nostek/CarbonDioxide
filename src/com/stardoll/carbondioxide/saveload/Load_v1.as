@@ -115,10 +115,11 @@ package com.stardoll.carbondioxide.saveload {
 			const sh:int = data[ SLKeys.RES_SCREENHEIGHT ];
 			
 			var res:CDResolution = new CDResolution(sw, sh);
-			res.x 		= data[ SLKeys.RES_X ];
-			res.y 		= data[ SLKeys.RES_Y ];
-			res.width 	= data[ SLKeys.RES_W ];
-			res.height 	= data[ SLKeys.RES_H ];
+			res.x 			= data[ SLKeys.RES_X ];
+			res.y 			= data[ SLKeys.RES_Y ];
+			res.width 		= data[ SLKeys.RES_W ];
+			res.height 		= data[ SLKeys.RES_H ];
+			res.aspectRatio = data[ SLKeys.RES_ASPECTRATIO ];
 			
 			item.addResolution( res );
 		}

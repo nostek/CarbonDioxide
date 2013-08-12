@@ -20,6 +20,7 @@ package com.stardoll.carbondioxide.models.cd {
 		public var width:Number;
 		public var height:Number;
 		
-		public var aspectRatio:Number = 1.5;
+		//Width/Height of pixel values
+		public var aspectRatio:Number;
 	}
 }
