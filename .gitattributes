@@ -1,10 +1,10 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-*.as text
+#*.as text
 
 # Standard to msysgit
-*.as	 diff=astextplain
+#*.as	 diff=astextplain
 
 # Ignore
 *.png binary
