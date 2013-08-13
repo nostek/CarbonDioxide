@@ -22,6 +22,7 @@ package com.stardoll.carbondioxide.models.cd {
 		private var _y:Number;
 		private var _width:Number;
 		private var _height:Number;
+		private var _ar:Number;
 
 		private var _name:String;
 		private var _asset:String;
@@ -218,8 +219,15 @@ package com.stardoll.carbondioxide.models.cd {
 					return _resolutions[i];
 				}
 			}
+			
+			var res:CDResolution = new CDResolution(DataModel.SCREEN_WIDTH, DataModel.SCREEN_HEIGHT);
+			res.x = _x;
+			res.y = _y;
+			res.width = _width;
+			res.height = _height;
+			res.aspectRatio = _ar;
 
-			return addResolution( new CDResolution(DataModel.SCREEN_WIDTH, DataModel.SCREEN_HEIGHT) );
+			return addResolution( res );
 		}
 
 		public function get resolutions():Vector.<CDResolution> {
@@ -286,6 +294,8 @@ package com.stardoll.carbondioxide.models.cd {
 
 			_width = state.width;
 			_height = state.height;
+			
+			_ar = state.aspectRatio;
 
 			if( aspectRatio != 0 ) {
 				const oldwidth:int 	= width;
