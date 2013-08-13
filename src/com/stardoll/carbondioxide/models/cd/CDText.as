@@ -4,16 +4,26 @@ package com.stardoll.carbondioxide.models.cd {
 	 * @author Simon
 	 */
 	public class CDText extends CDItem {
+		private var _text:String;
+
 		public function CDText(parent : CDItem, name : String) {
 			super(parent, name);
 
-			text = "DEFAULT";
+			_text = "DEFAULT";
 		}
 
 		override public function get type():int {
 			return TYPE_TEXT;
 		}
 
-		public var text:String;
+		public function get text():String {
+			return _text;
+		}
+
+		public function set text( text:String ):void {
+			_text = text;
+
+			itemChanged();
+		}
 	}
 }

@@ -26,7 +26,7 @@ package com.stardoll.carbondioxide.models.cd {
 		private var _name:String;
 		private var _asset:String;
 		private var _aspectRatio:int;
-		
+
 		private var _enabled:Boolean;
 		private var _visible:Boolean;
 
@@ -36,7 +36,7 @@ package com.stardoll.carbondioxide.models.cd {
 			_name = name;
 
 			_aspectRatio = CDAspectRatio.NONE;
-			
+
 			_enabled = _visible = true;
 
 			_children = new Vector.<CDItem>();
@@ -50,7 +50,7 @@ package com.stardoll.carbondioxide.models.cd {
 		protected function itemChanged():void {
 			EventManager.add( this );
 		}
-		
+
 		protected function saveUndo():void {
 			UndoManager.add( this, currentResolution );
 		}
@@ -88,27 +88,27 @@ package com.stardoll.carbondioxide.models.cd {
 		}
 
 		//////////////
-		
+
 		public function get enabled():Boolean {
 			return _enabled;
 		}
-		
+
 		public function set enabled( value:Boolean ):void {
 			_enabled = value;
-			
+
 			itemChanged();
 		}
-		
+
 		public function get visible():Boolean {
 			return _visible;
 		}
-		
+
 		public function set visible( value:Boolean ):void {
 			_visible = value;
-			
+
 			itemChanged();
 		}
-		
+
 		//////////////
 
 		public function get x():int {
@@ -134,10 +134,10 @@ package com.stardoll.carbondioxide.models.cd {
 		public function get worldY():int {
 			return _parent.worldY + y;
 		}
-		
+
 		public function setXYWH( x:int, y:int, width:int, height:int ):void {
 			saveUndo();
-			
+
 			currentResolution.x 			= toPercent( x, _parent.width );
 			currentResolution.y 			= toPercent( y, _parent.height );
 			currentResolution.width 		= toPercent( width, _parent.width );
@@ -151,7 +151,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set x( value:int ):void {
 			saveUndo();
-			
+
 			currentResolution.x = toPercent( value, _parent.width );
 
 			updateDisplayProperties();
@@ -161,7 +161,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set y( value:int ):void {
 			saveUndo();
-			
+
 			currentResolution.y = toPercent( value, _parent.height );
 
 			updateDisplayProperties();
@@ -171,7 +171,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set width( value:int ):void {
 			saveUndo();
-			
+
 			currentResolution.width = toPercent( value, _parent.width );
 			currentResolution.aspectRatio = width / height;
 
@@ -182,7 +182,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set height( value:int ):void {
 			saveUndo();
-			
+
 			currentResolution.height = toPercent( value, _parent.height );
 			currentResolution.aspectRatio = width / height;
 
@@ -293,11 +293,11 @@ package com.stardoll.carbondioxide.models.cd {
 
 				var newwidth:int 	= height * state.aspectRatio;
 				var newheight:int 	= height;
-				
+
 				const sa:Number = Math.min( oldwidth/newwidth, oldheight/newheight );
 				newwidth 	*= sa;
 				newheight 	*= sa;
-				
+
 				_width 	= toPercent( newwidth, _parent.width );
 				_height = toPercent( newheight, _parent.height );
 
