@@ -338,7 +338,7 @@ package com.stardoll.carbondioxide.components {
 			for each( item in _allowed ) {
 				if( item != null ) {
 					pt = this.globalToLocal(item.localToGlobal(PZERO));
-					rect = new Rectangle( pt.x, pt.y, item.width, item.height );
+					rect = new Rectangle( pt.x, pt.y, item.item.width, item.item.height );
 					
 					if( box.intersects( rect ) ) {
 						addToSelection(item, true);
@@ -384,9 +384,9 @@ package com.stardoll.carbondioxide.components {
 				if( item != null ) {
 					pt = this.globalToLocal(item.localToGlobal(PZERO));
 					if( rect == null ) {
-						rect = new Rectangle( pt.x, pt.y, item.width, item.height );
+						rect = new Rectangle( pt.x, pt.y, item.item.width, item.item.height );
 					} else {
-						rect = rect.union( new Rectangle( pt.x, pt.y, item.width, item.height ) );
+						rect = rect.union( new Rectangle( pt.x, pt.y, item.item.width, item.item.height ) );
 					}
 				}
 			}
