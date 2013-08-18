@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
@@ -92,6 +93,10 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "Zoom",
 							callback: onZoomDlg
+						},
+						{
+							name: "Color",
+							callback: onColor
 						},
 					]
 				},
@@ -231,13 +236,17 @@ package com.stardoll.carbondioxide.components {
 		private function onSave( e:Event ):void {
 			Save.run();
 		}
-		
+
 		private function onUndo( e:Event ):void {
 			UndoManager.runUndo();
 		}
-		
+
 		private function onRedo( e:Event ):void {
 			UndoManager.runRedo();
+		}
+
+		private function onColor( e:Event ):void {
+			new ColorDialogue();
 		}
 	}
 }

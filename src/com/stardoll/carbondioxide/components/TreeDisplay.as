@@ -25,12 +25,12 @@ package com.stardoll.carbondioxide.components {
 		private static var _doZoom:Signal;
 
 		private var _allowed:Vector.<ItemModel>;
-		
+
 		private var _selection:SelectionItem;
-		
+
 		private var _box:SelectionBox;
 		private var _start:Point;
-		
+
 		private var _dragging:Boolean;
 
 		public function TreeDisplay() {
@@ -38,6 +38,7 @@ package com.stardoll.carbondioxide.components {
 			DataModel.onViewChanged.add( onViewChanged );
 			DataModel.onLayerChanged.add( onViewChanged );
 			DataModel.onItemChanged.add( onItemChanged );
+			DataModel.onBGColorChanged.add( onViewChanged );
 
 			_doSelectItems = new Signal( Array );
 			_doSelectItems.add( onSelectItems );
@@ -48,7 +49,7 @@ package com.stardoll.carbondioxide.components {
 			_selection = new SelectionItem();
 			_selection.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
 			_selection.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick, false, 0, true);
-			
+
 			_box = new SelectionBox();
 
 			this.addEventListener(MouseEvent.CLICK, onDeselect, false, 0, true);
@@ -99,7 +100,7 @@ package com.stardoll.carbondioxide.components {
 				this.stopDrag();
 				this.mouseEnabled = this.mouseChildren = true;
 			}
-			
+
 			if( _start != null ) {
 				updateSelectionBox( true );
 				_start = null;
@@ -131,10 +132,10 @@ package com.stardoll.carbondioxide.components {
 		private function onItemChanged( item:CDItem ):void {
 			if( item == DataModel.currentLayer ) {
 				onViewChanged();
-				
+
 				return;
 			}
-			
+
 			var holder:ItemModel = findHolder( item );
 			if( holder != null ) {
 				holder.scaleX = holder.scaleY = 1;
@@ -144,13 +145,13 @@ package com.stardoll.carbondioxide.components {
 				holder.removeChildren();
 
 				holder.update( d );
-				
+
 				holder.visible = item.visible;
-				
+
 				if( !item.enabled || !item.visible ) {
 					removeFromSelection(holder);
 				}
-				
+
 				drawChildren( item, holder );
 
 				drawSelection();
@@ -162,7 +163,7 @@ package com.stardoll.carbondioxide.components {
 
 			var bg:Shape = new Shape();
 			with( bg.graphics ) {
-				beginFill(0xffffff, 1);
+				beginFill(DataModel.BG_COLOR, 1);
 				drawRect(0, 0, DataModel.SCREEN_WIDTH, DataModel.SCREEN_HEIGHT);
 				endFill();
 			}
@@ -215,7 +216,7 @@ package com.stardoll.carbondioxide.components {
 
 			s.x = item.x;
 			s.y = item.y;
-			
+
 			s.visible = item.visible;
 
 			if( item.parent == DataModel.currentLayer ) {
@@ -277,7 +278,7 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		////////////
-		
+
 		private static const PZERO:Point = new Point();
 
 		private function onSelectItems( items:Array ):void {
@@ -307,44 +308,44 @@ package com.stardoll.carbondioxide.components {
 
 		private function onClick( e:MouseEvent ):void {
 			const model:ItemModel = e.target as ItemModel;
-			
+
 			if( model == null || !model.item.visible || !model.item.enabled ) {
 				return;
 			}
-			
+
 			addToSelection( model, e.shiftKey );
 
 			e.stopPropagation();
 		}
-		
+
 		private function updateSelectionBox( end:Boolean ):void {
 			const cx:int = this.mouseX;
 			const cy:int = this.mouseY;
-			
+
 			var box:Rectangle = new Rectangle();
 			box.x = Math.min( cx, _start.x );
 			box.y = Math.min( cy, _start.y );
 			box.width = Math.max( cx, _start.x ) - box.x;
 			box.height = Math.max( cy, _start.y ) - box.y;
-			
+
 			_box.rect = end ? null : box;
-			
+
 			addToSelection(null);
-			
+
 			var item:ItemModel;
 			var rect:Rectangle;
 			var pt:Point;
-			
+
 			for each( item in _allowed ) {
 				if( item != null ) {
 					pt = this.globalToLocal(item.localToGlobal(PZERO));
 					rect = new Rectangle( pt.x, pt.y, item.item.width, item.item.height );
-					
+
 					if( box.intersects( rect ) ) {
 						addToSelection(item, true);
 					}
 				}
-			}			
+			}
 		}
 
 		private function addToSelection( item:ItemModel, addToList:Boolean=false ):void {
@@ -362,15 +363,15 @@ package com.stardoll.carbondioxide.components {
 
 			DataModel.onSelectedChanged.dispatch();
 		}
-		
+
 		private function removeFromSelection( item:ItemModel ):void {
 			const index:int = DataModel.SELECTED.indexOf( item );
-			
+
 			if( index >= 0 ) {
 				DataModel.SELECTED.splice( index, 1 );
-				
+
 				drawSelection();
-	
+
 				DataModel.onSelectedChanged.dispatch();
 			}
 		}
@@ -533,11 +534,11 @@ package com.stardoll.carbondioxide.components {
 						const currY:int = item.y;
 						const currW:int = item.width;
 						const currH:int = item.height;
-						
-						item.setXYWH( 	
-							currX + deltaX, 
-							currY + deltaY, 
-							Math.max( 0, currW + deltaWidth ), 
+
+						item.setXYWH(
+							currX + deltaX,
+							currY + deltaY,
+							Math.max( 0, currW + deltaWidth ),
 							Math.max( 0, currH + deltaHeight )
 						);
 					} else {
@@ -673,11 +674,11 @@ internal class SelectionItem extends Sprite {
 internal class SelectionBox extends Sprite {
 	private var _width:int;
 	private var _height:int;
-	
+
 	public function SelectionBox() {
 		this.mouseEnabled = this.mouseChildren = false;
 	}
-	
+
 	public function set rect( rect:Rectangle ):void {
 		this.graphics.clear();
 

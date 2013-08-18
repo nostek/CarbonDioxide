@@ -21,6 +21,16 @@ package com.stardoll.carbondioxide.models {
 		public static var SHIFT_KEY:Boolean = false;
 		public static var ALT_KEY:Boolean = false;
 
+		//BG Color
+		public static var BG_COLOR:uint = 0xffffff;
+
+		public static var onBGColorChanged:Signal = new Signal();
+
+		public static function setBGColor( color:uint ):void {
+			BG_COLOR = color;
+			onBGColorChanged.dispatch();
+		}
+
 		//Resolution
 		public static var _SCREEN_WIDTH:int = 1024;
 		public static var _SCREEN_HEIGHT:int = 768;
