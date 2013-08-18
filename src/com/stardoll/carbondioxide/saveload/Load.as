@@ -1,33 +1,91 @@
 package com.stardoll.carbondioxide.saveload {
+	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
-	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
+
+	import flash.events.Event;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.net.FileFilter;
 	/**
 	 * @author simonrodriguez
 	 */
 	public class Load {
+		private static function error( msg:String ):void {
+			new PopupDialogue("ERROR", msg);
+		}
+
+		public static function removeLock():void {
+			if( DataModel.DID_LOCK && DataModel.LAST_FILE != null ) {
+				var f:File = new File( DataModel.LAST_FILE.url + "LOCK" );
+				if( f.exists ) {
+					f.deleteFile();
+				}
+			}
+
+			DataModel.LAST_FILE = null;
+			DataModel.DID_LOCK = false;
+		}
+
 		public static function run():void {
-			var data:Object = loadData();
-			
+			var f:File = new File();
+			var filter:FileFilter = new FileFilter("Design", "*.json");
+
+			f.browseForOpen("Load Design", [filter]);
+			f.addEventListener(Event.SELECT, onSelectedFile);
+		}
+
+		private static function onSelectedFile( e:Event ):void {
+			var f:File = e.target as File;
+
+			removeLock();
+
+			checkLock( f );
+
+			DataModel.LAST_FILE = f;
+
+			var file:FileStream = new FileStream();
+			file.open(f, FileMode.READ);
+				var json:String = file.readUTFBytes(file.bytesAvailable);
+			file.close();
+
+			var data:Object = loadData( json );
+
 			if( data != null ) {
 				parseData( data );
 			}
 		}
-		
-		private static function error( msg:String ):void {
-			new PopupDialogue("ERROR", msg);
+
+		private static function checkLock( f:File ):void {
+			var lock:File = new File( f.url + "LOCK" );
+
+			var fs:FileStream = new FileStream();
+
+			if( lock.exists ) {
+				fs.open(lock, FileMode.READ);
+				fs.position = 0;
+				var msg:String = fs.readUTFBytes(fs.bytesAvailable);
+				fs.close();
+
+				new PopupDialogue("WARNING", msg + "\nMake sure you can use the file!");
+			} else {
+				fs.open(lock, FileMode.WRITE);
+				fs.writeUTFBytes("Locked by: " + File.userDirectory.name + "\nDate: " + (new Date()).toString());
+				fs.close();
+
+				DataModel.DID_LOCK = true;
+			}
 		}
-		
-		private static function loadData():Object {
-			const d:String = '{"k":"cbdd","v":1,"c":[{"c":[{"n":1,"a":2,"t":1,"r":[[1000,700,0.05,0.07142857142857142,0.9,0.8571428571428571,1.5]],"c":[{"n":3,"a":4,"t":1,"ar":1,"r":[[1000,700,0.011111111111111112,0.016666666666666666,0.05555555555555555,0.08333333333333333,1]]},{"n":5,"a":4,"t":1,"ar":3,"r":[[1000,700,0.9333333333333333,0.016666666666666666,0.05555555555555555,0.08333333333333333,1]]}],"ar":5}],"n":0,"t":0},{"c":[{"n":7,"t":1,"r":[[1000,700,0.05,0.07142857142857142,0.3,0.5714285714285714,1.5]]}],"n":6,"t":0}],"t":["main","test","overlay_big_suiteshop_bg","child1","avatar_180x180","child2","main2","test2"]}';
-			
+
+		private static function loadData( d:String ):Object {
 			try {
-				const data:Object = JSON.parse( d );	  
+				const data:Object = JSON.parse( d );
 			} catch( e:* ) {
 				error( "Unable to parse JSON");
 				return null;
 			}
-			
+
 			if( data[ SLKeys.MAIN_KEY ] == null || data[ SLKeys.MAIN_KEY ] != "cbdd" ) {
 				error("Wrong key in file");
 				return null;
@@ -37,10 +95,10 @@ package com.stardoll.carbondioxide.saveload {
 				error("No version in file");
 				return null;
 			}
-			
+
 			return data;
 		}
-		
+
 		private static function parseData( data:Object ):void {
 			const version:int = data[ SLKeys.MAIN_VERSION ];
 
@@ -54,7 +112,7 @@ package com.stardoll.carbondioxide.saveload {
 					return;
 				break;
 			}
-			
+
 			DataModel.setView( ViewsManager.views[0] );
 		}
 	}

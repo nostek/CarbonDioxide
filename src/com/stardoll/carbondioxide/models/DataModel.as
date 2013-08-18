@@ -5,6 +5,7 @@ package com.stardoll.carbondioxide.models {
 	import org.osflash.signals.Signal;
 
 	import flash.display.Bitmap;
+	import flash.filesystem.File;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -20,6 +21,10 @@ package com.stardoll.carbondioxide.models {
 		//Keys
 		public static var SHIFT_KEY:Boolean = false;
 		public static var ALT_KEY:Boolean = false;
+
+		//File
+		public static var LAST_FILE:File;
+		public static var DID_LOCK:Boolean = false;
 
 		//BG Color
 		public static var BG_COLOR:uint = 0xffffff;

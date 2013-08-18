@@ -14,12 +14,15 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
 	import com.stardoll.carbondioxide.models.cd.CDView;
+	import com.stardoll.carbondioxide.saveload.Load;
 
+	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageQuality;
 	import flash.display.StageScaleMode;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 
@@ -46,6 +49,9 @@ package com.stardoll.carbondioxide {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 10000);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
 
+			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExiting);
+			stage.addEventListener(Event.EXITING, onExiting);
+
 			new Menu( stage );
 
 			new ViewsManager();
@@ -63,10 +69,14 @@ package com.stardoll.carbondioxide {
 			new ItemsDialogue( false );
 			new PropertiesDialogue( false );
 
-			test();
-			DataModel.setView( ViewsManager.getViewByName("main") );
+//			test();
+//			DataModel.setView( ViewsManager.getViewByName("main") );
 
 //			DataModel.setResolution(1000, 700);
+		}
+
+		private function onExiting(e:Event):void {
+			Load.removeLock();
 		}
 
 		private function onKeyDown(e:KeyboardEvent):void {

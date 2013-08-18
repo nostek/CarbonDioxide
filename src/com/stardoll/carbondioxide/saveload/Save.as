@@ -1,5 +1,6 @@
 package com.stardoll.carbondioxide.saveload {
 	import com.stardoll.carbondioxide.managers.ViewsManager;
+	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
@@ -33,10 +34,8 @@ package com.stardoll.carbondioxide.saveload {
 
 		///
 
-		private static var _lastFile:File;
-
 		public static function run( reuse:Boolean ):void {
-			if( reuse && _lastFile != null ) {
+			if( reuse && DataModel.LAST_FILE != null ) {
 				onSaveFile(null);
 				return;
 			}
@@ -48,9 +47,9 @@ package com.stardoll.carbondioxide.saveload {
 		}
 
 		private static function onSaveFile( e:Event ):void {
-			var f:File = (e != null) ? e.target as File : _lastFile;
+			var f:File = (e != null) ? e.target as File : DataModel.LAST_FILE;
 
-			_lastFile = f;
+			DataModel.LAST_FILE = f;
 
 			var stream:FileStream = new FileStream();
 			stream.open( f, FileMode.WRITE);
