@@ -5,6 +5,11 @@ package com.stardoll.carbondioxide.saveload {
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
 	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.models.cd.CDView;
+
+	import flash.events.Event;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -12,27 +17,52 @@ package com.stardoll.carbondioxide.saveload {
 		public static const CURRENT_VERSION:int = 1;
 
 		private static var TEXTDB:Array;
-		
+
 		private static function text( txt:String ):int {
 			var index:int = TEXTDB.indexOf( txt );
-			
+
 			if( index >= 0 ) {
 				return index;
 			} else {
 				index = TEXTDB.length;
 				TEXTDB.push( txt );
 			}
-			
+
 			return index;
 		}
-		
+
 		///
 
-		public static function run():void {
+		private static var _lastFile:File;
+
+		public static function run( reuse:Boolean ):void {
+			if( reuse && _lastFile != null ) {
+				onSaveFile(null);
+				return;
+			}
+
+			var f:File = new File();
+
+			f.browseForSave("Save Design");
+			f.addEventListener(Event.SELECT, onSaveFile);
+		}
+
+		private static function onSaveFile( e:Event ):void {
+			var f:File = (e != null) ? e.target as File : _lastFile;
+
+			_lastFile = f;
+
+			var stream:FileStream = new FileStream();
+			stream.open( f, FileMode.WRITE);
+			stream.writeUTFBytes( saveData() );
+			stream.close();
+		}
+
+		private static function saveData():String {
 			TEXTDB = [];
-			
+
 			var data:Object = {};
-			
+
 			data[ SLKeys.MAIN_KEY ] = "cbdd";
 			data[ SLKeys.MAIN_VERSION ] = CURRENT_VERSION;
 
@@ -46,12 +76,12 @@ package com.stardoll.carbondioxide.saveload {
 			}
 
 			data[ SLKeys.MAIN_VIEWS ] = v;
-			
+
 			data[ SLKeys.MAIN_TEXTS ] = TEXTDB;
-			
+
 			TEXTDB = null;
 
-			trace( JSON.stringify(data) );
+			return JSON.stringify(data);
 		}
 
 		private static function saveView( view:CDView ):Object {
@@ -92,11 +122,11 @@ package com.stardoll.carbondioxide.saveload {
 			if( item.aspectRatio != CDAspectRatio.NONE ) {
 				data[ SLKeys.ITEM_ASPECTRATIO ] = item.aspectRatio;
 			}
-			
+
 			if( item.enabled == false ) {
 				data[ SLKeys.ITEM_ENABLED ] = false;
 			}
-			
+
 			if( item.visible == false ) {
 				data[ SLKeys.ITEM_VISIBLE ] = false;
 			}

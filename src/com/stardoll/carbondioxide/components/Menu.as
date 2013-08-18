@@ -39,7 +39,8 @@ package com.stardoll.carbondioxide.components {
 							callback: onSave
 						},
 						{
-							name: "Save As"
+							name: "Save As",
+							callback: onSaveNew
 						},
 						{
 							name: "Close",
@@ -234,7 +235,11 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onSave( e:Event ):void {
-			Save.run();
+			Save.run( true );
+		}
+
+		private function onSaveNew( e:Event ):void {
+			Save.run( false );
 		}
 
 		private function onUndo( e:Event ):void {
