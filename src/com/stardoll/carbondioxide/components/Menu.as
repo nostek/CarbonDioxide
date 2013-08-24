@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
 	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
@@ -69,6 +70,21 @@ package com.stardoll.carbondioxide.components {
 							shortcut: "y",
 							callback: onRedo
 						},
+						{
+							name: "Cut",
+							shortcut: "x",
+							callback: onCut
+						},
+						{
+							name: "Copy",
+							shortcut: "c",
+							callback: onCopy
+						},
+						{
+							name: "Paste",
+							shortcut: "v",
+							callback: onPaste
+						}
 					]
 				},
 
@@ -252,6 +268,18 @@ package com.stardoll.carbondioxide.components {
 
 		private function onColor( e:Event ):void {
 			new ColorDialogue();
+		}
+		
+		private function onCut( e:Event ):void {
+			CutCopyPaste.cut();
+		}
+		
+		private function onCopy( e:Event ):void {
+			CutCopyPaste.copy();
+		}
+		
+		private function onPaste( e:Event ):void {
+			CutCopyPaste.paste();
 		}
 	}
 }

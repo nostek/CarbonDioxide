@@ -92,6 +92,16 @@ package com.stardoll.carbondioxide.components {
 			if( _start != null ) {
 				updateSelectionBox( false );
 			}
+			
+			if( DataModel.currentLayer != null ) {
+				if( DataModel.currentLayer == DataModel.currentView ) {
+					DataModel.LAYER_MOUSE.x = this.mouseX;
+					DataModel.LAYER_MOUSE.y = this.mouseY;				
+				} else {
+					DataModel.LAYER_MOUSE.x = this.mouseX - DataModel.currentLayer.x;
+					DataModel.LAYER_MOUSE.y = this.mouseY - DataModel.currentLayer.y;				
+				}
+			}
 		}
 
 		private function onContainerStop(e:MouseEvent):void {

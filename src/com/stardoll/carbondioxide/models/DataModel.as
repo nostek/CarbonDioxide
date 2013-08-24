@@ -6,6 +6,7 @@ package com.stardoll.carbondioxide.models {
 
 	import flash.display.Bitmap;
 	import flash.filesystem.File;
+	import flash.geom.Point;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -25,6 +26,9 @@ package com.stardoll.carbondioxide.models {
 		//File
 		public static var LAST_FILE:File;
 		public static var DID_LOCK:Boolean = false;
+		
+		//Position
+		public static var LAYER_MOUSE:Point = new Point();
 
 		//BG Color
 		public static var BG_COLOR:uint = 0xffffff;
