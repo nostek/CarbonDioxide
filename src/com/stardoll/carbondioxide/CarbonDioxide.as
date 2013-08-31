@@ -5,7 +5,9 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
+	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
+	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
 	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
@@ -22,8 +24,10 @@ package com.stardoll.carbondioxide {
 	import flash.display.StageAlign;
 	import flash.display.StageQuality;
 	import flash.display.StageScaleMode;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.events.UncaughtErrorEvent;
 	import flash.ui.Keyboard;
 
 	public class CarbonDioxide extends Sprite {
@@ -33,11 +37,13 @@ package com.stardoll.carbondioxide {
 		public function CarbonDioxide() {
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			stage.quality = StageQuality.LOW;
+			stage.quality = StageQuality.BEST;
 			stage.frameRate = 31;
 			stage.color = 0x646464;
 
 			stage.doubleClickEnabled = true;
+
+			loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtErrorHandler);
 
 			new DataModel();
 			new EventManager( stage );
@@ -69,10 +75,27 @@ package com.stardoll.carbondioxide {
 			new ItemsDialogue( false );
 			new PropertiesDialogue( false );
 
-//			test();
-//			DataModel.setView( ViewsManager.getViewByName("main") );
+			test();
+			DataModel.setView( ViewsManager.getViewByName("main") );
 
-//			DataModel.setResolution(1000, 700);
+			new TreeDialogue();
+		}
+
+		private function onUncaughtErrorHandler(event:UncaughtErrorEvent):void {
+			var msg:String = "";
+
+			if (event.error is Error)
+			{
+				var error:Error = event.error as Error;
+				msg = JSON.stringify({error_name:error.name, error_id:error.errorID, error_message:error.message, error_stack:error.getStackTrace()});
+			}
+			else if (event.error is ErrorEvent)
+			{
+				var errorEvent:ErrorEvent = event.error as ErrorEvent;
+				msg = JSON.stringify({error2:errorEvent.text});
+			}
+
+			new PopupDialogue("CRASH", msg);
 		}
 
 		private function onExiting(e:Event):void {
@@ -86,11 +109,9 @@ package com.stardoll.carbondioxide {
 			if( e.keyCode == Keyboard.ALTERNATE ) {
 				DataModel.ALT_KEY = true;
 			}
-//			DataModel.setResolution(1400, 700);
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {
-//			DataModel.setResolution(1400, 700);
 			if( DataModel.SHIFT_KEY && !e.shiftKey ) {
 				DataModel.SHIFT_KEY = false;
 			}
