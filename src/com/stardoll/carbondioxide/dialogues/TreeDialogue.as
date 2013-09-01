@@ -330,14 +330,22 @@ internal class TreeItem extends Sprite {
 		var s:ContextMenu = new ContextMenu();
 
 		var additem:Function = function( name:String, callback:Function ):void {
-			var item:NativeMenuItem = new NativeMenuItem( name );
-			item.addEventListener(Event.SELECT, callback);
+			var item:NativeMenuItem;
+			if( name == null ) {
+				item = new NativeMenuItem( null, true );				
+			} else {
+				item = new NativeMenuItem( name );
+				item.addEventListener(Event.SELECT, callback);
+			}
 			s.addItem( item );
 		};
 
 		additem( "Add Item", onAddItemItem );
 		additem( "Add Text", onAddItemText );
 		additem( "Delete", onDelete );
+		additem( null, null );
+		additem( "Move top", onMoveTop );
+		additem( "Move bottom", onMoveBottom );
 
 		var global:Point = this.localToGlobal( new Point( this.mouseX, this.mouseY) );
 		s.display( this.stage, global.x, global.y );
@@ -405,5 +413,13 @@ internal class TreeItem extends Sprite {
 
 	private function onDelete(e:Event):void {
 		_model.parent.removeChild( _model );
+	}
+	
+	private function onMoveTop( e:Event ):void {
+		
+	}
+	
+	private function onMoveBottom( e:Event ):void {
+		
 	}
 }
