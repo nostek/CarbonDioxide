@@ -1,5 +1,4 @@
 package com.stardoll.carbondioxide.components {
-	import flash.geom.Rectangle;
 	import fl.controls.Button;
 	import fl.controls.ComboBox;
 
@@ -16,6 +15,10 @@ package com.stardoll.carbondioxide.components {
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 
 	/**
 	 * @author simonrodriguez
@@ -144,31 +147,22 @@ package com.stardoll.carbondioxide.components {
 				current = current.parent;
 			}
 
-			var text:TextHolder;
-
-			var xpos:int = 0;
+			var txt:String = "";
 
 			for( var i:int = 0; i < res.length; i++ ) {
-				text = new TextHolder();
-				text.item = res[(res.length-1)-i];
-				text.text = "/ " + text.item.name;
-				text.x = xpos;
-				_pathContainer.addChild(text);
-
-				text.addEventListener(MouseEvent.DOUBLE_CLICK, onSelectLayer, false, 0, true);
-
-				xpos += text.width + 4;
+				txt += "/" + res[(res.length-1)-i].name;
 			}
+
+			var fmt:TextFormat = new TextFormat("Verdana", 10, 0xffffffff, null, true);
+
+			var t:TextField = new TextField();
+			t.autoSize = TextFieldAutoSize.LEFT;
+			t.wordWrap = t.multiline = t.selectable = false;
+			t.defaultTextFormat = fmt;
+			t.text = txt;
+			_pathContainer.addChild(t);
 
 			_pathContainer.y = (HEIGHT/2) - (_pathContainer.height/2);
-		}
-
-		private function onSelectLayer( e:MouseEvent ):void {
-			var target:TextHolder = e.target as TextHolder;
-
-			if( target.item != DataModel.currentLayer ) {
-				DataModel.setLayer( target.item );
-			}
 		}
 
 		private function onManageViews(e:MouseEvent):void {
@@ -193,37 +187,5 @@ package com.stardoll.carbondioxide.components {
 
 			_viewBox.selectedIndex = _viewBox.length-1;
 		}
-	}
-}
-
-
-
-import com.stardoll.carbondioxide.models.cd.CDItem;
-
-import flash.display.Sprite;
-import flash.text.TextField;
-import flash.text.TextFieldAutoSize;
-import flash.text.TextFormat;
-
-
-
-internal class TextHolder extends Sprite {
-	public function TextHolder() {
-		this.doubleClickEnabled = true;
-		this.buttonMode = true;
-		this.mouseChildren = false;
-	}
-
-	public var item:CDItem;
-
-	public function set text( txt:String ):void {
-		var fmt:TextFormat = new TextFormat("Verdana", 10, 0xffffffff, null, true);
-
-		var t:TextField = new TextField();
-		t.autoSize = TextFieldAutoSize.LEFT;
-		t.wordWrap = t.multiline = t.selectable = false;
-		t.defaultTextFormat = fmt;
-		t.text = txt;
-		addChild(t);
 	}
 }
