@@ -22,6 +22,7 @@ package com.stardoll.carbondioxide.dialogues {
 			DataModel.onItemChanged.add( onItemUpdated );
 			DataModel.onLayerChanged.add( update );
 			DataModel.onViewChanged.add( update );
+			DataModel.onSelectedChanged.add( update );
 		}
 
 		override protected function onResize( width:int, height:int ):void {
@@ -37,6 +38,8 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onItemUpdated( item:CDItem ):void {
+			item;
+			
 			update();
 		}
 
@@ -65,6 +68,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 
 
+import com.stardoll.carbondioxide.models.ItemModel;
+import com.stardoll.carbondioxide.components.TreeDisplay;
 import com.stardoll.carbondioxide.models.DataModel;
 import com.stardoll.carbondioxide.models.cd.CDItem;
 import flash.display.Sprite;
@@ -108,11 +113,20 @@ internal class TreeItem extends Sprite {
 		if( model.parent != DataModel.currentLayer ) {
 			_enabled.visible = _visible.visible = false;
 		}
-
-		_name = buildName( model == DataModel.currentLayer ? 0xcccccc : 0xffffff, model.name );
+		
+		_name = buildName( (model == DataModel.currentLayer ? 0xbb7777 : (isSelected(model) ? 0x7777bb : 0xffffff)), model.name );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.CLICK, onName);
 		addChild(_name);
+	}
+	
+	private static function isSelected( model:CDItem ):Boolean {
+		for each( var holder:ItemModel in DataModel.SELECTED ) {
+			if( holder.item == model ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private function buildDot( color:uint, text:String ):Sprite {
@@ -176,10 +190,20 @@ internal class TreeItem extends Sprite {
 	}
 
 	private function onName( e:MouseEvent ):void {
-		if( _model.parent == DataModel.currentLayer ) {
+		if( _model == DataModel.currentView ) {
+			TreeDisplay.doSelectItems.dispatch( [] );
+			
+			if( _model != DataModel.currentLayer ) {
+				DataModel.setLayer( _model );
+			}
 
-		} else {
-			DataModel.setLayer( _model );
+			return;	
 		}
+		
+		if( _model.parent != DataModel.currentLayer ) {
+			DataModel.setLayer( _model.parent );
+		}
+		
+		TreeDisplay.doSelectItems.dispatch( [_model] );
 	}
 }
