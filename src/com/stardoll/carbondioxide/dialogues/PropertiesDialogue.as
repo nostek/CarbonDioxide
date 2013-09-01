@@ -62,7 +62,7 @@ package com.stardoll.carbondioxide.dialogues {
 				const holder:ItemModel = DataModel.SELECTED[0];
 				const item:CDItem = holder.item;
 
-				const bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? Drawer.getBounds(item.asset) : new Rectangle();
+				const bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
 
 				_properties.addItem({data:[false, "name"], 	label:"name: " + item.name});
 				_properties.addItem({data:[false, "x"], 	label:"x: " + item.x.toString()});
