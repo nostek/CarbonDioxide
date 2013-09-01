@@ -7,6 +7,8 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
+	import com.stardoll.carbondioxide.models.DataModel;
+	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.saveload.Load;
 	import com.stardoll.carbondioxide.saveload.Save;
 
@@ -84,6 +86,11 @@ package com.stardoll.carbondioxide.components {
 							name: "Paste",
 							shortcut: "v",
 							callback: onPaste
+						},
+						{
+							name: "Delete selected",
+							shortcut: "d",
+							callback: onDelete
 						}
 					]
 				},
@@ -280,6 +287,12 @@ package com.stardoll.carbondioxide.components {
 		
 		private function onPaste( e:Event ):void {
 			CutCopyPaste.paste();
+		}
+
+		private function onDelete( e:Event ):void {
+			for each( var item:ItemModel in DataModel.SELECTED ) {
+				item.item.parent.removeChild( item.item );
+			}
 		}
 	}
 }
