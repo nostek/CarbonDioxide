@@ -14,7 +14,7 @@ package com.stardoll.carbondioxide.dialogues {
 	 * @author simonrodriguez
 	 */
 	public class ZoomDialogue extends BaseDialogue {
-		public static var doMagnify:Boolean = true;
+		public static var doMagnify:Boolean = false;
 		public static var doPercent:Number = 1;
 		
 		public static function doZoom():void {
