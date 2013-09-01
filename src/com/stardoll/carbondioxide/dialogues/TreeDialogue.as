@@ -1,16 +1,25 @@
 package com.stardoll.carbondioxide.dialogues {
+	import fl.controls.ScrollBarDirection;
+	import fl.controls.ScrollBar;
+	import fl.events.ScrollEvent;
+
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 
 	import flash.display.Sprite;
+	import flash.geom.Rectangle;
 
 	/**
 	 * @author simonrodriguez
 	 */
 	public class TreeDialogue extends BaseDialogue {
+		private var _bg:Sprite;
 		private var _tree:Sprite;
 
 		private var _height:int;
+
+		private var _scrollV:ScrollBar;
+		private var _scrollH:ScrollBar;
 
 		public function TreeDialogue( fullSize:Boolean=true ) {
 			const WIDTH:int = 300;
@@ -18,8 +27,20 @@ package com.stardoll.carbondioxide.dialogues {
 
 			super("Tree", true, false, true, true);
 
+			_bg = new Sprite();
+			container.addChild( _bg );
+
 			_tree = new Sprite();
-			container.addChild( _tree );
+			_bg.addChild( _tree );
+
+			_scrollV = new ScrollBar();
+			_scrollV.addEventListener(ScrollEvent.SCROLL, onScrollV);
+			container.addChild( _scrollV );
+
+			_scrollH = new ScrollBar();
+			_scrollH.direction = ScrollBarDirection.HORIZONTAL;
+			_scrollH.addEventListener(ScrollEvent.SCROLL, onScrollH);
+			container.addChild( _scrollH );
 
 			init( WIDTH, HEIGHT );
 
@@ -39,15 +60,31 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		override protected function onResize( width:int, height:int ):void {
-			_tree.graphics.clear();
+			_bg.graphics.clear();
 
-			with( _tree.graphics ) {
+			with( _bg.graphics ) {
 				beginFill(0xffffff,1);
-				drawRect(0, 0, width, height);
+				drawRect(0, 0, width - _scrollV.width - 5, height - _scrollH.height - 5);
 				endFill();
 			}
 
+			_bg.scrollRect = new Rectangle(0, 0, width - _scrollV.width - 5, height - _scrollH.height - 5);
+
+			_scrollV.x = width - _scrollV.width;
+			_scrollV.height = height;
+
+			_scrollH.y = height - _scrollH.height;
+			_scrollH.width = width - _scrollV.width;
+
 			update();
+		}
+
+		private function onScrollV( e:ScrollEvent ):void {
+			_tree.y = -_scrollV.scrollPosition;
+		}
+
+		private function onScrollH( e:ScrollEvent ):void {
+			_tree.x = -_scrollH.scrollPosition;
 		}
 
 		private function onItemUpdated( item:CDItem ):void {
@@ -64,6 +101,26 @@ package com.stardoll.carbondioxide.dialogues {
 			if( DataModel.currentView == null ) return;
 
 			buildNode( DataModel.currentView, 2 );
+
+			////
+
+			const diffV:int = Math.max( 0, _tree.height - _bg.scrollRect.height );
+			const diffH:int = Math.max( 0, _tree.width - _bg.scrollRect.width );
+
+			if( diffV == 0 ) {
+				_tree.y = 0;
+			}
+			if( diffH == 0 ) {
+				_tree.x = 0;
+			}
+
+			_scrollV.minScrollPosition = 0;
+			_scrollV.maxScrollPosition = diffV;
+			_scrollV.visible = (diffV>0);
+
+			_scrollH.minScrollPosition = 0;
+			_scrollH.maxScrollPosition = diffH;
+			_scrollH.visible = (diffH>0);
 		}
 
 		private function buildNode( node:CDItem, offset:int ):void {
