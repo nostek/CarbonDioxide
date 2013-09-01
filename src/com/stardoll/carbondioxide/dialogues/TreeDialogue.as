@@ -1,6 +1,7 @@
 package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
+
 	import flash.display.Sprite;
 
 	/**
@@ -11,18 +12,30 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private var _height:int;
 
-		public function TreeDialogue() {
+		public function TreeDialogue( fullSize:Boolean=true ) {
+			const WIDTH:int = 300;
+			const HEIGHT:int = 450;
+
 			super("Tree", true, false, true, true);
 
 			_tree = new Sprite();
 			container.addChild( _tree );
 
-			init( 300, 400 );
+			init( WIDTH, HEIGHT );
+
+			this.x = 220;
+			this.y = 10;
+
+			if( !fullSize ) {
+				minimize();
+			}
 
 			DataModel.onItemChanged.add( onItemUpdated );
 			DataModel.onLayerChanged.add( update );
 			DataModel.onViewChanged.add( update );
 			DataModel.onSelectedChanged.add( update );
+
+			ExpandModel.onChanged.add( update );
 		}
 
 		override protected function onResize( width:int, height:int ):void {
@@ -39,7 +52,7 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private function onItemUpdated( item:CDItem ):void {
 			item;
-			
+
 			update();
 		}
 
@@ -47,6 +60,8 @@ package com.stardoll.carbondioxide.dialogues {
 			_tree.removeChildren();
 
 			_height = 2;
+
+			if( DataModel.currentView == null ) return;
 
 			buildNode( DataModel.currentView, 2 );
 		}
@@ -59,8 +74,10 @@ package com.stardoll.carbondioxide.dialogues {
 
 			_height += i.height + 1;
 
-			for each( var child:CDItem in node.children ) {
-				buildNode( child, offset + 20 );
+			if( ExpandModel.isMaximized( node ) ) {
+				for each( var child:CDItem in node.children ) {
+					buildNode( child, offset + 20 );
+				}
 			}
 		}
 	}
@@ -68,15 +85,50 @@ package com.stardoll.carbondioxide.dialogues {
 
 
 
-import com.stardoll.carbondioxide.models.ItemModel;
 import com.stardoll.carbondioxide.components.TreeDisplay;
+import com.stardoll.carbondioxide.dialogues.InputDialogue;
+import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 import com.stardoll.carbondioxide.models.DataModel;
+import com.stardoll.carbondioxide.models.ItemModel;
 import com.stardoll.carbondioxide.models.cd.CDItem;
+import com.stardoll.carbondioxide.models.cd.CDText;
+
+import org.osflash.signals.Signal;
+
+import flash.display.NativeMenuItem;
 import flash.display.Sprite;
+import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.geom.Point;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
+import flash.ui.ContextMenu;
+import flash.utils.Dictionary;
+
+
+
+internal class ExpandModel {
+	public static var onChanged:Signal = new Signal();
+
+	private static var expands:Dictionary = new Dictionary( true );
+
+	public static function minimize( model:CDItem ):void {
+		expands[ model ] = true;
+
+		onChanged.dispatch();
+	}
+
+	public static function maximize( model:CDItem ):void {
+		expands[ model ] = null;
+
+		onChanged.dispatch();
+	}
+
+	public static function isMaximized( model:CDItem ):Boolean {
+		return (expands[ model ] == null);
+	}
+}
 
 
 
@@ -97,7 +149,8 @@ internal class TreeItem extends Sprite {
 
 		_model = model;
 
-		_minmax = buildDot( 0x000000, "-");
+		_minmax = buildDot( 0x000000, ExpandModel.isMaximized( _model) ? "-" : "+" );
+		_minmax.addEventListener(MouseEvent.CLICK, onMinMax);
 		addChild(_minmax);
 
 		_enabled = buildDot( model.enabled ? 0x00ff00 : 0xff0000, "E ");
@@ -113,13 +166,14 @@ internal class TreeItem extends Sprite {
 		if( model.parent != DataModel.currentLayer ) {
 			_enabled.visible = _visible.visible = false;
 		}
-		
+
 		_name = buildName( (model == DataModel.currentLayer ? 0xbb7777 : (isSelected(model) ? 0x7777bb : 0xffffff)), model.name );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.CLICK, onName);
+		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
 	}
-	
+
 	private static function isSelected( model:CDItem ):Boolean {
 		for each( var holder:ItemModel in DataModel.SELECTED ) {
 			if( holder.item == model ) {
@@ -181,6 +235,14 @@ internal class TreeItem extends Sprite {
 		return dot;
 	}
 
+	private function onMinMax( e:MouseEvent ):void {
+		if( ExpandModel.isMaximized( _model ) ) {
+			ExpandModel.minimize( _model );
+		} else {
+			ExpandModel.maximize( _model );
+		}
+	}
+
 	private function onEnabled( e:MouseEvent ):void {
 		_model.enabled = !_model.enabled;
 	}
@@ -192,18 +254,99 @@ internal class TreeItem extends Sprite {
 	private function onName( e:MouseEvent ):void {
 		if( _model == DataModel.currentView ) {
 			TreeDisplay.doSelectItems.dispatch( [] );
-			
+
 			if( _model != DataModel.currentLayer ) {
 				DataModel.setLayer( _model );
 			}
 
-			return;	
+			return;
 		}
-		
+
 		if( _model.parent != DataModel.currentLayer ) {
 			DataModel.setLayer( _model.parent );
 		}
-		
+
 		TreeDisplay.doSelectItems.dispatch( [_model] );
+	}
+
+	private function onSubMenu( e:MouseEvent ):void {
+		var s:ContextMenu = new ContextMenu();
+
+		var additem:Function = function( name:String, callback:Function ):void {
+			var item:NativeMenuItem = new NativeMenuItem( name );
+			item.addEventListener(Event.SELECT, callback);
+			s.addItem( item );
+		};
+
+		additem( "Add Item", onAddItemItem );
+		additem( "Add Text", onAddItemText );
+		additem( "Delete", onDelete );
+
+		var global:Point = this.localToGlobal( new Point( this.mouseX, this.mouseY) );
+		s.display( this.stage, global.x, global.y );
+	}
+
+	private static const ADD_ITEM:int = 0;
+	private static const ADD_TEXT:int = 1;
+	private var _addType:int;
+
+	private function onAddItemItem(e:Event):void {
+		_addType = ADD_ITEM;
+		onAddItem();
+	}
+
+	private function onAddItemText(e:Event):void {
+		_addType = ADD_TEXT;
+		onAddItem();
+	}
+
+	private function onAddItem():void {
+		if( DataModel.currentView == null ) {
+			new PopupDialogue("ERROR", "Add a view first.");
+		}
+
+		var input:InputDialogue = new InputDialogue("Add Item", "Enter name:");
+		input.onOK.addOnce( onAddItemNamed );
+	}
+
+	private function onAddItemNamed(input:InputDialogue):void {
+		if( input.text == null || input.text == "" )
+			return;
+
+		if( checkName(input.text) ) {
+			var item:CDItem;
+
+			switch( _addType ) {
+				case ADD_ITEM:
+			 		item = _model.addChild( new CDItem(_model, input.text) );
+				break;
+
+				case ADD_TEXT:
+					item = _model.addChild( new CDText(_model, input.text) );
+				break;
+			}
+
+			item.setXYWH(0, 0, Math.max( 25, Math.min( 100, _model.width * 0.2) ), Math.max( 25, Math.min( 100, _model.height * 0.2) ));
+		} else {
+			new PopupDialogue("ERROR", "ERROR: Name is already in use.");
+		}
+	}
+
+	private function checkName( name:String ):Boolean {
+		const children:Vector.<CDItem> = _model.children;
+
+		const len:int = children.length;
+
+		for( var i:int = 0; i < len; i++ ) {
+			if( children[i].name == name ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private function onDelete(e:Event):void {
+		_model.parent.removeChild( _model );
 	}
 }

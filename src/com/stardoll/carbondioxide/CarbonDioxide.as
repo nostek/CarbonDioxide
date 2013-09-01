@@ -4,7 +4,6 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.components.TreeDisplay;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
-	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
@@ -72,13 +71,11 @@ package com.stardoll.carbondioxide {
 			BaseDialogue.DIALOGUES = addChild( new Sprite() ) as Sprite;
 
 			new AssetsDialogue( false );
-			new ItemsDialogue( false );
+			new TreeDialogue( false );
 			new PropertiesDialogue( false );
 
 			test();
 			DataModel.setView( ViewsManager.getViewByName("main") );
-
-			new TreeDialogue();
 		}
 
 		private function onUncaughtErrorHandler(event:UncaughtErrorEvent):void {

@@ -1,12 +1,12 @@
 package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
-	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
-	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
+	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
-	import com.stardoll.carbondioxide.dialogues.ItemsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
+	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
+	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.saveload.Load;
@@ -103,8 +103,8 @@ package com.stardoll.carbondioxide.components {
 							callback: onAssets
 						},
 						{
-							name: "Items",
-							callback: onItems
+							name: "Tree",
+							callback: onTree
 						},
 						{
 							name: "Properties",
@@ -224,8 +224,8 @@ package com.stardoll.carbondioxide.components {
 			new AssetsDialogue();
 		}
 
-		private function onItems( e:Event ):void {
-			new ItemsDialogue();
+		private function onTree( e:Event ):void {
+			new TreeDialogue();
 		}
 
 		private function onProperties( e:Event ):void {
@@ -276,15 +276,15 @@ package com.stardoll.carbondioxide.components {
 		private function onColor( e:Event ):void {
 			new ColorDialogue();
 		}
-		
+
 		private function onCut( e:Event ):void {
 			CutCopyPaste.cut();
 		}
-		
+
 		private function onCopy( e:Event ):void {
 			CutCopyPaste.copy();
 		}
-		
+
 		private function onPaste( e:Event ):void {
 			CutCopyPaste.paste();
 		}
