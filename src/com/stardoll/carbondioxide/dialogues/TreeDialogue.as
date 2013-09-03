@@ -1,10 +1,11 @@
 package com.stardoll.carbondioxide.dialogues {
-	import fl.controls.ScrollBarDirection;
 	import fl.controls.ScrollBar;
+	import fl.controls.ScrollBarDirection;
 	import fl.events.ScrollEvent;
 
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
+	import com.stardoll.carbondioxide.models.cd.CDResolution;
 
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
@@ -132,10 +133,23 @@ package com.stardoll.carbondioxide.dialogues {
 			_height += i.height + 1;
 
 			if( ExpandModel.isMaximized( node ) ) {
+				for each( var res:CDResolution in node.resolutions ) {
+					buildResolution( res, node, offset + 13 );
+				}
+
 				for each( var child:CDItem in node.children ) {
-					buildNode( child, offset + 20 );
+					buildNode( child, offset + 13 );
 				}
 			}
+		}
+
+		private function buildResolution( res:CDResolution, node:CDItem, offset:int ):void {
+			var i:ResolutionItem = new ResolutionItem( res, node );
+			i.x = offset;
+			i.y = _height;
+			_tree.addChild( i );
+
+			_height += i.height + 1;
 		}
 	}
 }
@@ -148,7 +162,9 @@ import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 import com.stardoll.carbondioxide.models.DataModel;
 import com.stardoll.carbondioxide.models.ItemModel;
 import com.stardoll.carbondioxide.models.cd.CDItem;
+import com.stardoll.carbondioxide.models.cd.CDResolution;
 import com.stardoll.carbondioxide.models.cd.CDText;
+import com.stardoll.carbondioxide.models.resolutions.ResolutionsModel;
 
 import org.osflash.signals.Signal;
 
@@ -184,6 +200,73 @@ internal class ExpandModel {
 
 	public static function isMaximized( model:CDItem ):Boolean {
 		return (expands[ model ] == null);
+	}
+}
+
+
+
+internal class ResolutionItem extends Sprite {
+	private static const HEIGHT:int = 16;
+
+	private var _name:Sprite;
+
+	private var _parent:CDItem;
+	private var _model:CDResolution;
+
+	public function ResolutionItem( model:CDResolution, parent:CDItem ) {
+		super();
+
+		_parent = parent;
+		_model = model;
+
+		var name:String = "unidentified";
+
+		const resolutions:Array = ResolutionsModel.resolutions;
+
+		for each( var o:Object in resolutions ) {
+			if( o["width"] == model.screenWidth && o["height"] == model.screenHeight ) {
+				name = o["label"];
+				break;
+			}
+		}
+
+		name += " (" + model.screenWidth + "x" + model.screenHeight + ")";
+
+		_name = buildName( name );
+		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
+		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDelete);
+		addChild(_name);
+	}
+
+	private function buildName( text:String ):Sprite {
+		var dot:Sprite = new Sprite();
+		dot.buttonMode = true;
+		dot.mouseChildren = false;
+		dot.doubleClickEnabled = true;
+		with( dot.graphics ) {
+			lineStyle(1, 0x000000, 1);
+
+			beginFill(0x77bb77, 1);
+			drawRoundRect(16, 0, 300, HEIGHT, 16, 16);
+			endFill();
+		}
+
+		var fmt:TextFormat = new TextFormat("Verdana", 10, 0xff000000, null, true);
+
+		var t:TextField = new TextField();
+		t.autoSize = TextFieldAutoSize.LEFT;
+		t.selectable = false;
+		t.defaultTextFormat = fmt;
+		t.text = text;
+		t.x = 20;
+		t.y = (HEIGHT - t.height) / 2;
+		dot.addChild(t);
+
+		return dot;
+	}
+
+	private function onDelete( e:MouseEvent ):void {
+		_parent.removeResolution( _model );
 	}
 }
 
@@ -274,7 +357,7 @@ internal class TreeItem extends Sprite {
 			lineStyle(1, 0x000000, 1);
 
 			beginFill(color, 1);
-			drawRoundRect(16, 0, 220, HEIGHT, 16, 16);
+			drawRoundRect(16, 0, 300, HEIGHT, 16, 16);
 			endFill();
 		}
 
@@ -332,7 +415,7 @@ internal class TreeItem extends Sprite {
 		var additem:Function = function( name:String, callback:Function ):void {
 			var item:NativeMenuItem;
 			if( name == null ) {
-				item = new NativeMenuItem( null, true );				
+				item = new NativeMenuItem( null, true );
 			} else {
 				item = new NativeMenuItem( name );
 				item.addEventListener(Event.SELECT, callback);
@@ -343,9 +426,9 @@ internal class TreeItem extends Sprite {
 		additem( "Add Item", onAddItemItem );
 		additem( "Add Text", onAddItemText );
 		additem( "Delete", onDelete );
-		additem( null, null );
-		additem( "Move top", onMoveTop );
-		additem( "Move bottom", onMoveBottom );
+//		additem( null, null );
+//		additem( "Move top", onMoveTop );
+//		additem( "Move bottom", onMoveBottom );
 
 		var global:Point = this.localToGlobal( new Point( this.mouseX, this.mouseY) );
 		s.display( this.stage, global.x, global.y );
@@ -414,12 +497,12 @@ internal class TreeItem extends Sprite {
 	private function onDelete(e:Event):void {
 		_model.parent.removeChild( _model );
 	}
-	
-	private function onMoveTop( e:Event ):void {
-		
-	}
-	
-	private function onMoveBottom( e:Event ):void {
-		
-	}
+
+//	private function onMoveTop( e:Event ):void {
+//
+//	}
+//
+//	private function onMoveBottom( e:Event ):void {
+//
+//	}
 }
