@@ -219,7 +219,7 @@ package com.stardoll.carbondioxide.models.cd {
 					return _resolutions[i];
 				}
 			}
-			
+
 			var res:CDResolution = new CDResolution(DataModel.SCREEN_WIDTH, DataModel.SCREEN_HEIGHT);
 			res.x = _x;
 			res.y = _y;
@@ -268,6 +268,24 @@ package com.stardoll.carbondioxide.models.cd {
 			return null;
 		}
 
+		public function setChildIndex( item:CDItem, index:int ):void {
+			if( index < 0 ) return;
+			if( index > _children.length ) return;
+
+			var current:int = _children.indexOf( item );
+
+			if( current == index ) return;
+
+			_children.splice(current, 1);
+			_children.splice(index, 0, item);
+
+			itemChanged();
+		}
+
+		public function getChildIndex( item:CDItem ):int {
+			return _children.indexOf( item );
+		}
+
 		public function get children():Vector.<CDItem> {
 			return _children;
 		}
@@ -294,7 +312,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 			_width = state.width;
 			_height = state.height;
-			
+
 			_ar = state.aspectRatio;
 
 			if( aspectRatio != 0 ) {

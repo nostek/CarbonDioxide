@@ -133,8 +133,10 @@ package com.stardoll.carbondioxide.dialogues {
 			_height += i.height + 1;
 
 			if( ExpandModel.isMaximized( node ) ) {
-				for each( var res:CDResolution in node.resolutions ) {
-					buildResolution( res, node, offset + 13 );
+				if( ExpandModel.isShowingResolutions ) {
+					for each( var res:CDResolution in node.resolutions ) {
+						buildResolution( res, node, offset + 13 );
+					}
 				}
 
 				for each( var child:CDItem in node.children ) {
@@ -184,6 +186,8 @@ import flash.utils.Dictionary;
 internal class ExpandModel {
 	public static var onChanged:Signal = new Signal();
 
+	////////////////////
+
 	private static var expands:Dictionary = new Dictionary( true );
 
 	public static function minimize( model:CDItem ):void {
@@ -200,6 +204,20 @@ internal class ExpandModel {
 
 	public static function isMaximized( model:CDItem ):Boolean {
 		return (expands[ model ] == null);
+	}
+
+	////////////////////
+
+	private static var showResolutions:Boolean = true;
+
+	public static function toggleResolutions():void {
+		showResolutions = !showResolutions;
+
+		onChanged.dispatch();
+	}
+
+	public static function get isShowingResolutions():Boolean {
+		return showResolutions;
 	}
 }
 
@@ -234,7 +252,7 @@ internal class ResolutionItem extends Sprite {
 
 		_name = buildName( name );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
-		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDelete);
+		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
 	}
 
@@ -242,7 +260,6 @@ internal class ResolutionItem extends Sprite {
 		var dot:Sprite = new Sprite();
 		dot.buttonMode = true;
 		dot.mouseChildren = false;
-		dot.doubleClickEnabled = true;
 		with( dot.graphics ) {
 			lineStyle(1, 0x000000, 1);
 
@@ -265,8 +282,34 @@ internal class ResolutionItem extends Sprite {
 		return dot;
 	}
 
-	private function onDelete( e:MouseEvent ):void {
+	private function onSubMenu( e:MouseEvent ):void {
+		var s:ContextMenu = new ContextMenu();
+
+		var additem:Function = function( name:String, callback:Function ):void {
+			var item:NativeMenuItem;
+			if( name == null ) {
+				item = new NativeMenuItem( null, true );
+			} else {
+				item = new NativeMenuItem( name );
+				item.addEventListener(Event.SELECT, callback);
+			}
+			s.addItem( item );
+		};
+
+		additem( "Delete", onDelete );
+		additem( null, null );
+		additem( ExpandModel.isShowingResolutions ? "Hide resolutions" : "Show resolutions", onToggleResolutions );
+
+		var global:Point = this.localToGlobal( new Point( this.mouseX, this.mouseY) );
+		s.display( this.stage, global.x, global.y );
+	}
+
+	private function onDelete( e:Event ):void {
 		_parent.removeResolution( _model );
+	}
+
+	private function onToggleResolutions( e:Event ):void {
+		ExpandModel.toggleResolutions();
 	}
 }
 
@@ -426,9 +469,13 @@ internal class TreeItem extends Sprite {
 		additem( "Add Item", onAddItemItem );
 		additem( "Add Text", onAddItemText );
 		additem( "Delete", onDelete );
-//		additem( null, null );
-//		additem( "Move top", onMoveTop );
-//		additem( "Move bottom", onMoveBottom );
+		additem( null, null );
+		additem( "Move Top", onMoveTop );
+		additem( "Move Up", onMoveUp );
+		additem( "Move Down", onMoveDown );
+		additem( "Move Bottom", onMoveBottom );
+		additem( null, null );
+		additem( ExpandModel.isShowingResolutions ? "Hide resolutions" : "Show resolutions", onToggleResolutions );
 
 		var global:Point = this.localToGlobal( new Point( this.mouseX, this.mouseY) );
 		s.display( this.stage, global.x, global.y );
@@ -498,11 +545,23 @@ internal class TreeItem extends Sprite {
 		_model.parent.removeChild( _model );
 	}
 
-//	private function onMoveTop( e:Event ):void {
-//
-//	}
-//
-//	private function onMoveBottom( e:Event ):void {
-//
-//	}
+	private function onMoveTop( e:Event ):void {
+		_model.parent.setChildIndex(_model, 0);
+	}
+
+	private function onMoveBottom( e:Event ):void {
+		_model.parent.setChildIndex(_model, _model.parent.children.length-1);
+	}
+
+	private function onMoveUp( e:Event ):void {
+		_model.parent.setChildIndex(_model, _model.parent.getChildIndex(_model)-1);
+	}
+
+	private function onMoveDown( e:Event ):void {
+		_model.parent.setChildIndex(_model, _model.parent.getChildIndex(_model)+1);
+	}
+
+	private function onToggleResolutions( e:Event ):void {
+		ExpandModel.toggleResolutions();
+	}
 }
