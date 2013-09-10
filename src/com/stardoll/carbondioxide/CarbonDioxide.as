@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide {
+	import flash.desktop.ClipboardFormats;
+	import flash.desktop.Clipboard;
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
@@ -74,8 +76,8 @@ package com.stardoll.carbondioxide {
 			new TreeDialogue( false );
 			new PropertiesDialogue( false );
 
-			test();
-			DataModel.setView( ViewsManager.getViewByName("main") );
+//			test();
+//			DataModel.setView( ViewsManager.getViewByName("main") );
 		}
 
 		private function onUncaughtErrorHandler(event:UncaughtErrorEvent):void {
@@ -91,6 +93,8 @@ package com.stardoll.carbondioxide {
 				var errorEvent:ErrorEvent = event.error as ErrorEvent;
 				msg = JSON.stringify({error2:errorEvent.text});
 			}
+
+			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, msg);
 
 			new PopupDialogue("CRASH", msg);
 		}

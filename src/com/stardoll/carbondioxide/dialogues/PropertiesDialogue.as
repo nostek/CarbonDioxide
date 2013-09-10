@@ -136,11 +136,17 @@ package com.stardoll.carbondioxide.dialogues {
 //					break;
 
 					case "ow":
-						item.width = bounds.width;
+						item.setXYWH(	item.x,
+										item.y,
+										bounds.width,
+										item.height	);
 					break;
 
 					case "oh":
-						item.height = bounds.height;
+						item.setXYWH(	item.x,
+										item.y,
+										item.width,
+										bounds.height );
 					break;
 
 					case "text":
@@ -194,7 +200,11 @@ package com.stardoll.carbondioxide.dialogues {
 					case "x":
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
-								item.item.x = Number(input.text);
+								item.
+								item.setXYWH(	Number(input.text),
+												item.y,
+												item.width,
+												item.height	);
 							}
 						}
 					break;
@@ -202,7 +212,11 @@ package com.stardoll.carbondioxide.dialogues {
 					case "y":
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
-								item.item.y = Number(input.text);
+								item.
+								item.setXYWH(	item.x,
+												Number(input.text),
+												item.width,
+												item.height	);
 							}
 						}
 					break;
@@ -210,7 +224,11 @@ package com.stardoll.carbondioxide.dialogues {
 					case "w":
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
-								item.item.width = Number(input.text);
+								item.
+								item.setXYWH(	item.x,
+												item.y,
+												Number(input.text),
+												item.height	);
 							}
 						}
 					break;
@@ -218,7 +236,11 @@ package com.stardoll.carbondioxide.dialogues {
 					case "h":
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
-								item.item.height = Number(input.text);
+								item.
+								item.setXYWH(	item.x,
+												item.y,
+												item.width,
+												Number(input.text)	);
 							}
 						}
 					break;
