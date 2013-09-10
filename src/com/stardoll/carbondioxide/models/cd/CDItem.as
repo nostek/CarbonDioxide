@@ -150,47 +150,21 @@ package com.stardoll.carbondioxide.models.cd {
 			itemChanged();
 		}
 
-//		public function set x( value:int ):void {
-//			saveUndo();
-//
-//			currentResolution.x = toPercent( value, _parent.width );
-//
-//			updateDisplayProperties();
-//
-//			itemChanged();
-//		}
-//
-//		public function set y( value:int ):void {
-//			saveUndo();
-//
-//			currentResolution.y = toPercent( value, _parent.height );
-//
-//			updateDisplayProperties();
-//
-//			itemChanged();
-//		}
-//
-//		public function set width( value:int ):void {
-//			saveUndo();
-//
-//			currentResolution.width = toPercent( value, _parent.width );
-//			currentResolution.aspectRatio = width / height;
-//
-//			updateDisplayProperties();
-//
-//			itemChanged();
-//		}
-//
-//		public function set height( value:int ):void {
-//			saveUndo();
-//
-//			currentResolution.height = toPercent( value, _parent.height );
-//			currentResolution.aspectRatio = width / height;
-//
-//			updateDisplayProperties();
-//
-//			itemChanged();
-//		}
+		public function set x( value:int ):void {
+			setXYWH( value, this.y, this.width, this.height );
+		}
+
+		public function set y( value:int ):void {
+			setXYWH( this.x, value, this.width, this.height );
+		}
+
+		public function set width( value:int ):void {
+			setXYWH( this.x, this.y, value, this.height );
+		}
+
+		public function set height( value:int ):void {
+			setXYWH( this.x, this.y, this.width, value );
+		}
 
 		//////////////
 
