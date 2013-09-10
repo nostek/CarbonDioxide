@@ -1,6 +1,6 @@
-package com.stardoll.UIDesigner.dialogues {
-	import com.stardoll.UIDesigner.components.DisplayItem;
-	import com.stardoll.UIDesigner.models.DataModel;
+package com.stardoll.carbondioxide.dialogues {
+	import com.stardoll.carbondioxide.models.ItemModel;
+	import com.stardoll.carbondioxide.models.DataModel;
 
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -16,30 +16,25 @@ package com.stardoll.UIDesigner.dialogues {
 
 		public function AlignDialogue() {
 			const WIDTH:int = 211;
-			const HEIGHT:int = 50;
+			const HEIGHT:int = 60;
+			
+			super("Align", true, false, false, true);
 
 			var s:Sprite = new Sprite();
 			_align = new ALIGN();
 			s.addChild(_align);
-			s.x = s.y = 10;
 			s.addEventListener(MouseEvent.CLICK, onClickAlign);
-			addChild(s);
-
-			super(WIDTH, HEIGHT, "Align", true, false, false);
-
-			this.x = 970;
-			this.y = 10;
-
-			minimize();
+			s.buttonMode = true;
+			container.addChild(s);
+			
+			init( WIDTH, HEIGHT );
 		}
 
 		private function onClickAlign(e:MouseEvent):void {
-			if( DataModel.transform.selectedItems.length == 0 )
+			if( DataModel.SELECTED.length == 0 )
 				return;
 
 			var btn:int = _align.mouseX/(_align.width/6);
-
-			DataModel.onItemSaveUndo.dispatch();
 
 			switch( btn ) {
 				case 0:
@@ -61,100 +56,103 @@ package com.stardoll.UIDesigner.dialogues {
 					alignBottom();
 				break;
 			}
-
-			DataModel.onItemSave.dispatch();
 		}
 
 		private function alignLeft():void {
-			var min:int = 50000;
+			var min:int = int.MAX_VALUE;
 
-			var selected:Array = DataModel.transform.selectedTargetObjects;
-			var obj:DisplayItem;
+			const selected:Vector.<ItemModel> = DataModel.SELECTED;
+			var obj:ItemModel;
 
 			for each( obj in selected ) {
-				min = Math.min( obj.x, min );
+				min = Math.min( obj.item.x, min );
 			}
 
 			for each( obj in selected ) {
-				obj.x = min;
+				obj.item.x = min;
 			}
 		}
+		
 		private function alignXCenter():void {
-			var min:int = 50000;
-			var max:int = -50000;
+			var min:int = int.MAX_VALUE;
+			var max:int = int.MIN_VALUE;
 
-			var selected:Array = DataModel.transform.selectedTargetObjects;
-			var obj:DisplayItem;
+			const selected:Vector.<ItemModel> = DataModel.SELECTED;
+			var obj:ItemModel;
 
 			for each( obj in selected ) {
-				min = Math.min( obj.x, min );
-				max = Math.max( obj.x+obj.width, max );
+				min = Math.min( obj.item.x, min );
+				max = Math.max( obj.item.x+obj.item.width, max );
 			}
 
-			var middle:int = min + (max-min)/2;
+			const middle:int = min + (max-min)/2;
 
 			for each( obj in selected ) {
-				obj.x = middle-obj.width/2;
+				obj.item.x = middle-(obj.item.width/2);
 			}
 		}
+		
 		private function alignRight():void {
-			var max:int = -50000;
+			var max:int = int.MIN_VALUE;
 
-			var selected:Array = DataModel.transform.selectedTargetObjects;
-			var obj:DisplayItem;
+			const selected:Vector.<ItemModel> = DataModel.SELECTED;
+			var obj:ItemModel;
 
 			for each( obj in selected ) {
-				max = Math.max( obj.x+obj.width, max );
+				max = Math.max( obj.item.x+obj.item.width, max );
 			}
 
 			for each( obj in selected ) {
-				obj.x = max-obj.width;
+				obj.item.x = max-obj.item.width;
 			}
 		}
+		
 		private function alignTop():void {
-			var min:int = 50000;
+			var min:int = int.MAX_VALUE;
 
-			var selected:Array = DataModel.transform.selectedTargetObjects;
-			var obj:DisplayItem;
+			const selected:Vector.<ItemModel> = DataModel.SELECTED;
+			var obj:ItemModel;
 
 			for each( obj in selected ) {
-				min = Math.min( obj.y, min );
+				min = Math.min( obj.item.y, min );
 			}
 
 			for each( obj in selected ) {
-				obj.y = min;
+				obj.item.y = min;
 			}
 		}
+		
 		private function alignYCenter():void {
-			var min:int = 50000;
-			var max:int = -50000;
+			var min:int = int.MAX_VALUE;
+			var max:int = int.MIN_VALUE;
 
-			var selected:Array = DataModel.transform.selectedTargetObjects;
-			var obj:DisplayItem;
+			const selected:Vector.<ItemModel> = DataModel.SELECTED;
+			var obj:ItemModel;
 
 			for each( obj in selected ) {
-				min = Math.min( obj.y, min );
-				max = Math.max( obj.y+obj.height, max );
+				min = Math.min( obj.item.y, min );
+				max = Math.max( obj.item.y+obj.item.height, max );
 			}
 
-			var middle:int = min + (max-min)/2;
+			const middle:int = min + (max-min)/2;
 
 			for each( obj in selected ) {
-				obj.y = middle-obj.height/2;
+				obj.item.y = middle-(obj.item.height/2);
 			}
 		}
+		
 		private function alignBottom():void {
-			var max:int = -50000;
+			var max:int = int.MIN_VALUE;
 
-			var selected:Array = DataModel.transform.selectedTargetObjects;
-			var obj:DisplayItem;
+			const selected:Vector.<ItemModel> = DataModel.SELECTED;
+			var obj:ItemModel;
 
 			for each( obj in selected ) {
-				max = Math.max( obj.y+obj.height, max );
+				max = Math.max( obj.item.y+obj.item.height, max );
 			}
 
 			for each( obj in selected ) {
-				obj.y = max-obj.height;
+				obj.item.y = max-obj.item.height;
 			}
 		}
 	}
