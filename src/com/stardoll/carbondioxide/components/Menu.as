@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.dialogues.AlignDialogue;
 	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
@@ -122,6 +123,10 @@ package com.stardoll.carbondioxide.components {
 							name: "Color",
 							callback: onColor
 						},
+						{
+							name: "Align",
+							callback: onAlign
+						},
 					]
 				},
 
@@ -238,6 +243,10 @@ package com.stardoll.carbondioxide.components {
 
 		private function onZoomDlg( e:Event ):void {
 			new ZoomDialogue();
+		}
+		
+		private function onAlign( e:Event ):void {
+			new AlignDialogue();
 		}
 
 		private function onZoomMagnify( e:Event ):void {
