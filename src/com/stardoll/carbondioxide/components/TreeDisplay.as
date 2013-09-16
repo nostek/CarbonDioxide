@@ -347,7 +347,7 @@ package com.stardoll.carbondioxide.components {
 			var pt:Point;
 
 			for each( item in _allowed ) {
-				if( item != null ) {
+				if( item != null && item.item.enabled ) {
 					pt = this.globalToLocal(item.localToGlobal(PZERO));
 					rect = new Rectangle( pt.x, pt.y, item.item.width, item.item.height );
 
