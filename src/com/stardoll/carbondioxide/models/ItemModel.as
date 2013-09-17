@@ -20,9 +20,9 @@ package com.stardoll.carbondioxide.models {
 			addChild( child );
 		}
 
-		public function get item():CDItem { return _item; }
+		public function get item():CDItem { return _item; }
 
-		public function get child():DisplayObject{ return _child; }
+		public function get child():DisplayObject{ return _child; }
 
 		public function update( item:DisplayObject ):void {
 			_child = item;
