@@ -27,8 +27,12 @@ package com.stardoll.carbondioxide.saveload {
 			DataModel.LAST_FILE = null;
 			DataModel.DID_LOCK = false;
 		}
+		
+		private static var SILENT:Boolean;
 
-		public static function run():void {
+		public static function run(doSilent:Boolean):void {
+			SILENT = doSilent;
+			
 			var f:File = new File();
 			var filter:FileFilter = new FileFilter("Design", "*.json");
 
@@ -70,11 +74,13 @@ package com.stardoll.carbondioxide.saveload {
 
 				new PopupDialogue("WARNING", msg + "\nMake sure you can use the file!");
 			} else {
-				fs.open(lock, FileMode.WRITE);
-				fs.writeUTFBytes("Locked by: " + File.userDirectory.name + "\nDate: " + (new Date()).toString());
-				fs.close();
-
-				DataModel.DID_LOCK = true;
+				if( SILENT ) {
+					fs.open(lock, FileMode.WRITE);
+					fs.writeUTFBytes("Locked by: " + File.userDirectory.name + "\nDate: " + (new Date()).toString());
+					fs.close();
+	
+					DataModel.DID_LOCK = true;
+				}
 			}
 		}
 
