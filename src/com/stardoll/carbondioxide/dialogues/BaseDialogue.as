@@ -12,6 +12,8 @@ package com.stardoll.carbondioxide.dialogues {
 	 */
 	public class BaseDialogue extends Sprite {
 		public static var DIALOGUES:Sprite;
+		
+		public static var BLOCK_MENU:Boolean=false;
 
 		public static const HEADER:int 	= 20;
 		public static const EDGE:int 	= 10;
@@ -43,6 +45,8 @@ package com.stardoll.carbondioxide.dialogues {
 					endFill();
 				}
 				BaseDialogue.DIALOGUES.addChild(_noclick);
+				
+				BLOCK_MENU = true;
 			}
 
 			_canScale = canScale;
@@ -81,6 +85,7 @@ package com.stardoll.carbondioxide.dialogues {
 		protected function close():void {
 			if( _noclick != null ) {
 				_noclick.parent.removeChild(_noclick);
+				BLOCK_MENU = false;
 			}
 
 			this.parent.removeChild(this);
