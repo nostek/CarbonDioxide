@@ -4,18 +4,18 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.utils.Drawer;
-
 	import org.osflash.signals.Signal;
-
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.ui.Keyboard;
 
 	/**
 	 * @author simonrodriguez
@@ -70,6 +70,8 @@ package com.stardoll.carbondioxide.components {
 			stage.addEventListener(MouseEvent.MOUSE_UP, onContainerStop);
 
 			stage.addEventListener(Event.RESIZE, onResize);
+			
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 9999);
 		}
 
 		public static function get doSelectItems():Signal { return _doSelectItems; }
@@ -126,6 +128,28 @@ package com.stardoll.carbondioxide.components {
 			this.scaleX = this.scaleY = z;
 
 			onResize(null);
+		}
+		
+		private function onKeyDown(e:KeyboardEvent):void {
+			if( e.target == this.stage ) {
+				const add:int = e.shiftKey ? 10 : 1;
+				for each( var item:ItemModel in DataModel.SELECTED ) {
+					switch( e.keyCode ) {
+						case Keyboard.UP:
+							item.item.y -= add;
+						break;
+						case Keyboard.DOWN:
+							item.item.y += add;
+						break;
+						case Keyboard.LEFT:
+							item.item.x -= add;
+						break;
+						case Keyboard.RIGHT:
+							item.item.x += add;
+						break;
+					}
+				}
+			}
 		}
 
 		private function findHolder( item:CDItem ):ItemModel {
@@ -523,6 +547,8 @@ package com.stardoll.carbondioxide.components {
 			_selection.update();
 
 			updateSelection( true );
+			
+			stage.focus = null;
 		}
 
 		private function updateSelection( setValues:Boolean ):void {
