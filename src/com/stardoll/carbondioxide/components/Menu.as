@@ -223,43 +223,39 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onMinimize( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			_stage.nativeWindow.minimize();
 		}
 
 		private function onZoom( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			_stage.nativeWindow.maximize();
 		}
 
 		private function onAssets( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			new AssetsDialogue();
 		}
 
 		private function onTree( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			new TreeDialogue();
 		}
 
 		private function onProperties( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			new PropertiesDialogue();
 		}
 
 		private function onFind( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			new FindAssetsDialogue();
 		}
 
 		private function onZoomDlg( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			new ZoomDialogue();
 		}
 		
 		private function onAlign( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			new AlignDialogue();
+		}
+
+		private function onColor( e:Event ):void {
+			new ColorDialogue();
 		}
 
 		private function onZoomMagnify( e:Event ):void {
@@ -279,12 +275,10 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onOpen( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			Load.run(false);
 		}
 		
 		private function onOpenSilent( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			Load.run(true);
 		}
 
@@ -294,42 +288,51 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onSaveNew( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
 			Save.run( false );
 		}
 
 		private function onUndo( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
 			UndoManager.runUndo();
 		}
 
 		private function onRedo( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
 			UndoManager.runRedo();
 		}
 
-		private function onColor( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
-			new ColorDialogue();
-		}
-
 		private function onCut( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				NativeApplication.nativeApplication.cut();
+				return;
+			}
 			CutCopyPaste.cut();
 		}
 
 		private function onCopy( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				NativeApplication.nativeApplication.copy();
+				return;
+			}
 			CutCopyPaste.copy();
 		}
 
 		private function onPaste( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				NativeApplication.nativeApplication.paste();
+				return;
+			}
 			CutCopyPaste.paste();
 		}
 
 		private function onDelete( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU ) return;
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
 			for each( var item:ItemModel in DataModel.SELECTED ) {
 				item.item.parent.removeChild( item.item );
 			}

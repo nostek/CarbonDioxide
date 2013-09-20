@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide {
+	import flash.events.MouseEvent;
 	import flash.desktop.ClipboardFormats;
 	import flash.desktop.Clipboard;
 	import com.stardoll.carbondioxide.components.Menu;
@@ -61,6 +62,9 @@ package com.stardoll.carbondioxide {
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
 
 			stage.addEventListener(Event.RESIZE, onResize );
+			
+			stage.addEventListener(MouseEvent.CLICK, onClick);
+			stage.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
 
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExiting);
 			stage.addEventListener(Event.EXITING, onExiting);
@@ -84,6 +88,18 @@ package com.stardoll.carbondioxide {
 
 //			test();
 //			DataModel.setView( ViewsManager.getViewByName("main") );
+		}
+		
+		private function onDblClick(e:MouseEvent):void {
+			if( e.target == stage && DataModel.currentView != null ) {
+				DataModel.setLayer( DataModel.currentView );
+			}
+		}
+		
+		private function onClick(e:MouseEvent):void {
+			if( e.target == stage ) {
+				stage.focus = null;
+			}
 		}
 
 		private function onResize( e:Event ):void {
