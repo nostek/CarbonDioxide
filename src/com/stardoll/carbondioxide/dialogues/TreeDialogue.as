@@ -139,7 +139,9 @@ package com.stardoll.carbondioxide.dialogues {
 					}
 				}
 
-				for each( var child:CDItem in node.children ) {
+				var reverse:Vector.<CDItem> = node.children.concat().reverse();
+				
+				for each( var child:CDItem in reverse ) {
 					buildNode( child, offset + 13 );
 				}
 			}
@@ -353,6 +355,7 @@ internal class TreeItem extends Sprite {
 		_name = buildName( (model == DataModel.currentLayer ? 0xbb7777 : (isSelected(model) ? 0x7777bb : 0xffffff)), model.name );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.CLICK, onName);
+		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
 		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
 	}
@@ -396,6 +399,7 @@ internal class TreeItem extends Sprite {
 		var dot:Sprite = new Sprite();
 		dot.buttonMode = true;
 		dot.mouseChildren = false;
+		dot.doubleClickEnabled = true;
 		with( dot.graphics ) {
 			lineStyle(1, 0x000000, 1);
 
@@ -444,12 +448,22 @@ internal class TreeItem extends Sprite {
 
 			return;
 		}
-
+		
+		if( DataModel.SELECTED.length == 1 && DataModel.SELECTED[0].item == _model ) {
+			return;
+		}
+		
 		if( _model.parent != DataModel.currentLayer ) {
 			DataModel.setLayer( _model.parent );
 		}
 
 		TreeDisplay.doSelectItems.dispatch( [_model] );
+	}
+	
+	private function onDblClick(e:MouseEvent):void {
+		DataModel.setLayer( _model );
+		
+		TreeDisplay.doSelectItems.dispatch( [] );
 	}
 
 	private function onSubMenu( e:MouseEvent ):void {
