@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide.dialogues {
+	import com.stardoll.carbondioxide.utils.ObjectEx;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
@@ -12,7 +14,7 @@ package com.stardoll.carbondioxide.dialogues {
 	 */
 	public class BaseDialogue extends Sprite {
 		public static var DIALOGUES:Sprite;
-		
+
 		public static var BLOCK_MENU:Boolean=false;
 
 		public static const HEADER:int 	= 20;
@@ -45,7 +47,7 @@ package com.stardoll.carbondioxide.dialogues {
 					endFill();
 				}
 				BaseDialogue.DIALOGUES.addChild(_noclick);
-				
+
 				BLOCK_MENU = true;
 			}
 
@@ -75,11 +77,43 @@ package com.stardoll.carbondioxide.dialogues {
 			if( canClose ) this.addEventListener(MouseEvent.CLICK, onClick);
 		}
 
-		protected function init( width:int, height:int ):void {
+		protected function init( width:int, height:int, x:int=-1000, y:int=-1000, doMinimize:Boolean=false ):void {
+			if( x == -1000 ) x = stage.stageWidth/2 - width/2;
+			if( y == -1000 ) y = stage.stageHeight/2 - height/2;
+
+			const id:String = dialogueID;
+			if( id != null ) {
+				var data:Object = SettingsManager.getItem( id );
+				x = ObjectEx.select(data, "x", x);
+				y = ObjectEx.select(data, "y", y);
+				width = ObjectEx.select(data, "w", width);
+				height = ObjectEx.select(data, "h", height);
+				doMinimize = ObjectEx.select(data, "m", doMinimize) as Boolean;
+			}
+
 			doResize( width, height );
 
-			this.x = stage.stageWidth/2 - width/2;
-			this.y = stage.stageHeight/2 - height/2;
+			this.x = x;
+			this.y = y;
+
+			if( doMinimize ) {
+				minimize();
+			}
+		}
+
+		private function saveDialogue():void {
+			const id:String = dialogueID;
+
+			if( id != null ) {
+				SettingsManager.setItem( id, {
+					"x": this.x,
+					"y": this.y,
+					"w": this.width,
+					"h": this.height,
+
+					"m": this.isMinimized
+				} );
+			}
 		}
 
 		protected function close():void {
@@ -92,6 +126,10 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		protected function get container():Sprite { return _container; }
+
+		protected function get isMinimized():Boolean { return (this.scrollRect!=null); }
+
+		protected function get dialogueID():String { return null; }
 
 		protected function onResize( width:int, height:int ):void {
 		}
@@ -157,6 +195,8 @@ package com.stardoll.carbondioxide.dialogues {
 		private function onStopDrag(e:MouseEvent):void {
 			if( !_doScale ) {
 				this.stopDrag();
+
+				saveDialogue();
 			}
 		}
 
@@ -172,6 +212,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDoScale);
 				stage.removeEventListener(MouseEvent.MOUSE_UP, onStopScale);
+
+				saveDialogue();
 			}
 		}
 
@@ -193,10 +235,14 @@ package com.stardoll.carbondioxide.dialogues {
 
 		public function minimize():void {
 			this.scrollRect = new Rectangle(0, 0, this.width, HEADER);
+
+			saveDialogue();
 		}
 
 		public function maximize():void {
 			this.scrollRect = null;
+
+			saveDialogue();
 		}
 	}
 }

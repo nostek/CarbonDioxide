@@ -1,7 +1,5 @@
 package com.stardoll.carbondioxide {
-	import flash.events.MouseEvent;
-	import flash.desktop.ClipboardFormats;
-	import flash.desktop.Clipboard;
+	import flash.utils.setTimeout;
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
@@ -11,6 +9,7 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
 	import com.stardoll.carbondioxide.managers.EventManager;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
@@ -20,6 +19,8 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.models.cd.CDView;
 	import com.stardoll.carbondioxide.saveload.Load;
 
+	import flash.desktop.Clipboard;
+	import flash.desktop.ClipboardFormats;
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -29,10 +30,14 @@ package com.stardoll.carbondioxide {
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.events.NativeWindowBoundsEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.ui.Keyboard;
 
 	public class CarbonDioxide extends Sprite {
+		private var _blockSave:Boolean;
+
 		private var _bg:Bitmap;
 
 		private var _tree:TreeDisplay;
@@ -47,11 +52,16 @@ package com.stardoll.carbondioxide {
 
 			stage.doubleClickEnabled = true;
 
+			_blockSave = true;
+
 			loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtErrorHandler);
 
+			new SettingsManager();
 			new DataModel();
 			new EventManager( stage );
 			new UndoManager();
+			new Menu( stage );
+			new ViewsManager();
 
 			_bg = new Bitmap( DataModel.BG.bitmapData );
 			_bg.width = stage.stageWidth;
@@ -61,18 +71,12 @@ package com.stardoll.carbondioxide {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 10000);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
 
-			stage.addEventListener(Event.RESIZE, onResize );
-			
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
 
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExiting);
-			stage.addEventListener(Event.EXITING, onExiting);
-
-			new Menu( stage );
-
-			new ViewsManager();
-			new DataModel();
+			stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVE, onSaveWindow);
+			stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, onSaveWindow);
 
 			_tree = new TreeDisplay();
 			addChild(_tree);
@@ -82,29 +86,61 @@ package com.stardoll.carbondioxide {
 
 			BaseDialogue.DIALOGUES = addChild( new Sprite() ) as Sprite;
 
-			new AssetsDialogue( false );
 			new TreeDialogue( false );
 			new PropertiesDialogue( false );
+
+			setTimeout( onFirst, 50);
 
 //			test();
 //			DataModel.setView( ViewsManager.getViewByName("main") );
 		}
-		
+
+		private function onFirst():void {
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_WINDOW) ) {
+				var data:Object = SettingsManager.getItem(SettingsManager.SETTINGS_WINDOW);
+
+				stage.nativeWindow.x = data["x"] as Number;
+				stage.nativeWindow.y = data["y"] as Number;
+				stage.nativeWindow.width = data["w"] as Number;
+				stage.nativeWindow.height = data["h"] as Number;
+			}
+
+
+			var assets:AssetsDialogue = new AssetsDialogue( false );
+
+			Load.runLast();
+
+			assets.initSettings();
+
+			_blockSave = false;
+		}
+
 		private function onDblClick(e:MouseEvent):void {
 			if( e.target == stage && DataModel.currentView != null ) {
 				DataModel.setLayer( DataModel.currentView );
 			}
 		}
-		
+
 		private function onClick(e:MouseEvent):void {
 			if( e.target == stage ) {
 				stage.focus = null;
 			}
 		}
 
-		private function onResize( e:Event ):void {
+		private function onSaveWindow(e:NativeWindowBoundsEvent):void {
 			_bg.width = stage.stageWidth;
 			_bg.height = stage.stageHeight;
+
+			if( _blockSave  ) {
+				return;
+			}
+
+			SettingsManager.setItem(SettingsManager.SETTINGS_WINDOW, {
+				x: stage.nativeWindow.x,
+				y: stage.nativeWindow.y,
+				w: stage.nativeWindow.width,
+				h: stage.nativeWindow.height
+			});
 		}
 
 		private function onUncaughtErrorHandler(event:UncaughtErrorEvent):void {

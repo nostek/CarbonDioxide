@@ -3,6 +3,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import fl.controls.ScrollBarDirection;
 	import fl.events.ScrollEvent;
 
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
@@ -43,14 +44,7 @@ package com.stardoll.carbondioxide.dialogues {
 			_scrollH.addEventListener(ScrollEvent.SCROLL, onScrollH);
 			container.addChild( _scrollH );
 
-			init( WIDTH, HEIGHT );
-
-			this.x = 220;
-			this.y = 10;
-
-			if( !fullSize ) {
-				minimize();
-			}
+			init( WIDTH, HEIGHT, 220, 10, !fullSize );
 
 			DataModel.onItemChanged.add( onItemUpdated );
 			DataModel.onLayerChanged.add( update );
@@ -59,6 +53,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 			ExpandModel.onChanged.add( update );
 		}
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_TREE; }
 
 		override protected function onResize( width:int, height:int ):void {
 			_bg.graphics.clear();
@@ -140,7 +136,7 @@ package com.stardoll.carbondioxide.dialogues {
 				}
 
 				var reverse:Vector.<CDItem> = node.children.concat().reverse();
-				
+
 				for each( var child:CDItem in reverse ) {
 					buildNode( child, offset + 13 );
 				}
@@ -157,6 +153,9 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 	}
 }
+
+
+
 
 
 
@@ -182,9 +181,6 @@ import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
 import flash.ui.ContextMenu;
 import flash.utils.Dictionary;
-
-
-
 internal class ExpandModel {
 	public static var onChanged:Signal = new Signal();
 
@@ -448,21 +444,21 @@ internal class TreeItem extends Sprite {
 
 			return;
 		}
-		
+
 		if( DataModel.SELECTED.length == 1 && DataModel.SELECTED[0].item == _model ) {
 			return;
 		}
-		
+
 		if( _model.parent != DataModel.currentLayer ) {
 			DataModel.setLayer( _model.parent );
 		}
 
 		TreeDisplay.doSelectItems.dispatch( [_model] );
 	}
-	
+
 	private function onDblClick(e:MouseEvent):void {
 		DataModel.setLayer( _model );
-		
+
 		TreeDisplay.doSelectItems.dispatch( [] );
 	}
 

@@ -2,6 +2,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import fl.controls.List;
 	import fl.events.ListEvent;
 
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
@@ -31,18 +32,13 @@ package com.stardoll.carbondioxide.dialogues {
 			_properties.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onEditProperties);
 			container.addChild(_properties);
 
-			init( WIDTH, HEIGHT );
-
-			this.x = 820;
-			this.y = 10;
-
-			if( !fullSize ) {
-				minimize();
-			}
+			init( WIDTH, HEIGHT, 820, 10, !fullSize );
 
 			DataModel.onSelectedChanged.add( onSetItems );
 			DataModel.onItemChanged.add( onSetItems );
 		}
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_PROPERTIES; }
 
 		override protected function onResize( width:int, height:int ):void {
 			_properties.width = width;

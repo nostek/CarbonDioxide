@@ -1,9 +1,12 @@
 package com.stardoll.carbondioxide.dialogues {
 	import fl.controls.List;
 	import fl.controls.TextInput;
+
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDView;
+
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 
@@ -30,6 +33,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 			init(WIDTH, HEIGHT);
 		}
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_FIND; }
 
 		override protected function onResize( width:int, height:int ):void {
 			_filter.width = width;

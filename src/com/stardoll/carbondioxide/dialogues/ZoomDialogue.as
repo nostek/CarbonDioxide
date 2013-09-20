@@ -4,6 +4,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import fl.events.ScrollEvent;
 
 	import com.stardoll.carbondioxide.components.TreeDisplay;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.utils.MathEx;
 
 	import flash.events.Event;
@@ -16,13 +17,13 @@ package com.stardoll.carbondioxide.dialogues {
 	public class ZoomDialogue extends BaseDialogue {
 		public static var doMagnify:Boolean = false;
 		public static var doPercent:Number = 1;
-		
+
 		public static function doZoom():void {
 			TreeDisplay.doZoom.dispatch( (doMagnify) ? 1 + 5 * (1-doPercent) : doPercent );
 		}
-		
+
 		/////
-		 
+
 		private var _magnify:CheckBox;
 		private var _zoomSlider:UIScrollBar;
 
@@ -52,6 +53,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 			init(WIDTH, HEIGHT);
 		}
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_ZOOM; }
 
 		override protected function onResize( width:int, height:int ):void {
 			_zoomSlider.y = height - _zoomSlider.height;

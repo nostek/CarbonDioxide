@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.managers.SettingsManager;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 	import fl.controls.Button;
 	import fl.controls.ComboBox;
 
@@ -115,7 +117,15 @@ package com.stardoll.carbondioxide.components {
 		private function onResolutionChange(e:Event):void {
 			var reses:Array = ResolutionsModel.resolutions;
 
-			const index:int = (_resolutions.selectedIndex>=0) ? _resolutions.selectedIndex : 0;
+			var index:int = (_resolutions.selectedIndex>=0) ? _resolutions.selectedIndex : 0;
+
+			if( e == null ) {
+				index = ObjectEx.select(SettingsManager.getItem(SettingsManager.SETTINGS_RESOLUTION), "i", index);
+				_resolutions.selectedIndex = index;
+			} else {
+				SettingsManager.setItem(SettingsManager.SETTINGS_RESOLUTION, {i: index});
+			}
+
 			var data:Object = reses[ index ];
 
 			const width:int = data["width"];

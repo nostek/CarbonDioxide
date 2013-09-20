@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide.models {
+	import com.stardoll.carbondioxide.managers.SettingsManager;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDView;
 
@@ -17,6 +19,8 @@ package com.stardoll.carbondioxide.models {
 
 		public function DataModel() {
 			BG = new _BG();
+
+			BG_COLOR = ObjectEx.select(SettingsManager.getItem(SettingsManager.SETTINGS_BGCOLOR), "c", BG_COLOR);
 		}
 
 		//Keys
@@ -26,7 +30,7 @@ package com.stardoll.carbondioxide.models {
 		//File
 		public static var LAST_FILE:File;
 		public static var DID_LOCK:Boolean = false;
-		
+
 		//Position
 		public static var LAYER_MOUSE:Point = new Point();
 
@@ -37,6 +41,9 @@ package com.stardoll.carbondioxide.models {
 
 		public static function setBGColor( color:uint ):void {
 			BG_COLOR = color;
+
+			SettingsManager.setItem(SettingsManager.SETTINGS_BGCOLOR, {c:color});
+
 			onBGColorChanged.dispatch();
 		}
 

@@ -1,6 +1,7 @@
 package com.stardoll.carbondioxide.dialogues {
-	import com.stardoll.carbondioxide.models.ItemModel;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
+	import com.stardoll.carbondioxide.models.ItemModel;
 
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -11,7 +12,7 @@ package com.stardoll.carbondioxide.dialogues {
 	public class AlignDialogue extends BaseDialogue {
 		[Embed(source="../../../../../assets/align.png")]
 		private var ALIGN:Class;
-		
+
 		[Embed(source="../../../../../assets/dist.png")]
 		private var DIST:Class;
 
@@ -21,7 +22,7 @@ package com.stardoll.carbondioxide.dialogues {
 		public function AlignDialogue() {
 			const WIDTH:int = 211;
 			const HEIGHT:int = 85;
-			
+
 			super("Align", true, false, false, true);
 
 			var s:Sprite = new Sprite();
@@ -30,7 +31,7 @@ package com.stardoll.carbondioxide.dialogues {
 			s.addEventListener(MouseEvent.CLICK, onClickAlign);
 			s.buttonMode = true;
 			container.addChild(s);
-			
+
 			var d:Sprite = new Sprite();
 			_dist = new DIST();
 			d.addChild(_dist);
@@ -38,12 +39,14 @@ package com.stardoll.carbondioxide.dialogues {
 			d.buttonMode = true;
 			d.y = s.height + 5;
 			container.addChild(d);
-			
+
 			init( WIDTH, HEIGHT );
 		}
-		
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_ALIGN; }
+
 		//////////////////////////////////////////
-		
+
 		private function onClickDist(e:MouseEvent):void {
 			if( DataModel.SELECTED.length == 0 )
 				return;
@@ -65,14 +68,14 @@ package com.stardoll.carbondioxide.dialogues {
 				break;
 				case 5:
 				break;
-			}			
+			}
 		}
-		
+
 		private function distHor():void {
 			const selected:Vector.<ItemModel> = DataModel.SELECTED;
-			
+
 			if( selected.length == 1 ) return;
-			
+
 			var min:int = int.MAX_VALUE;
 			var max:int = int.MIN_VALUE;
 
@@ -85,21 +88,21 @@ package com.stardoll.carbondioxide.dialogues {
 
 			const div:int = (max-min);
 			const m:int = selected.length-1;
-			
+
 			var index:int = 0;
-			
+
 			for each( obj in selected ) {
 				obj.item.x = (min+div*(index/m))-(obj.item.width/2);
-				
+
 				index++;
 			}
 		}
-		
+
 		private function distVer():void {
 			const selected:Vector.<ItemModel> = DataModel.SELECTED;
-			
+
 			if( selected.length == 1 ) return;
-			
+
 			var min:int = int.MAX_VALUE;
 			var max:int = int.MIN_VALUE;
 
@@ -112,16 +115,16 @@ package com.stardoll.carbondioxide.dialogues {
 
 			const div:int = (max-min);
 			const m:int = selected.length-1;
-			
+
 			var index:int = 0;
-			
+
 			for each( obj in selected ) {
 				obj.item.y = (min+div*(index/m))-(obj.item.height/2);
-				
+
 				index++;
-			}			
+			}
 		}
-		
+
 		//////////////////////////////////////////
 
 		private function onClickAlign(e:MouseEvent):void {
@@ -166,7 +169,7 @@ package com.stardoll.carbondioxide.dialogues {
 				obj.item.x = min;
 			}
 		}
-		
+
 		private function alignXCenter():void {
 			var min:int = int.MAX_VALUE;
 			var max:int = int.MIN_VALUE;
@@ -185,7 +188,7 @@ package com.stardoll.carbondioxide.dialogues {
 				obj.item.x = middle-(obj.item.width/2);
 			}
 		}
-		
+
 		private function alignRight():void {
 			var max:int = int.MIN_VALUE;
 
@@ -200,7 +203,7 @@ package com.stardoll.carbondioxide.dialogues {
 				obj.item.x = max-obj.item.width;
 			}
 		}
-		
+
 		private function alignTop():void {
 			var min:int = int.MAX_VALUE;
 
@@ -215,7 +218,7 @@ package com.stardoll.carbondioxide.dialogues {
 				obj.item.y = min;
 			}
 		}
-		
+
 		private function alignYCenter():void {
 			var min:int = int.MAX_VALUE;
 			var max:int = int.MIN_VALUE;
@@ -234,7 +237,7 @@ package com.stardoll.carbondioxide.dialogues {
 				obj.item.y = middle-(obj.item.height/2);
 			}
 		}
-		
+
 		private function alignBottom():void {
 			var max:int = int.MIN_VALUE;
 

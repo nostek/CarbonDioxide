@@ -4,6 +4,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import fl.events.ListEvent;
 
 	import com.stardoll.carbondioxide.components.TreeDisplay;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
@@ -20,7 +21,7 @@ package com.stardoll.carbondioxide.dialogues {
 	public class ItemsDialogue extends BaseDialogue {
 		private static const ADD_ITEM:int = 0;
 		private static const ADD_TEXT:int = 1;
-		
+
 		private var _lastData:Array;
 		private var _data:Array;
 
@@ -37,7 +38,7 @@ package com.stardoll.carbondioxide.dialogues {
 		private var _collapse:Button;
 
 		private var _ignore:Boolean;
-		
+
 		private var _addType:int;
 
 		public function ItemsDialogue( fullSize:Boolean=true ) {
@@ -58,7 +59,7 @@ package com.stardoll.carbondioxide.dialogues {
 			_addItem.label = "Add Item";
 			_addItem.addEventListener(MouseEvent.CLICK, onAddItemButton);
 			container.addChild(_addItem);
-			
+
 			_addText = new Button();
 			_addText.label = "Add text";
 			_addText.addEventListener(MouseEvent.CLICK, onAddItemButton);
@@ -93,15 +94,10 @@ package com.stardoll.carbondioxide.dialogues {
 			DataModel.onSelectedChanged.add( onSelectItems );
 			DataModel.onItemChanged.add( onUpdate );
 
-			init(WIDTH, HEIGHT);
-
-			this.x = 220;
-			this.y = 10;
-
-			if( !fullSize ) {
-				minimize();
-			}
+			init(WIDTH, HEIGHT, 220, 10, !fullSize );
 		}
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_ITEMS; }
 
 		override protected function onResize( width:int, height:int ):void {
 			const div:int = width/4;
@@ -123,11 +119,11 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private function onUpdate( itm:CDItem ):void {
 			itm;
-			
+
 			onSetItems();
 			onSelectItems();
 		}
-		
+
 		private function onSetItems():void {
 			buildLast();
 
@@ -309,7 +305,7 @@ package com.stardoll.carbondioxide.dialogues {
 			if( e.target == _addText ) {
 				_addType = ADD_TEXT;
 			}
-			
+
 			if( DataModel.currentView == null ) {
 				new PopupDialogue("ERROR", "Add a view first.");
 			}
@@ -324,17 +320,17 @@ package com.stardoll.carbondioxide.dialogues {
 
 			if( checkName(input.text) ) {
 				var item:CDItem;
-				
+
 				switch( _addType ) {
 					case ADD_ITEM:
 				 		item = DataModel.currentLayer.addChild( new CDItem(DataModel.currentLayer, input.text) );
 					break;
-					
+
 					case ADD_TEXT:
 						item = DataModel.currentLayer.addChild( new CDText(DataModel.currentLayer, input.text) );
 					break;
 				}
-				
+
 				item.setXYWH(0, 0, 100, 100);
 			} else {
 				new PopupDialogue("ERROR", "ERROR: Name is already in use.");

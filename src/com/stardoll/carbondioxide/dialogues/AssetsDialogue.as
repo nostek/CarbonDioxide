@@ -4,6 +4,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import fl.controls.TextInput;
 	import fl.events.ListEvent;
 
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.utils.Drawer;
@@ -69,14 +70,7 @@ package com.stardoll.carbondioxide.dialogues {
 			_bitmap = new Bitmap( new BitmapData(1, 1, true, 0xffffffff), "auto", true );
 			container.addChild(_bitmap);
 
-			init( WIDTH, HEIGHT );
-
-			this.x = 520;
-			this.y = 10;
-
-			if( !fullSize ) {
-				minimize();
-			}
+			init( WIDTH, HEIGHT, 520, 10, !fullSize );
 
 			if( Drawer.isLoaded ) {
 				runFrames();
@@ -84,6 +78,22 @@ package com.stardoll.carbondioxide.dialogues {
 				_database = new Vector.<String>();
 			}
 		}
+
+		public function initSettings():void {
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_ASSETS) ) {
+				var dlg:YesNoDialogue = new YesNoDialogue("Load assets ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_ASSETS )[0]);
+				dlg.onYes.addOnce( onRestore );
+				dlg.onNo.addOnce( onNoRestore );
+			}
+
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_FONTS) ) {
+				var dlg2:YesNoDialogue = new YesNoDialogue("Load fonts ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0]);
+				dlg2.onYes.addOnce( onRestoreFonts );
+				dlg2.onNo.addOnce( onNoRestoreFonts );
+			}
+		}
+
+		override protected function get dialogueID():String { return SettingsManager.SETTINGS_ASSETS; }
 
 		override protected function onResize( width:int, height:int ):void {
 			_loadSwf.width = width;
@@ -101,10 +111,23 @@ package com.stardoll.carbondioxide.dialogues {
 			_externals.width = width;
 			_externals.y = _loadFonts.y + _loadFonts.height + 10;
 			_externals.height = (_filter.y-_externals.y) - 10;
-
 		}
 
 		////
+
+
+
+		////
+
+		private function onNoRestore():void {
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_ASSETS, null);
+		}
+
+		private function onRestore():void {
+			var url:String = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_ASSETS )[0];
+
+			doLoadFile( url );
+		}
 
 		private function onLoadSWF(e:Event):void {
 			var f:File = new File();
@@ -116,9 +139,15 @@ package com.stardoll.carbondioxide.dialogues {
 		private function onFileSelected(e:Event):void {
 			var target:File = e.target as File;
 
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_ASSETS, [target.url]);
+
+			doLoadFile( target.url );
+		}
+
+		private function doLoadFile( url:String ):void {
 			var loader:Loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete);
-			loader.load( new URLRequest(target.url) );
+			loader.load( new URLRequest(url) );
 		}
 
 		private function onLoaderComplete(e:Event):void {
@@ -145,6 +174,16 @@ package com.stardoll.carbondioxide.dialogues {
 
 		////
 
+		private function onNoRestoreFonts():void {
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_FONTS, null);
+		}
+
+		private function onRestoreFonts():void {
+			var url:String = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0];
+
+			doLoadFonts( url );
+		}
+
 		private function onLoadFonts(e:Event):void {
 			var f:File = new File();
 
@@ -155,10 +194,16 @@ package com.stardoll.carbondioxide.dialogues {
 		private function onFileFontSelected(e:Event):void {
 			var target:File = e.target as File;
 
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_FONTS, [target.url]);
+
+			doLoadFonts(target.url);
+		}
+
+		private function doLoadFonts( url:String ):void {
 			var loader:URLLoader = new URLLoader();
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(Event.COMPLETE, onLoadDataComplete);
-			loader.load( new URLRequest(target.url) );
+			loader.load( new URLRequest(url) );
 		}
 
 		private function onLoadDataComplete(e:Event):void {

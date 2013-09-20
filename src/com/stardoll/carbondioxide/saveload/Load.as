@@ -1,5 +1,7 @@
 package com.stardoll.carbondioxide.saveload {
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
+	import com.stardoll.carbondioxide.dialogues.YesNoDialogue;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 
@@ -27,12 +29,33 @@ package com.stardoll.carbondioxide.saveload {
 			DataModel.LAST_FILE = null;
 			DataModel.DID_LOCK = false;
 		}
-		
+
 		private static var SILENT:Boolean;
+
+		public static function runLast():void {
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_LAYOUT) ) {
+				var dlg3:YesNoDialogue = new YesNoDialogue("Load layout ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_LAYOUT )[0]);
+				dlg3.onYes.addOnce( onRestore );
+				dlg3.onNo.addOnce( onNoRestore );
+			}
+		}
+
+		private static function onNoRestore():void {
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_LAYOUT, null);
+		}
+
+		private static function onRestore():void {
+			var data:Object = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_LAYOUT );
+
+			SILENT = data[1] as Boolean;
+			var url:String = data[0];
+
+			doLoadFile( new File(url) );
+		}
 
 		public static function run(doSilent:Boolean):void {
 			SILENT = doSilent;
-			
+
 			var f:File = new File();
 			var filter:FileFilter = new FileFilter("Design", "*.json");
 
@@ -43,11 +66,17 @@ package com.stardoll.carbondioxide.saveload {
 		private static function onSelectedFile( e:Event ):void {
 			var f:File = e.target as File;
 
+			doLoadFile(f);
+		}
+
+		private static function doLoadFile( f:File ):void {
 			removeLock();
 
 			checkLock( f );
 
 			DataModel.LAST_FILE = f;
+
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_LAYOUT, [f.url, SILENT]);
 
 			var file:FileStream = new FileStream();
 			file.open(f, FileMode.READ);
@@ -78,7 +107,7 @@ package com.stardoll.carbondioxide.saveload {
 					fs.open(lock, FileMode.WRITE);
 					fs.writeUTFBytes("Locked by: " + File.userDirectory.name + "\nDate: " + (new Date()).toString());
 					fs.close();
-	
+
 					DataModel.DID_LOCK = true;
 				}
 			}
