@@ -71,7 +71,7 @@ package com.stardoll.carbondioxide.components {
 
 			stage.addEventListener(Event.RESIZE, onResize);
 
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 9999);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 9999);
 		}
 
 		public static function get doSelectItems():Signal { return _doSelectItems; }
