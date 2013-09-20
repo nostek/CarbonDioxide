@@ -12,19 +12,19 @@ package com.stardoll.carbondioxide.copypaste {
 	public class CutCopyPaste {
 		public static function cut():void {
 			copy();
-			
+
 			for each( var item:ItemModel in DataModel.SELECTED ) {
 				item.item.parent.removeChild( item.item );
 			}
 		}
-		
+
 		public static function copy():void {
 			var data:Array = [];
 
 			const items:Vector.<ItemModel> = DataModel.SELECTED;
-			
+
 			var parseObject:Function = function( item:CDItem, offset:Boolean = false ):Object {
-				var o:Object = { 
+				var o:Object = {
 					type: item.type,
 					name: item.name,
 					x: item.x - (offset ? DataModel.LAYER_MOUSE.x : 0),
@@ -34,48 +34,49 @@ package com.stardoll.carbondioxide.copypaste {
 					asset: item.asset,
 					ar: item.aspectRatio,
 					e: item.enabled,
-					v: item.visible
+					v: item.visible,
+					c: item.color
 				};
-				
+
 				if( item is CDText ) {
 					o["text"] = (item as CDText).text;
 				}
-				
+
 				var c:Array = [];
 					for each( var child:CDItem in item.children ) {
 						c.push( parseObject( child ) );
 					}
 				o["children"] = c;
-				
+
 				return o;
 			};
-			
+
 			for each( var model:ItemModel in items ) {
 				data.push( parseObject( model.item, true ) );
 			}
-			
+
 			var json:String = JSON.stringify( { clip:"clop456", items : data } );
-			
+
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, json );
 		}
-		
+
 		public static function paste():void {
 			if( DataModel.currentLayer == null ) {
 				return;
 			}
-			
+
 			var data:String = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT) as String;
-			
+
 			try {
-				var json:Object = JSON.parse( data );	
+				var json:Object = JSON.parse( data );
 			} catch( e:Error ) {
 				return;
 			}
-			
+
 			if( !(json["clip"] != null && json["clip"] == "clop456") ) {
 				return;
 			}
-			
+
 			var validName:Function = function( name:String, layer:CDItem ):String {
 				var children:Vector.<CDItem> = layer.children;
 				for each( var child:CDItem in children ) {
@@ -85,46 +86,47 @@ package com.stardoll.carbondioxide.copypaste {
 				}
 				return name;
 			};
-			
+
 			var items:Array = json["items"];
-			
+
 			var parseObject:Function = function( obj:Object, parent:CDItem, offset:Boolean = false ):void {
-				var item:CDItem;	
-				
+				var item:CDItem;
+
 				switch( obj["type"] ) {
 					case CDItem.TYPE_ITEM:
 						item = new CDItem( parent, validName(obj["name"], parent) );
 					break;
-					
+
 					case CDItem.TYPE_TEXT:
 						item = new CDText( parent, validName(obj["name"], parent) );
-						
+
 						(item as CDText).text = obj["text"];
 					break;
-					
+
 					default:
 					break;
 				}
-				
-				item.setXYWH( 	
-					(offset ? DataModel.LAYER_MOUSE.x : 0) + obj["x"], 
-					(offset ? DataModel.LAYER_MOUSE.y : 0) + obj["y"], 
-					obj["w"], 
+
+				item.setXYWH(
+					(offset ? DataModel.LAYER_MOUSE.x : 0) + obj["x"],
+					(offset ? DataModel.LAYER_MOUSE.y : 0) + obj["y"],
+					obj["w"],
 					obj["h"]
 				);
-				
+
 				item.asset = obj["asset"];
 				item.aspectRatio = obj["ar"];
 				item.enabled = obj["e"] as Boolean;
 				item.visible = obj["v"] as Boolean;
-				
+				item.color = obj["c"] as uint;
+
 				for each( var child:Object in obj["children"] ) {
 					parseObject( child, item );
 				}
-				
+
 				parent.addChild(item);
 			};
-			
+
 			for each( var obj:Object in items ) {
 				parseObject( obj, DataModel.currentLayer, true );
 			}

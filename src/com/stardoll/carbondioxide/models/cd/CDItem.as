@@ -11,6 +11,8 @@ package com.stardoll.carbondioxide.models.cd {
 		public static const TYPE_ITEM:int 		= 1;
 		public static const TYPE_TEXT:int 		= 2;
 
+		public static const UNDEFINED_COLOR:uint = 0x00000000;
+
 		///
 
 		private var _parent:CDItem;
@@ -31,10 +33,14 @@ package com.stardoll.carbondioxide.models.cd {
 		private var _enabled:Boolean;
 		private var _visible:Boolean;
 
+		private var _color:uint;
+
 		public function CDItem( parent:CDItem, name:String ) {
 			_parent = parent;
 
 			_name = name;
+
+			_color = UNDEFINED_COLOR;
 
 			_aspectRatio = CDAspectRatio.NONE;
 
@@ -106,6 +112,20 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set visible( value:Boolean ):void {
 			_visible = value;
+
+			itemChanged();
+		}
+
+		public function get isColorDefined():Boolean {
+			return (_color!=UNDEFINED_COLOR);
+		}
+
+		public function get color():uint {
+			return _color;
+		}
+
+		public function set color( value:uint ):void {
+			_color = value;
 
 			itemChanged();
 		}
@@ -269,18 +289,18 @@ package com.stardoll.carbondioxide.models.cd {
 		public function toString() : String {
 			return "CDItem( " + x + " " + y + " " + width + " " + height + " )";
 		}
-		
+
 		public function get path() : String {
 			var ret:String = "";
-			
+
 			var item:CDItem = this;
-			
+
 			while( !(item is CDView) ) {
 				ret = "/" + item.name + ret;
-				
+
 				item = item.parent;
 			}
-			
+
 			return ret;
 		}
 

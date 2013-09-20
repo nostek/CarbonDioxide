@@ -249,13 +249,17 @@ package com.stardoll.carbondioxide.components {
 		private function onZoomDlg( e:Event ):void {
 			new ZoomDialogue();
 		}
-		
+
 		private function onAlign( e:Event ):void {
 			new AlignDialogue();
 		}
 
 		private function onColor( e:Event ):void {
-			new ColorDialogue();
+			var dlg:ColorDialogue = new ColorDialogue();
+			dlg.onSelect.addOnce( _onSelectColor );
+		}
+		private function _onSelectColor( color:uint ):void {
+			DataModel.setBGColor( color );
 		}
 
 		private function onZoomMagnify( e:Event ):void {
@@ -277,7 +281,7 @@ package com.stardoll.carbondioxide.components {
 		private function onOpen( e:Event ):void {
 			Load.run(false);
 		}
-		
+
 		private function onOpenSilent( e:Event ):void {
 			Load.run(true);
 		}

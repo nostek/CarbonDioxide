@@ -130,6 +130,10 @@ package com.stardoll.carbondioxide.saveload {
 				data[ SLKeys.ITEM_VISIBLE ] = false;
 			}
 
+			if( item.isColorDefined ) {
+				data[ SLKeys.ITEM_COLOR ] = item.color;
+			}
+
 			var i:int;
 
 			const resolutions:Vector.<CDResolution> = item.resolutions;

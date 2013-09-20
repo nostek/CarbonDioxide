@@ -284,6 +284,10 @@ package com.stardoll.carbondioxide.components {
 		private function drawShape( item:CDItem, color:uint=0x000000 ):DisplayObject {
 			var s:Shape = new Shape();
 
+			if( item.isColorDefined ) {
+				color = item.color;
+			}
+
 			with( s.graphics ) {
 				beginFill(color, 0.5);
 				drawRect(0, 0, item.width, item.height);

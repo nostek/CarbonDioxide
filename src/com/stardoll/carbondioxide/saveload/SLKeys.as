@@ -7,7 +7,7 @@ package com.stardoll.carbondioxide.saveload {
 		public static const MAIN_VERSION:String = "v";
 		public static const MAIN_VIEWS:String 	= "c";
 		public static const MAIN_TEXTS:String 	= "t";
-		
+
 		public static const ITEM_TYPE:String 		= "t";
 		public static const ITEM_NAME:String 		= "n";
 		public static const ITEM_CHILDREN:String 	= "c";
@@ -17,7 +17,8 @@ package com.stardoll.carbondioxide.saveload {
 		public static const ITEM_RESOLUTIONS:String = "r";
 		public static const ITEM_ENABLED:String 	= "e";
 		public static const ITEM_VISIBLE:String 	= "v";
-		
+		public static const ITEM_COLOR:String		= "cl";
+
 		public static const RES_SCREENWIDTH:int 	= 0;
 		public static const RES_SCREENHEIGHT:int 	= 1;
 		public static const RES_X:int 				= 2;

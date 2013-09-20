@@ -1,5 +1,5 @@
 package com.stardoll.carbondioxide.dialogues {
-	import com.stardoll.carbondioxide.models.DataModel;
+	import org.osflash.signals.Signal;
 
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -14,6 +14,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private var _colors:Bitmap;
 
+		private var _onSelect:Signal;
+
 		public function ColorDialogue() {
 			const WIDTH:int = 199+EDGE+EDGE;
 			const HEIGHT:int = 232+HEADER+EDGE;
@@ -27,14 +29,18 @@ package com.stardoll.carbondioxide.dialogues {
 			_colors = new COLORS();
 			s.addChild(_colors);
 
+			_onSelect = new Signal( uint );
+
 			init( WIDTH, HEIGHT );
 		}
+
+		public function get onSelect():Signal { return _onSelect; }
 
 		override protected function onResize( width:int, height:int ):void {
 		}
 
 		private function onClick(e:MouseEvent):void {
-			DataModel.setBGColor( _colors.bitmapData.getPixel( e.localX, e.localY ) );
+			_onSelect.dispatch( _colors.bitmapData.getPixel( e.localX, e.localY ) );
 
 			close();
 		}

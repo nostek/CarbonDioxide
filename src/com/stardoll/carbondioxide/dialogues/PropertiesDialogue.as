@@ -77,6 +77,7 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
 				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio: " + CDAspectRatio.toString( item.aspectRatio )});
 				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset});
+				_properties.addItem({data:[false, "color"],	label:"color: " + item.color.toString()});
 
 				if( item is CDText ) {
 					_properties.addItem({data:[false, "text"],	label:"text: " + (item as CDText).text});
@@ -90,6 +91,7 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "visible"], label:"visible: (-)"});
 				_properties.addItem({data:[false, "enabled"], label:"enabled: (-)"});
 				_properties.addItem({data:[false, "ar"], label:"aspect ratio: (-)"});
+				_properties.addItem({data:[false, "color"],	label:"color: (-)"});
 			}
 		}
 
@@ -169,6 +171,11 @@ package com.stardoll.carbondioxide.dialogues {
 						alignDlg.onSelect.addOnce( onAlignSelected );
 					break;
 
+					case "color":
+						var colorDlg:ColorDialogue = new ColorDialogue();
+						colorDlg.onSelect.addOnce( onColorSelected );
+					break;
+
 					default : break;
 				}
 			}
@@ -215,7 +222,7 @@ package com.stardoll.carbondioxide.dialogues {
 					case "w":
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
-								item.item.width = Number(input.text); 
+								item.item.width = Number(input.text);
 							}
 						}
 					break;
@@ -223,7 +230,7 @@ package com.stardoll.carbondioxide.dialogues {
 					case "h":
 						if( !isNaN(Number(input.text)) ) {
 							for each( item in DataModel.SELECTED ) {
-								item.item.height = Number(input.text); 
+								item.item.height = Number(input.text);
 							}
 						}
 					break;
@@ -262,6 +269,14 @@ package com.stardoll.carbondioxide.dialogues {
 
 			for each( item in DataModel.SELECTED ) {
 				item.item.aspectRatio = ar;
+			}
+		}
+
+		private function onColorSelected( color:uint ):void {
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				item.item.color = color;
 			}
 		}
 	}
