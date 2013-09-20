@@ -1,50 +1,40 @@
 package com.stardoll.carbondioxide.dialogues {
-	import fl.controls.ColorPicker;
-	import fl.events.ColorPickerEvent;
-
 	import com.stardoll.carbondioxide.models.DataModel;
 
-	import flash.events.Event;
+	import flash.display.Bitmap;
+	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author simonrodriguez
 	 */
 	public class ColorDialogue extends BaseDialogue {
-		private var _picker:ColorPicker;
+		[Embed(source="../../../../../assets/colors.png")]
+		private var COLORS:Class;
 
-		private var _color:uint;
+		private var _colors:Bitmap;
 
 		public function ColorDialogue() {
-			const WIDTH:int = 200;
-			const HEIGHT:int = 200;
+			const WIDTH:int = 199+EDGE+EDGE;
+			const HEIGHT:int = 232+HEADER+EDGE;
 
 			super("Select Color", false, true, false, false);
 
-			_picker = new ColorPicker();
-			_picker.addEventListener(ColorPickerEvent.CHANGE, onColor);
-			_picker.addEventListener(Event.CLOSE, onClose);
-			container.addChild( _picker );
+			var s:Sprite = new Sprite();
+			s.addEventListener(MouseEvent.CLICK, onClick);
+			container.addChild(s);
+
+			_colors = new COLORS();
+			s.addChild(_colors);
 
 			init( WIDTH, HEIGHT );
 		}
 
 		override protected function onResize( width:int, height:int ):void {
-			_picker.width = width;
-			_picker.height = height;
 		}
 
-		private function onColor(e:ColorPickerEvent):void {
-			_color = e.color;
-		}
-
-		private function onClose(e:Event):void {
-			stage.addEventListener(Event.ENTER_FRAME, onFrameSkip);
-		}
-
-		private function onFrameSkip(e:Event):void {
-			stage.removeEventListener(Event.ENTER_FRAME, onFrameSkip);
-
-			DataModel.setBGColor( _color );
+		private function onClick(e:MouseEvent):void {
+			DataModel.setBGColor( _colors.bitmapData.getPixel( e.localX, e.localY ) );
 
 			close();
 		}
