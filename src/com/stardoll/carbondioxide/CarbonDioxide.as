@@ -32,6 +32,8 @@ package com.stardoll.carbondioxide {
 	import flash.ui.Keyboard;
 
 	public class CarbonDioxide extends Sprite {
+		private var _bg:Bitmap;
+
 		private var _tree:TreeDisplay;
 		private var _status:StatusBar;
 
@@ -50,11 +52,15 @@ package com.stardoll.carbondioxide {
 			new EventManager( stage );
 			new UndoManager();
 
-			var bg:Bitmap = new Bitmap( DataModel.BG.bitmapData );
-			addChild(bg);
+			_bg = new Bitmap( DataModel.BG.bitmapData );
+			_bg.width = stage.stageWidth;
+			_bg.height = stage.stageHeight;
+			addChild(_bg);
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 10000);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
+
+			stage.addEventListener(Event.RESIZE, onResize );
 
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExiting);
 			stage.addEventListener(Event.EXITING, onExiting);
@@ -78,6 +84,11 @@ package com.stardoll.carbondioxide {
 
 //			test();
 //			DataModel.setView( ViewsManager.getViewByName("main") );
+		}
+
+		private function onResize( e:Event ):void {
+			_bg.width = stage.stageWidth;
+			_bg.height = stage.stageHeight;
 		}
 
 		private function onUncaughtErrorHandler(event:UncaughtErrorEvent):void {
