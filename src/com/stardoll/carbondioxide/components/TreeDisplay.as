@@ -70,7 +70,7 @@ package com.stardoll.carbondioxide.components {
 			stage.addEventListener(MouseEvent.MOUSE_UP, onContainerStop);
 
 			stage.addEventListener(Event.RESIZE, onResize);
-			
+
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 9999);
 		}
 
@@ -94,14 +94,14 @@ package com.stardoll.carbondioxide.components {
 			if( _start != null ) {
 				updateSelectionBox( false );
 			}
-			
+
 			if( DataModel.currentLayer != null ) {
 				if( DataModel.currentLayer == DataModel.currentView ) {
 					DataModel.LAYER_MOUSE.x = this.mouseX;
-					DataModel.LAYER_MOUSE.y = this.mouseY;				
+					DataModel.LAYER_MOUSE.y = this.mouseY;
 				} else {
 					DataModel.LAYER_MOUSE.x = this.mouseX - DataModel.currentLayer.x;
-					DataModel.LAYER_MOUSE.y = this.mouseY - DataModel.currentLayer.y;				
+					DataModel.LAYER_MOUSE.y = this.mouseY - DataModel.currentLayer.y;
 				}
 			}
 		}
@@ -129,7 +129,7 @@ package com.stardoll.carbondioxide.components {
 
 			onResize(null);
 		}
-		
+
 		private function onKeyDown(e:KeyboardEvent):void {
 			if( e.target == this.stage ) {
 				const add:int = e.shiftKey ? 10 : 1;
@@ -213,8 +213,6 @@ package com.stardoll.carbondioxide.components {
 
 			addChild( _selection );
 			addChild( _box );
-
-			onResize(null);
 		}
 
 		private function onDeselect( e:MouseEvent ):void {
@@ -300,7 +298,7 @@ package com.stardoll.carbondioxide.components {
 				return drawShape( item, 0xff0000);
 			}
 
-			return new Bitmap( Drawer.draw( item.asset, item.width, item.height ) );
+			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
 		}
 
 		private function drawText( item:CDText ):DisplayObject {
@@ -547,7 +545,7 @@ package com.stardoll.carbondioxide.components {
 			_selection.update();
 
 			updateSelection( true );
-			
+
 			stage.focus = null;
 		}
 
