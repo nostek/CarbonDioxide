@@ -269,6 +269,20 @@ package com.stardoll.carbondioxide.models.cd {
 		public function toString() : String {
 			return "CDItem( " + x + " " + y + " " + width + " " + height + " )";
 		}
+		
+		public function get path() : String {
+			var ret:String = "";
+			
+			var item:CDItem = this;
+			
+			while( !(item is CDView) ) {
+				ret = "/" + item.name + ret;
+				
+				item = item.parent;
+			}
+			
+			return ret;
+		}
 
 		//////////////
 

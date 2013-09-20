@@ -65,6 +65,7 @@ package com.stardoll.carbondioxide.dialogues {
 				const bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
 
 				_properties.addItem({data:[false, "name"], 	label:"name: " + item.name});
+				_properties.addItem({data:[false, "path"], 	label:"path: " + item.path});
 				_properties.addItem({data:[false, "x"], 	label:"x: " + item.x.toString()});
 				_properties.addItem({data:[false, "y"], 	label:"y: " + item.y.toString()});
 				_properties.addItem({data:[false, "w"], 	label:"width: " + item.width.toString()});
@@ -113,6 +114,10 @@ package com.stardoll.carbondioxide.dialogues {
 				switch( data[1] ) {
 					case "name":
 						input = new InputDialogue("Edit parameters", "Enter name:", item.name);
+					break;
+
+					case "path":
+						input = new InputDialogue("Path", "Items path:", item.path);
 					break;
 
 					case "x":
