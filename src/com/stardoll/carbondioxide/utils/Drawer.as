@@ -55,10 +55,12 @@ package com.stardoll.carbondioxide.utils {
 		public static function get names():Vector.<String> {
 			var ret:Vector.<String> = new Vector.<String>();
 
-			const len:int = _frames.length;
-			for( var i:int = 0; i < len; i++ ) {
-				if( _frames[i] != null ) {
-					ret[ret.length] = _frames[i].name;
+			if( _frames != null ) {
+				const len:int = _frames.length;
+				for( var i:int = 0; i < len; i++ ) {
+					if( _frames[i] != null ) {
+						ret[ret.length] = _frames[i].name;
+					}
 				}
 			}
 

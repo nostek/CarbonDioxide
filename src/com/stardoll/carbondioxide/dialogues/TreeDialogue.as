@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.dialogues {
+	import com.stardoll.carbondioxide.managers.EventManager;
 	import fl.controls.ScrollBar;
 	import fl.controls.ScrollBarDirection;
 	import fl.events.ScrollEvent;
@@ -91,6 +92,10 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function update():void {
+			EventManager.treeChanged( updateCB );
+		}
+
+		private function updateCB():void {
 			_tree.removeChildren();
 
 			_height = 2;

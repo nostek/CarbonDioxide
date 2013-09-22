@@ -1,10 +1,14 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.utils.Drawer;
+	import com.stardoll.carbondioxide.utils.Images;
+
 	import org.osflash.signals.Signal;
+
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -193,6 +197,9 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onViewChanged():void {
+			EventManager.viewChanged( onViewChangedCB );
+		}
+		private function onViewChangedCB():void {
 			removeChildren();
 
 			var bg:Shape = new Shape();
@@ -269,6 +276,10 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function drawFromData( item:CDItem ):DisplayObject {
+			if( item.asset != null && Images.haveImage(item.asset) ) {
+				return drawImage( item );
+			}
+
 			if( !Drawer.isLoaded || (item.asset == null || item.asset == "") ) {
 				return drawShape( item );
 			} else {
@@ -279,6 +290,17 @@ package com.stardoll.carbondioxide.components {
 			}
 
 			return null;
+		}
+
+		private function drawImage( item:CDItem ):DisplayObject {
+			var s:Sprite = new Sprite();
+
+			var bm:Bitmap = new Bitmap( Images.getImage(item.asset), "auto", true );
+			bm.width = item.width;
+			bm.height = item.height;
+			s.addChild(bm);
+
+			return s;
 		}
 
 		private function drawShape( item:CDItem, color:uint=0x000000 ):DisplayObject {

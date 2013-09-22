@@ -8,6 +8,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.utils.Drawer;
+	import com.stardoll.carbondioxide.utils.Images;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -32,15 +33,17 @@ package com.stardoll.carbondioxide.dialogues {
 	 * @author simonrodriguez
 	 */
 	public class AssetsDialogue extends BaseDialogue {
-		private var _database:Vector.<String>;
-
 		private var _loadSwf:Button;
 		private var _loadFonts:Button;
+		private var _loadImages:Button;
+
 		private var _externals:List;
 		private var _filter:TextInput;
 
 		private var _bitmap:Bitmap;
 		private var _bitmapSize:int;
+
+		private var _pendingImages:Array;
 
 		public function AssetsDialogue( fullSize:Boolean=true ) {
 			const WIDTH:int = 300;
@@ -58,6 +61,11 @@ package com.stardoll.carbondioxide.dialogues {
 			_loadFonts.addEventListener(MouseEvent.CLICK, onLoadFonts);
 			container.addChild(_loadFonts);
 
+			_loadImages = new Button();
+			_loadImages.label = "Load Image";
+			_loadImages.addEventListener(MouseEvent.CLICK, onLoadImages);
+			container.addChild(_loadImages);
+
 			_externals = new List();
 			_externals.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onSelectExternal);
 			_externals.addEventListener(Event.CHANGE, onSelectExternalChange);
@@ -70,13 +78,11 @@ package com.stardoll.carbondioxide.dialogues {
 			_bitmap = new Bitmap( new BitmapData(1, 1, true, 0xffffffff), "auto", true );
 			container.addChild(_bitmap);
 
+			_pendingImages = [];
+
 			init( WIDTH, HEIGHT, 520, 10, !fullSize );
 
-			if( Drawer.isLoaded ) {
-				runFrames();
-			} else {
-				_database = new Vector.<String>();
-			}
+			onPopulateList();
 		}
 
 		public function initSettings():void {
@@ -91,6 +97,16 @@ package com.stardoll.carbondioxide.dialogues {
 				dlg2.onYes.addOnce( onRestoreFonts );
 				dlg2.onNo.addOnce( onNoRestoreFonts );
 			}
+
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_IMAGES) ) {
+				_pendingImages = SettingsManager.getItem( SettingsManager.SETTINGS_IMAGES ) as Array;
+
+				for( var i:int = _pendingImages.length-1; i >= 0; i-- ) {
+					var dlg3:YesNoDialogue = new YesNoDialogue("Load image ? ", "Load image? " + _pendingImages[i]);
+					dlg3.onYes.addOnce( onRestoreImage );
+					dlg3.onNo.addOnce( onNoRestoreImage );
+				}
+			}
 		}
 
 		override protected function get dialogueID():String { return SettingsManager.SETTINGS_ASSETS; }
@@ -101,6 +117,9 @@ package com.stardoll.carbondioxide.dialogues {
 			_loadFonts.y = _loadSwf.y + _loadSwf.height + 10;
 			_loadFonts.width = width;
 
+			_loadImages.y = _loadFonts.y + _loadFonts.height + 10;
+			_loadImages.width = width;
+
 			_bitmap.height = _bitmap.width = _bitmapSize = Math.min( width, height, 150 );
 			_bitmap.x = width/2 - _bitmapSize/2;
 			_bitmap.y = height - _bitmapSize;
@@ -109,13 +128,55 @@ package com.stardoll.carbondioxide.dialogues {
 			_filter.y = _bitmap.y - _filter.height - 10;
 
 			_externals.width = width;
-			_externals.y = _loadFonts.y + _loadFonts.height + 10;
+			_externals.y = _loadImages.y + _loadImages.height + 10;
 			_externals.height = (_filter.y-_externals.y) - 10;
 		}
 
 		////
 
+		private function onNoRestoreImage():void {
+			_pendingImages.splice( 0, 1 );
 
+			Images.addImage(null, null);
+		}
+
+		private function onRestoreImage():void {
+			var url:String = _pendingImages[0];
+
+			_pendingImages.splice( 0, 1 );
+
+			doLoadFileImage( url );
+		}
+
+		private function onLoadImages(e:Event):void {
+			var f:File = new File();
+
+			f.browseForOpen("Load Image", [ new FileFilter("PNG/JPG/BMP File", "*.png;*.jpg;*.bmp") ]);
+			f.addEventListener(Event.SELECT, onFileSelectedImage);
+		}
+
+		private function onFileSelectedImage(e:Event):void {
+			var target:File = e.target as File;
+
+			doLoadFileImage( target.url );
+		}
+
+		private function doLoadFileImage( url:String ):void {
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderCompleteImage);
+			loader.load( new URLRequest(url) );
+		}
+
+		private function onLoaderCompleteImage(e:Event):void {
+			var info:LoaderInfo = e.target as LoaderInfo;
+			info.removeEventListener(Event.COMPLETE, onLoaderCompleteImage);
+
+			var bm:Bitmap = info.loader.content as Bitmap;
+
+			Images.addImage(info.url, bm.bitmapData);
+
+			onPopulateList();
+		}
 
 		////
 
@@ -159,17 +220,11 @@ package com.stardoll.carbondioxide.dialogues {
 
 			new Drawer( mc );
 
-			runFrames();
+			onPopulateList();
 
 			if( DataModel.currentView != null ) {
 				DataModel.setView( DataModel.currentView );
 			}
-		}
-
-		private function runFrames():void {
-			_database = Drawer.names;
-
-			onPopulateList();
 		}
 
 		////
@@ -242,7 +297,10 @@ package com.stardoll.carbondioxide.dialogues {
 			const filter:String = (_filter.text.length > 0 ? _filter.text : null);
 
 			_externals.removeAll();
-			for each( var frame:String in _database ) {
+
+			var frame:String;
+
+			for each( frame in Drawer.names ) {
 				if( filter != null ) {
 					if( frame.indexOf(filter) >= 0 ) {
 						_externals.addItem({label:frame});
@@ -251,6 +309,17 @@ package com.stardoll.carbondioxide.dialogues {
 					_externals.addItem({label:frame});
 				}
 			}
+
+			for each( frame in Images.names ) {
+				if( filter != null ) {
+					if( frame.indexOf(filter) >= 0 ) {
+						_externals.addItem({label:frame});
+					}
+				} else {
+					_externals.addItem({label:frame});
+				}
+			}
+
 			_externals.sortItemsOn("label");
 		}
 
@@ -272,6 +341,10 @@ package com.stardoll.carbondioxide.dialogues {
 			var frame:String = _externals.selectedItem["label"];
 
 			if( frame == null ) return;
+
+			if( Images.haveImage( frame ) ) {
+				return;
+			}
 
 			_bitmap.bitmapData = Drawer.drawCenter( frame, _bitmapSize, _bitmapSize );
 			_bitmap.scaleX = _bitmap.scaleY = 1;

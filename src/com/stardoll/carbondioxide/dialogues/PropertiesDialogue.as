@@ -9,6 +9,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.utils.Drawer;
+	import com.stardoll.carbondioxide.utils.Images;
 
 	import flash.geom.Rectangle;
 
@@ -58,7 +59,11 @@ package com.stardoll.carbondioxide.dialogues {
 				const holder:ItemModel = DataModel.SELECTED[0];
 				const item:CDItem = holder.item;
 
-				const bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+				var bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+				if( item.asset != null && Images.haveImage(item.asset) ) {
+					bounds.width = Images.getImage(item.asset).width;
+					bounds.height = Images.getImage(item.asset).height;
+				}
 
 				_properties.addItem({data:[false, "name"], 	label:"name: " + item.name});
 				_properties.addItem({data:[false, "path"], 	label:"path: " + item.path});
@@ -105,7 +110,11 @@ package com.stardoll.carbondioxide.dialogues {
 
 			const multiple:Boolean = (DataModel.SELECTED.length > 1);
 
-			const bounds:Rectangle = ( !multiple && Drawer.isLoaded && item.asset != null ) ? Drawer.getBounds(item.asset) : new Rectangle();
+			var bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+			if( item.asset != null && Images.haveImage(item.asset) ) {
+				bounds.width = Images.getImage(item.asset).width;
+				bounds.height = Images.getImage(item.asset).height;
+			}
 
 			if( data[0] == true ) {
 			} else {
