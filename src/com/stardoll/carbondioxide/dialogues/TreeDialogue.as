@@ -561,19 +561,19 @@ internal class TreeItem extends Sprite {
 	}
 
 	private function onMoveTop( e:Event ):void {
-		_model.parent.setChildIndex(_model, 0);
-	}
-
-	private function onMoveBottom( e:Event ):void {
 		_model.parent.setChildIndex(_model, _model.parent.children.length-1);
 	}
 
+	private function onMoveBottom( e:Event ):void {
+		_model.parent.setChildIndex(_model, 0);
+	}
+
 	private function onMoveUp( e:Event ):void {
-		_model.parent.setChildIndex(_model, _model.parent.getChildIndex(_model)-1);
+		_model.parent.setChildIndex(_model, _model.parent.getChildIndex(_model)+1);
 	}
 
 	private function onMoveDown( e:Event ):void {
-		_model.parent.setChildIndex(_model, _model.parent.getChildIndex(_model)+1);
+		_model.parent.setChildIndex(_model, _model.parent.getChildIndex(_model)-1);
 	}
 
 	private function onToggleResolutions( e:Event ):void {
