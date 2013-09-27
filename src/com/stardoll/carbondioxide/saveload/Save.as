@@ -33,8 +33,12 @@ package com.stardoll.carbondioxide.saveload {
 		}
 
 		///
+		
+		private static var EXPORT:Boolean = false;
 
-		public static function run( reuse:Boolean ):void {
+		public static function run( reuse:Boolean, export:Boolean=false ):void {
+			Save.EXPORT = export;
+			
 			if( reuse && DataModel.LAST_FILE != null ) {
 				onSaveFile(null);
 				return;
@@ -110,7 +114,7 @@ package com.stardoll.carbondioxide.saveload {
 			data[ SLKeys.ITEM_TYPE ] = item.type;
 			data[ SLKeys.ITEM_NAME ] = text( item.name );
 
-			if( item is CDText ) {
+			if( !EXPORT && item is CDText ) {
 				data[ SLKeys.ITEM_TEXT ] = text( (item as CDText).text );
 			}
 
@@ -122,15 +126,15 @@ package com.stardoll.carbondioxide.saveload {
 				data[ SLKeys.ITEM_ASPECTRATIO ] = item.aspectRatio;
 			}
 
-			if( item.enabled == false ) {
+			if( !EXPORT && item.enabled == false ) {
 				data[ SLKeys.ITEM_ENABLED ] = false;
 			}
 
-			if( item.visible == false ) {
+			if( !EXPORT && item.visible == false ) {
 				data[ SLKeys.ITEM_VISIBLE ] = false;
 			}
 
-			if( item.isColorDefined ) {
+			if( !EXPORT && item.isColorDefined ) {
 				data[ SLKeys.ITEM_COLOR ] = item.color;
 			}
 

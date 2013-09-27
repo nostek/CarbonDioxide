@@ -52,6 +52,10 @@ package com.stardoll.carbondioxide.components {
 							callback: onSaveNew
 						},
 						{
+							name: "Export",
+							callback: onExport
+						},
+						{
 							name: "Close",
 							callback: onExit,
 							shortcut: "w"
@@ -293,6 +297,10 @@ package com.stardoll.carbondioxide.components {
 
 		private function onSaveNew( e:Event ):void {
 			Save.run( false );
+		}
+		
+		private function onExport( e:Event ):void {
+			Save.run( false, true );
 		}
 
 		private function onUndo( e:Event ):void {
