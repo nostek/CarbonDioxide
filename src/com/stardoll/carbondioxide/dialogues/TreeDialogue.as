@@ -353,7 +353,7 @@ internal class TreeItem extends Sprite {
 			_enabled.visible = _visible.visible = false;
 		}
 
-		_name = buildName( (model == DataModel.currentLayer ? 0xbb7777 : (isSelected(model) ? 0x7777bb : 0xffffff)), model.name );
+		_name = buildName( model.name );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.CLICK, onName);
 		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
@@ -396,7 +396,13 @@ internal class TreeItem extends Sprite {
 		return dot;
 	}
 
-	private function buildName( color:uint, text:String ):Sprite {
+	private function buildName( text:String ):Sprite {
+		var color:uint = 0xffffff;
+
+		if( _model.isColorDefined && _model.color == CDItem.INVISIBLE_COLOR ) color = 0xdde20a;
+		if( _model == DataModel.currentLayer ) color = 0xbb7777;
+		if( isSelected(_model) ) color = 0x7777bb;
+
 		var dot:Sprite = new Sprite();
 		dot.buttonMode = true;
 		dot.mouseChildren = false;

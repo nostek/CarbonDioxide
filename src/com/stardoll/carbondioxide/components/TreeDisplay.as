@@ -311,7 +311,9 @@ package com.stardoll.carbondioxide.components {
 			}
 
 			with( s.graphics ) {
-				beginFill(color, 0.5);
+				var alpha:int = (color >> 24) & 0xff;
+				var a:Number = (alpha == 0) ? 0.5 : 0.0;
+				beginFill(color, a);
 				drawRect(0, 0, item.width, item.height);
 				endFill();
 			}

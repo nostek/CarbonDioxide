@@ -18,8 +18,9 @@ package com.stardoll.carbondioxide.saveload {
 
 		private static var TEXTDB:Array;
 
-		private static function text( txt:int, _def:String=null ):String {
+		private static function text( txt:int, _def:String=null, _defNull:Boolean=false ):String {
 			if( txt < 0 || txt >= TEXTDB.length ) {
+				if( _def == null && _defNull ) return null;
 				return _def || "[UNKNOWN]";
 			}
 			return TEXTDB[ txt ];
@@ -83,10 +84,10 @@ package com.stardoll.carbondioxide.saveload {
 			}
 
 			if( type == CDItem.TYPE_TEXT ) {
-				(item as CDText).text = text( ObjectEx.select(data, SLKeys.ITEM_TEXT, -1), (item as CDText).text );
+				(item as CDText).text = text( ObjectEx.select(data, SLKeys.ITEM_TEXT, -1), (item as CDText).text, true );
 			}
 
-			item.asset 			= text( ObjectEx.select(data, SLKeys.ITEM_ASSET, -1), item.asset );
+			item.asset 			= text( ObjectEx.select(data, SLKeys.ITEM_ASSET, -1), item.asset, true );
 			item.aspectRatio	= ObjectEx.select(data, SLKeys.ITEM_ASPECTRATIO, item.aspectRatio);
 
 			item.enabled = ObjectEx.select(data, SLKeys.ITEM_ENABLED, true) as Boolean;

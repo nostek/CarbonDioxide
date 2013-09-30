@@ -11,7 +11,8 @@ package com.stardoll.carbondioxide.models.cd {
 		public static const TYPE_ITEM:int 		= 1;
 		public static const TYPE_TEXT:int 		= 2;
 
-		public static const UNDEFINED_COLOR:uint = 0x00000000;
+		public static const DEFAULT_COLOR:uint = 0x000000;
+		public static const INVISIBLE_COLOR:uint = 0xff000000;
 
 		///
 
@@ -40,7 +41,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 			_name = name;
 
-			_color = UNDEFINED_COLOR;
+			_color = DEFAULT_COLOR;
 
 			_aspectRatio = CDAspectRatio.NONE;
 
@@ -117,7 +118,7 @@ package com.stardoll.carbondioxide.models.cd {
 		}
 
 		public function get isColorDefined():Boolean {
-			return (_color!=UNDEFINED_COLOR);
+			return (_color!=DEFAULT_COLOR);
 		}
 
 		public function get color():uint {

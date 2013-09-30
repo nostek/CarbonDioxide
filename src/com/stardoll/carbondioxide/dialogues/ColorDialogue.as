@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide.dialogues {
+	import com.stardoll.carbondioxide.models.cd.CDItem;
+
 	import org.osflash.signals.Signal;
 
 	import flash.display.Bitmap;
@@ -40,7 +42,11 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onClick(e:MouseEvent):void {
-			_onSelect.dispatch( _colors.bitmapData.getPixel( e.localX, e.localY ) );
+			if( e.localX < 10 && e.localY < 10 ) {
+				_onSelect.dispatch( CDItem.INVISIBLE_COLOR );
+			} else {
+				_onSelect.dispatch( _colors.bitmapData.getPixel( e.localX, e.localY ) );
+			}
 
 			close();
 		}
