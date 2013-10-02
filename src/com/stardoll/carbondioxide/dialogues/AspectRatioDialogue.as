@@ -13,8 +13,6 @@ package com.stardoll.carbondioxide.dialogues {
 	public class AspectRatioDialogue extends BaseDialogue {
 		private var _onSelect:Signal;
 
-		private var _aspectratio:int;
-
 		public function AspectRatioDialogue() {
 			const WIDTH:int = 75 + EDGE + EDGE;
 			const HEIGHT:int = 165;
@@ -43,14 +41,12 @@ package com.stardoll.carbondioxide.dialogues {
 			btn.addEventListener(MouseEvent.CLICK, onClick);
 			container.addChild( btn );
 
-			_onSelect = new Signal( AspectRatioDialogue );
+			_onSelect = new Signal( int );
 
 			init(WIDTH, HEIGHT);
 		}
 
 		public function get onSelect():Signal { return _onSelect; }
-
-		public function get aspectRatio():int { return _aspectratio; }
 
 		private function addButton( x:Number, y:Number, id:int ):void {
 			var btn:Button = new Button();
@@ -66,9 +62,7 @@ package com.stardoll.carbondioxide.dialogues {
 		private function onClick(e:MouseEvent):void {
 			var btn:Button = e.target as Button;
 
-			_aspectratio = (btn.name == "") ? CDAspectRatio.NONE : int(btn.name);
-
-			_onSelect.dispatch( this );
+			_onSelect.dispatch( (btn.name == "") ? CDAspectRatio.NONE : int(btn.name) );
 
 			close();
 		}

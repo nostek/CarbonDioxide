@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import flash.text.TextFormat;
 	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
@@ -334,7 +335,9 @@ package com.stardoll.carbondioxide.components {
 				return drawShape( item, 0xff0000);
 			}
 
-			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width ) );
+			var fmt:TextFormat = new TextFormat( null, null, null, null, null, null, null, null, CDText.getAlignAsFormat(item.align) );
+
+			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ) );
 		}
 
 		////////////

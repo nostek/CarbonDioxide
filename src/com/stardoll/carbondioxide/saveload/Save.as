@@ -33,12 +33,12 @@ package com.stardoll.carbondioxide.saveload {
 		}
 
 		///
-		
+
 		private static var EXPORT:Boolean = false;
 
 		public static function run( reuse:Boolean, export:Boolean=false ):void {
 			Save.EXPORT = export;
-			
+
 			if( reuse && DataModel.LAST_FILE != null ) {
 				onSaveFile(null);
 				return;
@@ -116,6 +116,7 @@ package com.stardoll.carbondioxide.saveload {
 
 			if( !EXPORT && item is CDText ) {
 				data[ SLKeys.ITEM_TEXT ] = text( (item as CDText).text );
+				if( (item as CDText).align != CDText.ALIGN_LEFT) data[ SLKeys.ITEM_TEXT_ALIGN ] = (item as CDText).align;
 			}
 
 			if( item.asset != null ) {

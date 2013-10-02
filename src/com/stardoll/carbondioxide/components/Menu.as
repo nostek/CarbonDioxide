@@ -223,7 +223,11 @@ package com.stardoll.carbondioxide.components {
 		////////////////////
 
 		private function onExit( e:Event ):void {
-			NativeApplication.nativeApplication.exit();
+		    var exitingEvent:Event = new Event(Event.EXITING, false, true);
+		    NativeApplication.nativeApplication.dispatchEvent(exitingEvent);
+		    if (!exitingEvent.isDefaultPrevented()) {
+		        NativeApplication.nativeApplication.exit();
+		    }
 		}
 
 		private function onMinimize( e:Event ):void {
@@ -298,7 +302,7 @@ package com.stardoll.carbondioxide.components {
 		private function onSaveNew( e:Event ):void {
 			Save.run( false );
 		}
-		
+
 		private function onExport( e:Event ):void {
 			Save.run( false, true );
 		}

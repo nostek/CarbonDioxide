@@ -103,7 +103,7 @@ package com.stardoll.carbondioxide.saveload {
 
 				new PopupDialogue("WARNING", msg + "\nMake sure you can use the file!");
 			} else {
-				if( SILENT ) {
+				if( !SILENT ) {
 					fs.open(lock, FileMode.WRITE);
 					fs.writeUTFBytes("Locked by: " + File.userDirectory.name + "\nDate: " + (new Date()).toString());
 					fs.close();

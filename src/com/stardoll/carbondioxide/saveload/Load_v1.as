@@ -85,6 +85,7 @@ package com.stardoll.carbondioxide.saveload {
 
 			if( type == CDItem.TYPE_TEXT ) {
 				(item as CDText).text = text( ObjectEx.select(data, SLKeys.ITEM_TEXT, -1), (item as CDText).text, true );
+				(item as CDText).align = ObjectEx.select(data, SLKeys.ITEM_TEXT_ALIGN, CDText.ALIGN_LEFT);
 			}
 
 			item.asset 			= text( ObjectEx.select(data, SLKeys.ITEM_ASSET, -1), item.asset, true );

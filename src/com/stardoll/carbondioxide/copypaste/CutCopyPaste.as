@@ -40,6 +40,7 @@ package com.stardoll.carbondioxide.copypaste {
 
 				if( item is CDText ) {
 					o["text"] = (item as CDText).text;
+					o["texta"] = (item as CDText).align;
 				}
 
 				var c:Array = [];
@@ -101,6 +102,7 @@ package com.stardoll.carbondioxide.copypaste {
 						item = new CDText( parent, validName(obj["name"], parent) );
 
 						(item as CDText).text = obj["text"];
+						(item as CDText).align = obj["texta"];
 					break;
 
 					default:

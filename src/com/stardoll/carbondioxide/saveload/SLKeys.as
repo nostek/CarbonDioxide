@@ -12,6 +12,7 @@ package com.stardoll.carbondioxide.saveload {
 		public static const ITEM_NAME:String 		= "n";
 		public static const ITEM_CHILDREN:String 	= "c";
 		public static const ITEM_TEXT:String 		= "tx";
+		public static const ITEM_TEXT_ALIGN:String 	= "ta";
 		public static const ITEM_ASSET:String 		= "a";
 		public static const ITEM_ASPECTRATIO:String = "ar";
 		public static const ITEM_RESOLUTIONS:String = "r";

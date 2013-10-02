@@ -82,6 +82,7 @@ package com.stardoll.carbondioxide.dialogues {
 
 				if( item is CDText ) {
 					_properties.addItem({data:[false, "text"],	label:"text: " + (item as CDText).text});
+					_properties.addItem({data:[false, "texta"],	label:"text align: " + CDText.getAlignAsString((item as CDText).align)});
 				}
 			} else {
 				_properties.addItem({data:[false, "x"], label:"x: (-)"});
@@ -157,6 +158,11 @@ package com.stardoll.carbondioxide.dialogues {
 
 					case "text":
 						input = new InputDialogue("Edit parameters", "Text:", (item as CDText).text);
+					break;
+
+					case "texta":
+						var textAlignDlg:TextAlignDialogue = new TextAlignDialogue();
+						textAlignDlg.onSelect.addOnce( onTextAlignSelected );
 					break;
 
 					case "visible":
@@ -267,13 +273,19 @@ package com.stardoll.carbondioxide.dialogues {
 			return true;
 		}
 
-		private function onAlignSelected( dlg:AspectRatioDialogue ):void {
-			const ar:int = dlg.aspectRatio;
-
+		private function onAlignSelected( ar:int ):void {
 			var item:ItemModel;
 
 			for each( item in DataModel.SELECTED ) {
 				item.item.aspectRatio = ar;
+			}
+		}
+
+		private function onTextAlignSelected( a:int ):void {
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				(item.item as CDText).align = a;
 			}
 		}
 
