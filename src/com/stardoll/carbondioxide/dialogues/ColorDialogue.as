@@ -36,7 +36,7 @@ package com.stardoll.carbondioxide.dialogues {
 			init( WIDTH, HEIGHT );
 		}
 
-		public function get onSelect():Signal { return _onSelect; }
+		public function get onSelect():Signal { return _onSelect; }
 
 		override protected function onResize( width:int, height:int ):void {
 		}

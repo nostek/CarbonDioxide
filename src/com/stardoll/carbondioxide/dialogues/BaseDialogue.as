@@ -20,6 +20,9 @@ package com.stardoll.carbondioxide.dialogues {
 		public static const HEADER:int 	= 20;
 		public static const EDGE:int 	= 10;
 
+		private var _realWidth:int;
+		private var _realHeight:int;
+
 		private var _noclick:Sprite;
 		private var _topic:TextField;
 
@@ -54,6 +57,8 @@ package com.stardoll.carbondioxide.dialogues {
 			_canScale = canScale;
 			_canClose = canClose;
 
+			_realWidth = _realHeight = 200;
+
 			var fmt:TextFormat = new TextFormat("Verdana", 10, 0xffffffff, null, true);
 
 			_topic = new TextField();
@@ -87,7 +92,7 @@ package com.stardoll.carbondioxide.dialogues {
 				x = ObjectEx.select(data, "x", x);
 				y = ObjectEx.select(data, "y", y);
 				width = ObjectEx.select(data, "w", width);
-				height = ObjectEx.select(data, "h", height);
+				height = Math.max( 50, ObjectEx.select(data, "h", height) );
 				doMinimize = ObjectEx.select(data, "m", doMinimize) as Boolean;
 			}
 
@@ -108,8 +113,8 @@ package com.stardoll.carbondioxide.dialogues {
 				SettingsManager.setItem( id, {
 					"x": this.x,
 					"y": this.y,
-					"w": this.width,
-					"h": this.height,
+					"w": _realWidth,
+					"h": _realHeight,
 
 					"m": this.isMinimized
 				} );
@@ -135,6 +140,9 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function doResize( width:int, height:int ):void {
+			_realWidth = width;
+			_realHeight = height;
+
 			with( this.graphics ) {
 				clear();
 
