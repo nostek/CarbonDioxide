@@ -28,7 +28,7 @@ package com.stardoll.carbondioxide.dialogues {
 			container.addChild( _list );
 
 			_filter = new TextInput();
-			_filter.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_filter.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
 			container.addChild(_filter);
 
 			init(WIDTH, HEIGHT);
@@ -73,6 +73,12 @@ package com.stardoll.carbondioxide.dialogues {
 					rec( view, ch, "");
 				}
 			}
+		}
+		
+		override protected function close():void {
+			_filter.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			
+			super.close();
 		}
 	}
 }

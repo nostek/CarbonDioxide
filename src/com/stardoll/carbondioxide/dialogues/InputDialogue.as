@@ -40,12 +40,12 @@ package com.stardoll.carbondioxide.dialogues {
 
 			_button = new Button();
 			_button.label = "OK";
-			_button.addEventListener(MouseEvent.CLICK, onButton);
+			_button.addEventListener(MouseEvent.CLICK, onButton, false, 0, true);
 			container.addChild(_button);
 
 			_input = new TextInput();
 			if( start != null ) _input.text = start;
-			_input.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_input.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
 			container.addChild(_input);
 
 			_onOK = new Signal( InputDialogue );
@@ -84,6 +84,12 @@ package com.stardoll.carbondioxide.dialogues {
 			if( e.keyCode == Keyboard.ESCAPE ) {
 				close();
 			}
+		}
+		
+		override protected function close():void {
+			_input.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			
+			super.close();
 		}
 	}
 }

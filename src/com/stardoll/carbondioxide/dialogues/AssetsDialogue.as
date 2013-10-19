@@ -72,7 +72,7 @@ package com.stardoll.carbondioxide.dialogues {
 			container.addChild(_externals);
 
 			_filter = new TextInput();
-			_filter.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_filter.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
 			container.addChild(_filter);
 
 			_bitmap = new Bitmap( new BitmapData(1, 1, true, 0xffffffff), "auto", true );
@@ -107,6 +107,12 @@ package com.stardoll.carbondioxide.dialogues {
 					dlg3.onNo.addOnce( onNoRestoreImage );
 				}
 			}
+		}
+		
+		override protected function close():void {
+			_filter.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			
+			super.close();
 		}
 
 		override protected function get dialogueID():String { return SettingsManager.SETTINGS_ASSETS; }
