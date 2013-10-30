@@ -1,15 +1,16 @@
 package com.stardoll.carbondioxide.dialogues {
-	import com.stardoll.carbondioxide.managers.EventManager;
 	import fl.controls.ScrollBar;
 	import fl.controls.ScrollBarDirection;
 	import fl.events.ScrollEvent;
 
+	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
 
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 
 	/**
@@ -29,6 +30,8 @@ package com.stardoll.carbondioxide.dialogues {
 			const HEIGHT:int = 450;
 
 			super("Tree", true, false, true, true);
+
+			this.addEventListener(MouseEvent.MOUSE_WHEEL, onScroll, false, 0, true);
 
 			_bg = new Sprite();
 			container.addChild( _bg );
@@ -75,6 +78,10 @@ package com.stardoll.carbondioxide.dialogues {
 			_scrollH.width = width - _scrollV.width;
 
 			update();
+		}
+
+		private function onScroll(e:MouseEvent):void {
+			_scrollV.scrollPosition -= e.delta;
 		}
 
 		private function onScrollV( e:ScrollEvent ):void {
