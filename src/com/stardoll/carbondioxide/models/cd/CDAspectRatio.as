@@ -18,34 +18,24 @@ package com.stardoll.carbondioxide.models.cd {
 			switch( id ) {
 				case 0:
 					return "NONE";
-				break;
 				case 1:
 					return "TOP_LEFT";
-				break;
 				case 2:
 					return "TOP";
-				break;
 				case 3:
 					return "TOP_RIGHT";
-				break;
 				case 4:
 					return "LEFT";
-				break;
 				case 5:
 					return "CENTER";
-				break;
 				case 6:
 					return "RIGHT";
-				break;
 				case 7:
 					return "BOTTOM_LEFT";
-				break;
 				case 8:
 					return "BOTTOM";
-				break;
 				case 9:
 					return "BOTTOM_RIGHT";
-				break;
 			}
 			return null;
 		}

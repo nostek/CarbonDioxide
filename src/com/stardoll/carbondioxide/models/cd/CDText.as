@@ -13,13 +13,10 @@ package com.stardoll.carbondioxide.models.cd {
 			switch( a ) {
 				case ALIGN_LEFT:
 					return TextFormatAlign.LEFT;
-				break;
 				case ALIGN_CENTER:
 					return TextFormatAlign.CENTER;
-				break;
 				case ALIGN_RIGHT:
 					return TextFormatAlign.RIGHT;
-				break;
 			}
 			return null;
 		}
@@ -28,13 +25,10 @@ package com.stardoll.carbondioxide.models.cd {
 			switch( a ) {
 				case ALIGN_LEFT:
 					return "LEFT";
-				break;
 				case ALIGN_CENTER:
 					return "CENTER";
-				break;
 				case ALIGN_RIGHT:
 					return "RIGHT";
-				break;
 			}
 			return null;
 		}

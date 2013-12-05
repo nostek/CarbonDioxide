@@ -144,8 +144,7 @@ package com.stardoll.carbondioxide.saveload {
 
 				default:
 					error("Unknown version: " + version.toString());
-					return;
-				break;
+				return;
 			}
 
 			DataModel.setView( ViewsManager.views[0] );
