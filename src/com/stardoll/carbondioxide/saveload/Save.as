@@ -119,6 +119,10 @@ package com.stardoll.carbondioxide.saveload {
 				if( (item as CDText).align != CDText.ALIGN_LEFT) data[ SLKeys.ITEM_TEXT_ALIGN ] = (item as CDText).align;
 			}
 
+			if( item.note != null ) {
+				data[ SLKeys.ITEM_NOTE ] = text( item.note );
+			}
+
 			if( item.asset != null ) {
 				data[ SLKeys.ITEM_ASSET ] = text( item.asset );
 			}

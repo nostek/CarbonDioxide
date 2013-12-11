@@ -31,6 +31,8 @@ package com.stardoll.carbondioxide.models.cd {
 		private var _asset:String;
 		private var _aspectRatio:int;
 
+		private var _note:String;
+
 		private var _enabled:Boolean;
 		private var _visible:Boolean;
 
@@ -40,6 +42,8 @@ package com.stardoll.carbondioxide.models.cd {
 			_parent = parent;
 
 			_name = name;
+
+			_note = null;
 
 			_color = DEFAULT_COLOR;
 
@@ -91,6 +95,16 @@ package com.stardoll.carbondioxide.models.cd {
 
 		public function set aspectRatio( ar:int ):void {
 			_aspectRatio = ar;
+
+			itemChanged();
+		}
+
+		public function get note():String {
+			return _note;
+		}
+
+		public function set note( note:String ):void {
+			_note = note;
 
 			itemChanged();
 		}

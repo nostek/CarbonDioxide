@@ -67,6 +67,7 @@ package com.stardoll.carbondioxide.dialogues {
 
 				_properties.addItem({data:[false, "name"], 	label:"name: " + item.name});
 				_properties.addItem({data:[false, "path"], 	label:"path: " + item.path});
+				_properties.addItem({data:[false, "note"], 	label:"note: " + item.note});
 				_properties.addItem({data:[false, "x"], 	label:"x: " + item.x.toString()});
 				_properties.addItem({data:[false, "y"], 	label:"y: " + item.y.toString()});
 				_properties.addItem({data:[false, "w"], 	label:"width: " + item.width.toString()});
@@ -126,6 +127,10 @@ package com.stardoll.carbondioxide.dialogues {
 
 					case "path":
 						input = new InputDialogue("Path", "Items path:", item.path);
+					break;
+
+					case "note":
+						input = new InputDialogue("Note", "Items note:", item.note);
 					break;
 
 					case "x":
@@ -249,6 +254,11 @@ package com.stardoll.carbondioxide.dialogues {
 					case "text":
 						item = DataModel.SELECTED[0];
 						(item.item as CDText).text = input.text;
+					break;
+
+					case "note":
+						item = DataModel.SELECTED[0];
+						item.item.note = input.text;
 					break;
 
 //					case "r":

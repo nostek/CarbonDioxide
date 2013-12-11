@@ -88,6 +88,8 @@ package com.stardoll.carbondioxide.saveload {
 				(item as CDText).align = ObjectEx.select(data, SLKeys.ITEM_TEXT_ALIGN, CDText.ALIGN_LEFT);
 			}
 
+			item.note			= text( ObjectEx.select(data, SLKeys.ITEM_NOTE, -1), (item as CDItem).note, true );
+
 			item.asset 			= text( ObjectEx.select(data, SLKeys.ITEM_ASSET, -1), item.asset, true );
 			item.aspectRatio	= ObjectEx.select(data, SLKeys.ITEM_ASPECTRATIO, item.aspectRatio);
 

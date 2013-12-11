@@ -35,7 +35,8 @@ package com.stardoll.carbondioxide.copypaste {
 					ar: item.aspectRatio,
 					e: item.enabled,
 					v: item.visible,
-					c: item.color
+					c: item.color,
+					note: item.note
 				};
 
 				if( item is CDText ) {
@@ -121,6 +122,7 @@ package com.stardoll.carbondioxide.copypaste {
 				item.enabled = obj["e"] as Boolean;
 				item.visible = obj["v"] as Boolean;
 				item.color = obj["c"] as uint;
+				item.note = obj["note"] as String;
 
 				for each( var child:Object in obj["children"] ) {
 					parseObject( child, item );

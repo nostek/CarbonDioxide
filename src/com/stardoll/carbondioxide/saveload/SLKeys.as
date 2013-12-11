@@ -19,6 +19,7 @@ package com.stardoll.carbondioxide.saveload {
 		public static const ITEM_ENABLED:String 	= "e";
 		public static const ITEM_VISIBLE:String 	= "v";
 		public static const ITEM_COLOR:String		= "cl";
+		public static const ITEM_NOTE:String		= "nt";
 
 		public static const RES_SCREENWIDTH:int 	= 0;
 		public static const RES_SCREENHEIGHT:int 	= 1;

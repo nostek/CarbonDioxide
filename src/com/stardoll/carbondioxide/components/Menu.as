@@ -1,8 +1,8 @@
 package com.stardoll.carbondioxide.components {
-	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
-	import com.stardoll.carbondioxide.dialogues.AlignDialogue;
 	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
+	import com.stardoll.carbondioxide.dialogues.AlignDialogue;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
+	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
@@ -15,6 +15,7 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.saveload.Save;
 
 	import flash.desktop.NativeApplication;
+	import flash.display.DisplayObject;
 	import flash.display.NativeMenu;
 	import flash.display.NativeMenuItem;
 	import flash.display.NativeWindow;
@@ -135,6 +136,10 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "Align",
 							callback: onAlign
+						},
+						{
+							name: "Reset Windows",
+							callback: onResetWindows
 						},
 					]
 				},
@@ -260,6 +265,17 @@ package com.stardoll.carbondioxide.components {
 
 		private function onAlign( e:Event ):void {
 			new AlignDialogue();
+		}
+
+		private function onResetWindows( e:Event ):void {
+			var d:DisplayObject;
+
+			const len:int = BaseDialogue.DIALOGUES.numChildren;
+			for( var i:int = 0; i < len; i++ ) {
+				d = BaseDialogue.DIALOGUES.getChildAt(i);
+				d.x = 0;
+				d.y = 0;
+			}
 		}
 
 		private function onColor( e:Event ):void {
