@@ -1,5 +1,5 @@
 package com.stardoll.carbondioxide.components {
-	import flash.text.TextFormat;
+	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
@@ -20,6 +20,7 @@ package com.stardoll.carbondioxide.components {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 
 	/**
@@ -633,6 +634,8 @@ package com.stardoll.carbondioxide.components {
 
 			var item:CDItem;
 
+			var children:Vector.<Rectangle>;
+
 			for each( var d:ItemModel in DataModel.SELECTED ) {
 				if( d != null ) {
 					item = d.item;
@@ -643,12 +646,43 @@ package com.stardoll.carbondioxide.components {
 						const currW:int = item.width;
 						const currH:int = item.height;
 
+						if( DataModel.LOCK_CHILD_POSITION || DataModel.LOCK_CHILD_SCALE ) {
+							children = new Vector.<Rectangle>(item.children.length, true);
+
+							for( var i:int = 0; i < children.length; i++ ) {
+								children[i] 		= new Rectangle();
+								children[i].x 		= item.children[i].x;
+								children[i].y 		= item.children[i].y;
+								children[i].width 	= item.children[i].width;
+								children[i].height 	= item.children[i].height;
+							}
+						}
+
 						item.setXYWH(
 							currX + deltaX,
 							currY + deltaY,
 							Math.max( 0, currW + deltaWidth ),
 							Math.max( 0, currH + deltaHeight )
 						);
+
+						if( DataModel.LOCK_CHILD_POSITION || DataModel.LOCK_CHILD_SCALE ) {
+							UndoManager.GROUP_LAST_UNDO = true;
+
+							for( i = 0; i < children.length; i++ ) {
+								if( !DataModel.LOCK_CHILD_POSITION ) {
+									children[i].x 		= item.children[i].x;
+									children[i].y 		= item.children[i].y;
+								}
+								if( !DataModel.LOCK_CHILD_SCALE ) {
+									children[i].width 	= item.children[i].width;
+									children[i].height 	= item.children[i].height;
+								}
+
+								item.children[i].setXYWH(children[i].x, children[i].y, children[i].width, children[i].height);
+							}
+
+							UndoManager.GROUP_LAST_UNDO = false;
+						}
 					} else {
 						d.x = item.x + deltaX;
 						d.y = item.y + deltaY;

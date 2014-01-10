@@ -37,6 +37,10 @@ package com.stardoll.carbondioxide.models {
 		//BG Color
 		public static var BG_COLOR:uint = 0xffffff;
 
+		//Locks
+		public static var LOCK_CHILD_POSITION:Boolean 	= false;
+		public static var LOCK_CHILD_SCALE:Boolean 		= false;
+
 		public static var onBGColorChanged:Signal = new Signal();
 
 		public static function setBGColor( color:uint ):void {

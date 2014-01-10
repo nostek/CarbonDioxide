@@ -166,6 +166,20 @@ package com.stardoll.carbondioxide.components {
 				},
 
 				{
+					name: "Options",
+					children: [
+						{
+							name: "Lock child positions",
+							callback: onLockChildPosition
+						},
+						{
+							name: "Lock child scale",
+							callback: onLockChildScale
+						},
+					]
+				},
+
+				{
 					name: "Window",
 					children: [
 						{
@@ -376,6 +390,20 @@ package com.stardoll.carbondioxide.components {
 			for each( var item:ItemModel in DataModel.SELECTED ) {
 				item.item.parent.removeChild( item.item );
 			}
+		}
+
+		private function onLockChildPosition( e:Event ):void {
+			DataModel.LOCK_CHILD_POSITION = !DataModel.LOCK_CHILD_POSITION;
+
+			(e.target as NativeMenuItem).label = DataModel.LOCK_CHILD_POSITION ? "Unlock child position" : "Lock child position";
+			(e.target as NativeMenuItem).checked = DataModel.LOCK_CHILD_POSITION;
+		}
+
+		private function onLockChildScale( e:Event ):void {
+			DataModel.LOCK_CHILD_SCALE = !DataModel.LOCK_CHILD_SCALE;
+
+			(e.target as NativeMenuItem).label = DataModel.LOCK_CHILD_SCALE ? "Unlock child scale" : "Lock child scale";
+			(e.target as NativeMenuItem).checked = DataModel.LOCK_CHILD_SCALE;
 		}
 	}
 }
