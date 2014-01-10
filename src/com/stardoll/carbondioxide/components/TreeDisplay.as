@@ -105,8 +105,18 @@ package com.stardoll.carbondioxide.components {
 					DataModel.LAYER_MOUSE.x = this.mouseX;
 					DataModel.LAYER_MOUSE.y = this.mouseY;
 				} else {
-					DataModel.LAYER_MOUSE.x = this.mouseX - DataModel.currentLayer.x;
-					DataModel.LAYER_MOUSE.y = this.mouseY - DataModel.currentLayer.y;
+					var xx:Number = 0;
+					var yy:Number = 0;
+
+					var l:CDItem = DataModel.currentLayer;
+					while( l != DataModel.currentView ) {
+						xx += l.x;
+						yy += l.y;
+						l = l.parent;
+					}
+
+					DataModel.LAYER_MOUSE.x = this.mouseX - xx;
+					DataModel.LAYER_MOUSE.y = this.mouseY - yy;
 				}
 			}
 		}

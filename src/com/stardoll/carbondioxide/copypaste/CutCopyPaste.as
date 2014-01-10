@@ -23,12 +23,19 @@ package com.stardoll.carbondioxide.copypaste {
 
 			const items:Vector.<ItemModel> = DataModel.SELECTED;
 
+			var maxx:Number = Number.MIN_VALUE;
+			var maxy:Number = Number.MIN_VALUE;
+			for each( var model:ItemModel in items ) {
+				maxx = Math.max( maxx, model.item.x );
+				maxy = Math.max( maxy, model.item.y );
+			}
+
 			var parseObject:Function = function( item:CDItem, offset:Boolean = false ):Object {
 				var o:Object = {
 					type: item.type,
 					name: item.name,
-					x: item.x - (offset ? DataModel.LAYER_MOUSE.x : 0),
-					y: item.y - (offset ? DataModel.LAYER_MOUSE.y : 0),
+					x: item.x - (offset ? maxx : 0),
+					y: item.y - (offset ? maxy : 0),
 					w: item.width,
 					h: item.height,
 					asset: item.asset,
@@ -53,7 +60,7 @@ package com.stardoll.carbondioxide.copypaste {
 				return o;
 			};
 
-			for each( var model:ItemModel in items ) {
+			for each( model in items ) {
 				data.push( parseObject( model.item, true ) );
 			}
 
