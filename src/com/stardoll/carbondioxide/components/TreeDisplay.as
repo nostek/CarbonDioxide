@@ -233,6 +233,8 @@ package com.stardoll.carbondioxide.components {
 				drawChildren( item, holder );
 
 				drawSelection();
+			} else {
+				onViewChanged();
 			}
 		}
 

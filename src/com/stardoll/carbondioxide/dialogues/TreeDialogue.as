@@ -168,9 +168,6 @@ package com.stardoll.carbondioxide.dialogues {
 
 
 
-
-
-
 import com.stardoll.carbondioxide.components.TreeDisplay;
 import com.stardoll.carbondioxide.dialogues.InputDialogue;
 import com.stardoll.carbondioxide.dialogues.PopupDialogue;
@@ -356,11 +353,11 @@ internal class TreeItem extends Sprite {
 		_visible.addEventListener(MouseEvent.CLICK, onVisible);
 		addChild(_visible);
 
-		if( model.parent != DataModel.currentLayer ) {
-			_enabled.visible = _visible.visible = false;
-		}
+//		if( model.parent != DataModel.currentLayer ) {
+//			_enabled.visible = _visible.visible = false;
+//		}
 
-		_name = buildName( model.name );
+		_name = buildName();
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.CLICK, onName);
 		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
@@ -403,8 +400,14 @@ internal class TreeItem extends Sprite {
 		return dot;
 	}
 
-	private function buildName( text:String ):Sprite {
+	private function buildName():Sprite {
 		var color:uint = 0xffffff;
+
+		var text:String = _model.name;
+
+		if( _model.note != null && _model.note != "" ) {
+			text += " (!)";
+		}
 
 		if( _model.isColorDefined && _model.color == CDItem.INVISIBLE_COLOR ) color = 0xdde20a;
 		if( _model == DataModel.currentLayer ) color = 0xbb7777;
