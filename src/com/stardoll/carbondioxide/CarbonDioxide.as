@@ -51,6 +51,8 @@ package com.stardoll.carbondioxide {
 			stage.frameRate = 31;
 			stage.color = 0x646464;
 
+			stage.nativeWindow.title += " " + getAppDescVersion();
+
 			stage.doubleClickEnabled = true;
 
 			_blockSave = true;
@@ -95,6 +97,18 @@ package com.stardoll.carbondioxide {
 
 //			test();
 //			DataModel.setView( ViewsManager.getViewByName("main") );
+		}
+
+		private function getAppDescVersion( label:Boolean=false ):String {
+			var xml:XML = NativeApplication.nativeApplication.applicationDescriptor;
+			var ns:Namespace = xml.namespace();
+			var version:String = xml.ns::versionNumber;
+
+			if( label ) {
+				version += " " + xml.ns::versionLabel;
+			}
+
+			return version;
 		}
 
 		private function onFirst():void {
