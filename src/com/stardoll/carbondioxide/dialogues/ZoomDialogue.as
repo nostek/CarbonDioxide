@@ -18,8 +18,8 @@ package com.stardoll.carbondioxide.dialogues {
 		public static var doMagnify:Boolean = false;
 		public static var doPercent:Number = 1;
 
-		public static function doZoom():void {
-			TreeDisplay.doZoom.dispatch( (doMagnify) ? 1 + 5 * (1-doPercent) : doPercent );
+		public static function doZoom( fromMouse:Boolean ):void {
+			TreeDisplay.doZoom.dispatch( (doMagnify) ? 1 + 5 * (1-doPercent) : doPercent, fromMouse );
 		}
 
 		/////
@@ -63,12 +63,12 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private function onMagnify(e:Event):void {
 			doMagnify = !doMagnify;
-			doZoom();
+			doZoom( false );
 		}
 
 		private function onZoomScreen(e:ScrollEvent):void {
 			doPercent = ((100-_zoomSlider.scrollPosition)/_zoomSlider.maxScrollPosition);
-			doZoom();
+			doZoom( false );
 		}
 	}
 }

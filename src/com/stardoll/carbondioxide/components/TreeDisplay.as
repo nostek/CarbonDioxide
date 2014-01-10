@@ -48,7 +48,7 @@ package com.stardoll.carbondioxide.components {
 			_doSelectItems = new Signal( Array );
 			_doSelectItems.add( onSelectItems );
 
-			_doZoom = new Signal( Number );
+			_doZoom = new Signal( Number, Boolean );
 			_doZoom.add( doZoom );
 
 			_selection = new SelectionItem();
@@ -129,10 +129,39 @@ package com.stardoll.carbondioxide.components {
 			this.y = (stage.stageHeight - DataModel.SCREEN_HEIGHT*this.scaleY) >> 1;
 		}
 
-		private function doZoom( z:Number ):void {
+		private function doZoom( z:Number, fromMouse:Boolean ):void {
+			const X:int = stage.mouseX;
+			const Y:int = stage.mouseY;
+
+			var W:int = DataModel.SCREEN_WIDTH*this.scaleX;
+			var H:int = DataModel.SCREEN_HEIGHT*this.scaleY;
+
+			var ret:Point = new Point( X - this.x, Y - this.y );
+
+			if( W == 0 || H == 0 ) {
+				ret.x = ret.y = 0.5;
+			} else {
+				ret.x = ret.x / W;
+				ret.y = ret.y / H;
+			}
+
 			this.scaleX = this.scaleY = z;
 
 			onResize(null);
+
+			if( fromMouse ) {
+				W = DataModel.SCREEN_WIDTH*this.scaleX;
+				H = DataModel.SCREEN_HEIGHT*this.scaleY;
+
+				ret.x = W * ret.x;
+				ret.y = H * ret.y;
+
+				this.x = X;
+				this.y = Y;
+
+				this.x -= ret.x;
+				this.y -= ret.y;
+			}
 		}
 
 		private function onKeyDown(e:KeyboardEvent):void {
@@ -290,7 +319,9 @@ package com.stardoll.carbondioxide.components {
 				return drawGraphics( item );
 			}
 
+			/*FDT_IGNORE*/
 			return null;
+			/*FDT_IGNORE*/
 		}
 
 		private function drawImage( item:CDItem ):DisplayObject {

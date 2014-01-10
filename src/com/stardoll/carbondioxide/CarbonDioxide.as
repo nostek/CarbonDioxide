@@ -1,5 +1,4 @@
 package com.stardoll.carbondioxide {
-	import flash.utils.setTimeout;
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
@@ -8,6 +7,7 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
+	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
 	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.UndoManager;
@@ -34,6 +34,7 @@ package com.stardoll.carbondioxide {
 	import flash.events.NativeWindowBoundsEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.ui.Keyboard;
+	import flash.utils.setTimeout;
 
 	public class CarbonDioxide extends Sprite {
 		private var _blockSave:Boolean;
@@ -73,6 +74,7 @@ package com.stardoll.carbondioxide {
 
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
+			stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExiting);
 			stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVE, onSaveWindow);
@@ -125,6 +127,12 @@ package com.stardoll.carbondioxide {
 			if( e.target == stage ) {
 				stage.focus = null;
 			}
+		}
+
+		private function onMouseWheel(e:MouseEvent):void {
+			var d:Number = ZoomDialogue.doMagnify ? -e.delta : e.delta;
+			ZoomDialogue.doPercent = Math.min( 1, Math.max( 0, ZoomDialogue.doPercent + d*0.01 ) );
+			ZoomDialogue.doZoom( true );
 		}
 
 		private function onSaveWindow(e:NativeWindowBoundsEvent):void {

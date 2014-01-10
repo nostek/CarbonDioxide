@@ -110,6 +110,10 @@ package com.stardoll.carbondioxide.components {
 					name: "Windows",
 					children: [
 						{
+							name: "[RESET WINDOWS]",
+							callback: onResetWindows
+						},
+						{
 							name: "Assets",
 							callback: onAssets
 						},
@@ -136,10 +140,6 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "Align",
 							callback: onAlign
-						},
-						{
-							name: "Reset Windows",
-							callback: onResetWindows
 						},
 					]
 				},
@@ -289,17 +289,25 @@ package com.stardoll.carbondioxide.components {
 		private function onZoomMagnify( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU ) return;
 			ZoomDialogue.doMagnify = !ZoomDialogue.doMagnify;
-			ZoomDialogue.doZoom();
+			ZoomDialogue.doZoom( false );
 		}
 		private function onZoomMinus( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU ) return;
-			ZoomDialogue.doPercent = Math.min( 1, ZoomDialogue.doPercent + 0.1 );
-			ZoomDialogue.doZoom();
+			if( ZoomDialogue.doMagnify ) {
+				ZoomDialogue.doPercent = Math.min( 1, ZoomDialogue.doPercent + 0.1 );
+			} else {
+				ZoomDialogue.doPercent = Math.max( 0, ZoomDialogue.doPercent - 0.1 );
+			}
+			ZoomDialogue.doZoom( false );
 		}
 		private function onZoomPlus( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU ) return;
-			ZoomDialogue.doPercent = Math.max( 0, ZoomDialogue.doPercent - 0.1 );
-			ZoomDialogue.doZoom();
+			if( ZoomDialogue.doMagnify ) {
+				ZoomDialogue.doPercent = Math.max( 0, ZoomDialogue.doPercent - 0.1 );
+			} else {
+				ZoomDialogue.doPercent = Math.min( 1, ZoomDialogue.doPercent + 0.1 );
+			}
+			ZoomDialogue.doZoom( false );
 		}
 
 		private function onOpen( e:Event ):void {
