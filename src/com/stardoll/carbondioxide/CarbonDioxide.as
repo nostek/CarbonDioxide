@@ -121,7 +121,6 @@ package com.stardoll.carbondioxide {
 				stage.nativeWindow.height = data["h"] as Number;
 			}
 
-
 			var assets:AssetsDialogue = new AssetsDialogue( false );
 
 			Load.runLast();
