@@ -190,6 +190,9 @@ import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
 import flash.ui.ContextMenu;
 import flash.utils.Dictionary;
+
+
+
 internal class ExpandModel {
 	public static var onChanged:Signal = new Signal();
 
@@ -474,7 +477,26 @@ internal class TreeItem extends Sprite {
 			DataModel.setLayer( _model.parent );
 		}
 
-		TreeDisplay.doSelectItems.dispatch( [_model] );
+		if( e.commandKey || e.ctrlKey ) {
+			var wasin:Boolean = false;
+
+			var a:Array = [];
+			for each( var item:ItemModel in DataModel.SELECTED ) {
+				if( item.item == _model ) {
+					 wasin = true;
+				} else {
+					a.push( item.item );
+				}
+			}
+
+			if( !wasin ) {
+				a.push( _model );
+			}
+
+			TreeDisplay.doSelectItems.dispatch( a );
+		} else {
+			TreeDisplay.doSelectItems.dispatch( [_model] );
+		}
 	}
 
 	private function onDblClick(e:MouseEvent):void {
