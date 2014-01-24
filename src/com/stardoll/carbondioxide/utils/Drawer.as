@@ -59,7 +59,7 @@ package com.stardoll.carbondioxide.utils {
 				const len:int = _frames.length;
 				for( var i:int = 0; i < len; i++ ) {
 					if( _frames[i] != null ) {
-						ret[ret.length] = _frames[i].name;
+						ret[ret.length] = _frames[i].name + ((_frames[i].scale9) ? " [9scale]" : "");
 					}
 				}
 			}
