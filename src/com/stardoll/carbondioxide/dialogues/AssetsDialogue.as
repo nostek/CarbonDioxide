@@ -108,10 +108,10 @@ package com.stardoll.carbondioxide.dialogues {
 				}
 			}
 		}
-		
+
 		override protected function close():void {
 			_filter.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			
+
 			super.close();
 		}
 
@@ -304,25 +304,31 @@ package com.stardoll.carbondioxide.dialogues {
 
 			_externals.removeAll();
 
+			var data:Object;
 			var frame:String;
+			var name:String;
 
-			for each( frame in Drawer.names ) {
+			for each( data in Drawer.names ) {
+				name = data["name"];
+				frame = data["frame"];
 				if( filter != null ) {
-					if( frame.indexOf(filter) >= 0 ) {
-						_externals.addItem({label:frame});
+					if( name.indexOf(filter) >= 0 ) {
+						_externals.addItem({label:name, frame:frame});
 					}
 				} else {
-					_externals.addItem({label:frame});
+					_externals.addItem({label:name, frame:frame});
 				}
 			}
 
-			for each( frame in Images.names ) {
+			for each( data in Images.names ) {
+				name = data["name"];
+				frame = data["frame"];
 				if( filter != null ) {
-					if( frame.indexOf(filter) >= 0 ) {
-						_externals.addItem({label:frame});
+					if( name.indexOf(filter) >= 0 ) {
+						_externals.addItem({label:name, frame:frame});
 					}
 				} else {
-					_externals.addItem({label:frame});
+					_externals.addItem({label:name, frame:frame});
 				}
 			}
 
@@ -333,7 +339,7 @@ package com.stardoll.carbondioxide.dialogues {
 			if( _externals != null ) {
 				var data:Object = _externals.getItemAt(e.index);
 				if( data ) {
-					var frame:String = data["label"];
+					var frame:String = data["frame"];
 					if( frame != null ) {
 						for each( var item:ItemModel in DataModel.SELECTED ) {
 							item.item.asset = frame;
@@ -344,7 +350,7 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onSelectExternalChange(e:Event):void {
-			var frame:String = _externals.selectedItem["label"];
+			var frame:String = _externals.selectedItem["frame"];
 
 			if( frame == null ) return;
 

@@ -52,14 +52,17 @@ package com.stardoll.carbondioxide.utils {
 			return _matrix!=null;
 		}
 
-		public static function get names():Vector.<String> {
-			var ret:Vector.<String> = new Vector.<String>();
+		public static function get names():Vector.<Object> {
+			var ret:Vector.<Object> = new Vector.<Object>();
 
 			if( _frames != null ) {
 				const len:int = _frames.length;
 				for( var i:int = 0; i < len; i++ ) {
 					if( _frames[i] != null ) {
-						ret[ret.length] = _frames[i].name + ((_frames[i].scale9) ? " [9scale]" : "");
+						ret[ret.length] = {
+							name: _frames[i].name + ((_frames[i].scale9) ? " [9scale]" : ""),
+							frame: _frames[i].name
+						};
 					}
 				}
 			}
