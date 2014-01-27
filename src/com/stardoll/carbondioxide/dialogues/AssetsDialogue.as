@@ -320,15 +320,13 @@ package com.stardoll.carbondioxide.dialogues {
 				}
 			}
 
-			for each( data in Images.names ) {
-				name = data["name"];
-				frame = data["frame"];
+			for each( name in Images.names ) {
 				if( filter != null ) {
 					if( name.indexOf(filter) >= 0 ) {
-						_externals.addItem({label:name, frame:frame});
+						_externals.addItem({label:name, frame:name});
 					}
 				} else {
-					_externals.addItem({label:name, frame:frame});
+					_externals.addItem({label:name, frame:name});
 				}
 			}
 
