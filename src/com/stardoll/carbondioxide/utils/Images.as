@@ -17,12 +17,15 @@ package com.stardoll.carbondioxide.utils {
 			}
 
 			if( url != null ) {
-				if( haveImage(url) ) {
-					removeImage(url);
+				var name:String = nameFromURL(url);
+
+				if( haveImage(name) ) {
+					removeImage(name);
 				}
 
 				var model:BitmapModel = new BitmapModel();
 				model.url = url;
+				model.name = name;
 				model.bmd = bmd;
 
 				_images.push( model );
@@ -37,7 +40,7 @@ package com.stardoll.carbondioxide.utils {
 
 		public static function getImage( url:String ):BitmapData {
 			for each( var model:BitmapModel in _images ) {
-				if( model.url == url ) {
+				if( model.name == url ) {
 					return model.bmd;
 				}
 			}
@@ -47,7 +50,7 @@ package com.stardoll.carbondioxide.utils {
 		public static function haveImage( url:String ):Boolean {
 			if( _images != null ) {
 				for each( var model:BitmapModel in _images ) {
-					if( model.url == url ) {
+					if( model.name == url ) {
 						return true;
 					}
 				}
@@ -57,11 +60,18 @@ package com.stardoll.carbondioxide.utils {
 
 		private static function removeImage( url:String ):void {
 			for each( var model:BitmapModel in _images ) {
-				if( model.url == url ) {
+				if( model.name == url ) {
 					_images.splice( _images.indexOf(model), 1);
 					return;
 				}
 			}
+		}
+
+		private static function nameFromURL( url:String ):String {
+			if( url.lastIndexOf("/") ) {
+				return url.substr( url.lastIndexOf("/")+1 );
+			}
+			return url;
 		}
 
 		public static function get names():Vector.<String> {
@@ -69,7 +79,7 @@ package com.stardoll.carbondioxide.utils {
 
 			if( _images != null ) {
 				for each( var model:BitmapModel in _images ) {
-					ret[ret.length] = model.url;
+					ret[ret.length] = model.name;
 				}
 			}
 
@@ -83,5 +93,6 @@ package com.stardoll.carbondioxide.utils {
 import flash.display.BitmapData;
 internal class BitmapModel {
 	public var url:String;
+	public var name:String;
 	public var bmd:BitmapData;
 }
