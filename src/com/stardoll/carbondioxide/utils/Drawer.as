@@ -28,8 +28,6 @@ package com.stardoll.carbondioxide.utils {
 
 		private static var _textField:TextField;
 
-		private static var _scaleResolution:Number;
-
 		public function Drawer( mc:MovieClip ) {
 			_matrix = new Matrix();
 			_point = new Point();
@@ -38,8 +36,6 @@ package com.stardoll.carbondioxide.utils {
 			_textField.embedFonts = true;
 			_textField.antiAliasType = AntiAliasType.ADVANCED;
 			_textField.autoSize = TextFieldAutoSize.LEFT;
-
-			_scaleResolution = 1536 / DataModel.SCREEN_HEIGHT;
 
 			exportFramesInit( mc );
 		}
@@ -163,8 +159,7 @@ package com.stardoll.carbondioxide.utils {
 				if( mc != null && mc.scale9Grid != null ) {
 					model.scale9 = true;
 
-					model.scale9outer = new Sprite();
-					model.scale9outer.addChild( mc );
+					model.scale9outer = mc;
 
 					if( masker == null ) {
 						model.bounds = model.data.getBounds(model.scale9outer);
@@ -265,6 +260,10 @@ package com.stardoll.carbondioxide.utils {
 			return false;
 		}
 
+		private static function get scaleResolution():Number {
+			return (1536 / DataModel.SCREEN_HEIGHT);
+		}
+
 		//////////////////////////////////////////
 
 		public static function draw( frame:Object, width:Number, height:Number, transparent:Boolean=true, background:uint=0x00000000 ):BitmapData {
@@ -299,8 +298,8 @@ package com.stardoll.carbondioxide.utils {
 					target.drawWithQuality(model.data, _matrix, null, null, null, true, QUALITY);
 				} else {
 					if( model.scale9inside != null ) {
-						model.scale9inside.width = width * _scaleResolution;
-						model.scale9inside.height = height * _scaleResolution;
+						model.scale9inside.width = width * scaleResolution;
+						model.scale9inside.height = height * scaleResolution;
 					}
 
 					model.data.width = width;
