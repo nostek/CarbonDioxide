@@ -26,6 +26,7 @@ package com.stardoll.carbondioxide.models {
 		//Keys
 		public static var SHIFT_KEY:Boolean = false;
 		public static var ALT_KEY:Boolean = false;
+		public static var COMMAND_KEY:Boolean = false;
 
 		//File
 		public static var LAST_FILE:File;

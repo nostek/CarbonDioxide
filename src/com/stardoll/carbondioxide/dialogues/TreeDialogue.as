@@ -200,16 +200,16 @@ internal class ExpandModel {
 
 	private static var expands:Dictionary = new Dictionary( true );
 
-	public static function minimize( model:CDItem ):void {
+	public static function minimize( model:CDItem, update:Boolean=true ):void {
 		expands[ model ] = true;
 
-		onChanged.dispatch();
+		if( update ) onChanged.dispatch();
 	}
 
-	public static function maximize( model:CDItem ):void {
+	public static function maximize( model:CDItem, update:Boolean=true ):void {
 		expands[ model ] = null;
 
-		onChanged.dispatch();
+		if( update ) onChanged.dispatch();
 	}
 
 	public static function isMaximized( model:CDItem ):Boolean {
@@ -528,6 +528,9 @@ internal class TreeItem extends Sprite {
 		additem( "Move Down", onMoveDown );
 		additem( "Move Bottom", onMoveBottom );
 		additem( null, null );
+		additem( "Expand All", onExpandAll );
+		additem( "Collapse All", onCollapseAll );
+		additem( null, null );
 		additem( ExpandModel.isShowingResolutions ? "Hide resolutions" : "Show resolutions", onToggleResolutions );
 
 		var global:Point = this.localToGlobal( new Point( this.mouseX, this.mouseY) );
@@ -616,5 +619,27 @@ internal class TreeItem extends Sprite {
 
 	private function onToggleResolutions( e:Event ):void {
 		ExpandModel.toggleResolutions();
+	}
+
+	private function onExpandAll( e:Event ):void {
+		onExpColRecursive(_model, true);
+
+		ExpandModel.onChanged.dispatch();
+	}
+	private function onCollapseAll( e:Event ):void {
+		onExpColRecursive(_model, false);
+
+		ExpandModel.onChanged.dispatch();
+	}
+	private function onExpColRecursive( item:CDItem, exp:Boolean ):void {
+		if( exp ) {
+			ExpandModel.maximize( item, false );
+		} else {
+			ExpandModel.minimize( item, false );
+		}
+
+		for each( var m:CDItem in item.children ) {
+			onExpColRecursive(m, exp);
+		}
 	}
 }

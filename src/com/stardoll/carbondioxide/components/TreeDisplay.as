@@ -177,6 +177,7 @@ package com.stardoll.carbondioxide.components {
 
 		private function onKeyDown(e:KeyboardEvent):void {
 			if( e.target == this.stage ) {
+				if( e.commandKey || e.controlKey ) return;
 				const add:int = e.shiftKey ? 10 : 1;
 				for each( var item:ItemModel in DataModel.SELECTED ) {
 					switch( e.keyCode ) {
@@ -245,6 +246,11 @@ package com.stardoll.carbondioxide.components {
 		private function onViewChangedCB():void {
 			removeChildren();
 
+			var sel:Array = [];
+			for each( var i:ItemModel in DataModel.SELECTED ) {
+				sel.push( i.item );
+			}
+
 			var bg:Shape = new Shape();
 			with( bg.graphics ) {
 				beginFill(DataModel.BG_COLOR, 1);
@@ -260,6 +266,10 @@ package com.stardoll.carbondioxide.components {
 			}
 
 			addToSelection(null);
+
+			if( sel.length ) {
+				onSelectItems( sel );
+			}
 
 			addChild( _selection );
 			addChild( _box );

@@ -11,8 +11,11 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
+	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.saveload.Load;
 	import com.stardoll.carbondioxide.saveload.Save;
+	import com.stardoll.carbondioxide.utils.Drawer;
+	import com.stardoll.carbondioxide.utils.Images;
 
 	import flash.desktop.NativeApplication;
 	import flash.display.DisplayObject;
@@ -21,6 +24,7 @@ package com.stardoll.carbondioxide.components {
 	import flash.display.NativeWindow;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.geom.Rectangle;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -175,6 +179,11 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "Lock child scale",
 							callback: onLockChildScale
+						},
+						{
+							name: "Original Width/Height",
+							callback: onOrigWidthHeight,
+							shortcut: "o"
 						},
 					]
 				},
@@ -404,6 +413,22 @@ package com.stardoll.carbondioxide.components {
 
 			(e.target as NativeMenuItem).label = DataModel.LOCK_CHILD_SCALE ? "Unlock child scale" : "Lock child scale";
 			(e.target as NativeMenuItem).checked = DataModel.LOCK_CHILD_SCALE;
+		}
+
+		private function onOrigWidthHeight( e:Event ):void {
+			for each( var holder:ItemModel in DataModel.SELECTED ) {
+				var item:CDItem = holder.item;
+				if( item != null ) {
+					var bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+					if( item.asset != null && Images.haveImage(item.asset) ) {
+						bounds.width = Images.getImage(item.asset).width;
+						bounds.height = Images.getImage(item.asset).height;
+					}
+
+					item.width = bounds.width;
+					item.height = bounds.height;
+				}
+			}
 		}
 	}
 }

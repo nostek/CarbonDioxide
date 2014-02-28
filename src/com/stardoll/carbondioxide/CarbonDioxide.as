@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide {
+	import fl.controls.listClasses.CellRenderer;
+
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
@@ -13,6 +15,7 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
+	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDResolution;
@@ -23,6 +26,7 @@ package com.stardoll.carbondioxide {
 	import flash.desktop.ClipboardFormats;
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageQuality;
@@ -143,6 +147,14 @@ package com.stardoll.carbondioxide {
 		}
 
 		private function onMouseWheel(e:MouseEvent):void {
+			var o:DisplayObject = e.target as DisplayObject;
+			if( o == null ) return;
+			while( o != stage ) {
+				if( o == BaseDialogue.DIALOGUES ) return;
+				if( o is CellRenderer ) return;
+				o = o.parent;
+			}
+
 			var d:Number = ZoomDialogue.doMagnify ? -e.delta : e.delta;
 			ZoomDialogue.doPercent = Math.min( 1, Math.max( 0, ZoomDialogue.doPercent + d*0.01 ) );
 			ZoomDialogue.doZoom( true );
@@ -194,6 +206,31 @@ package com.stardoll.carbondioxide {
 			if( e.keyCode == Keyboard.ALTERNATE ) {
 				DataModel.ALT_KEY = true;
 			}
+			if( e.commandKey || e.controlKey ) {
+				DataModel.COMMAND_KEY = true;
+			}
+
+			if( DataModel.COMMAND_KEY && DataModel.SHIFT_KEY ) {
+				var holder:ItemModel;
+				var item:CDItem;
+
+				if( e.keyCode == Keyboard.UP ) {
+					for each( holder in DataModel.SELECTED ) {
+						item = holder.item;
+						if( item != null ) {
+							item.parent.setChildIndex(item, item.parent.getChildIndex(item)+1);
+						}
+					}
+				}
+				if( e.keyCode == Keyboard.DOWN ) {
+					for each( holder in DataModel.SELECTED ) {
+						item = holder.item;
+						if( item != null ) {
+							item.parent.setChildIndex(item, item.parent.getChildIndex(item)-1);
+						}
+					}
+				}
+			}
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {
@@ -202,6 +239,9 @@ package com.stardoll.carbondioxide {
 			}
 			if( DataModel.ALT_KEY && e.keyCode == Keyboard.ALTERNATE ) {
 				DataModel.ALT_KEY = false;
+			}
+			if( DataModel.COMMAND_KEY && !e.commandKey && !e.controlKey ) {
+				DataModel.COMMAND_KEY = false;
 			}
 		}
 
