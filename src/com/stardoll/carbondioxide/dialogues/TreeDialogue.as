@@ -176,6 +176,7 @@ import com.stardoll.carbondioxide.models.ItemModel;
 import com.stardoll.carbondioxide.models.cd.CDItem;
 import com.stardoll.carbondioxide.models.cd.CDResolution;
 import com.stardoll.carbondioxide.models.cd.CDText;
+import com.stardoll.carbondioxide.models.cd.CDView;
 import com.stardoll.carbondioxide.models.resolutions.ResolutionsModel;
 
 import org.osflash.signals.Signal;
@@ -346,19 +347,17 @@ internal class TreeItem extends Sprite {
 		_minmax.addEventListener(MouseEvent.CLICK, onMinMax);
 		addChild(_minmax);
 
-		_enabled = buildDot( model.enabled ? 0x00ff00 : 0xff0000, "E ");
-		_enabled.x = HEIGHT + 6;
-		_enabled.addEventListener(MouseEvent.CLICK, onEnabled);
-		addChild(_enabled);
+		if( !(model is CDView) ) {
+			_enabled = buildDot( model.enabled ? 0x00ff00 : 0xff0000, "E ");
+			_enabled.x = HEIGHT + 6;
+			_enabled.addEventListener(MouseEvent.CLICK, onEnabled);
+			addChild(_enabled);
 
-		_visible = buildDot( model.visible ? 0x00ff00 : 0xff0000, "V ");
-		_visible.x = HEIGHT + HEIGHT + 6 + 2;
-		_visible.addEventListener(MouseEvent.CLICK, onVisible);
-		addChild(_visible);
-
-//		if( model.parent != DataModel.currentLayer ) {
-//			_enabled.visible = _visible.visible = false;
-//		}
+			_visible = buildDot( model.visible ? 0x00ff00 : 0xff0000, "V ");
+			_visible.x = HEIGHT + HEIGHT + 6 + 2;
+			_visible.addEventListener(MouseEvent.CLICK, onVisible);
+			addChild(_visible);
+		}
 
 		_name = buildName();
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
@@ -366,6 +365,10 @@ internal class TreeItem extends Sprite {
 		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
 		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
+
+		if( (model is CDView) ) {
+			_name.x = 6;
+		}
 	}
 
 	private static function isSelected( model:CDItem ):Boolean {

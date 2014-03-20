@@ -537,6 +537,10 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onMouseDown( e:MouseEvent ):void {
+			if( DataModel.ALT_KEY ) {
+				return;
+			}
+
 			for each( var d:ItemModel in DataModel.SELECTED ) {
 				if( d != null ) {
 					d.save();
