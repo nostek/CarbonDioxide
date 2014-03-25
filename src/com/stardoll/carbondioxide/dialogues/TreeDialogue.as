@@ -583,6 +583,10 @@ internal class TreeItem extends Sprite {
 			}
 
 			item.setXYWH(0, 0, Math.max( 25, Math.min( 100, _model.width * 0.2) ), Math.max( 25, Math.min( 100, _model.height * 0.2) ));
+
+			if( input.isCmd ) {
+				DataModel.onFilterAssets.dispatch( input.text );
+			}
 		} else {
 			new PopupDialogue("ERROR", "ERROR: Name is already in use.");
 		}

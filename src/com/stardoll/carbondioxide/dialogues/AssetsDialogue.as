@@ -51,6 +51,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 			super( "Assets", true, false, true, true );
 
+			DataModel.onFilterAssets.add( onFilterAssets );
+
 			_loadSwf = new Button();
 			_loadSwf.label = "Load Assets";
 			_loadSwf.addEventListener(MouseEvent.CLICK, onLoadSWF);
@@ -361,6 +363,12 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {
+			onPopulateList();
+		}
+
+		private function onFilterAssets( filter:String ):void {
+			_filter.text = filter;
+
 			onPopulateList();
 		}
 	}

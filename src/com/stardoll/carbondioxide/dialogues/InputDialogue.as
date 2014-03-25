@@ -22,6 +22,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private var _onOK:Signal;
 
+        private var _isCmd:Boolean;
+
 		public function InputDialogue( caption:String, text:String, start:String=null ) {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 150;
@@ -52,6 +54,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 			init( WIDTH, HEIGHT );
 
+            _isCmd = false;
+
 			stage.focus = _input;
 		}
 
@@ -60,6 +64,10 @@ package com.stardoll.carbondioxide.dialogues {
 		public function get text():String {
 			return _input.text;
 		}
+
+        public function get isCmd():Boolean {
+            return _isCmd;
+        }
 
 		override protected function onResize( width:int, height:int ):void {
 			_label.width = width;
@@ -78,17 +86,21 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {
-			if( e.keyCode == Keyboard.ENTER ) {
+			if( e.controlKey || e.ctrlKey ) {
+                _isCmd = true;
+            }
+
+            if( e.keyCode == Keyboard.ENTER ) {
 				onButton(null);
 			}
 			if( e.keyCode == Keyboard.ESCAPE ) {
 				close();
 			}
 		}
-		
+
 		override protected function close():void {
 			_input.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			
+
 			super.close();
 		}
 	}

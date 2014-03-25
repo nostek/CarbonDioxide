@@ -118,5 +118,8 @@ package com.stardoll.carbondioxide.models {
 		public static var SELECTED:Vector.<ItemModel> = new Vector.<ItemModel>();
 
 		public static var onSelectedChanged:Signal = new Signal();
+
+		//Asset filter
+		public static var onFilterAssets:Signal = new Signal( String );
 	}
 }
