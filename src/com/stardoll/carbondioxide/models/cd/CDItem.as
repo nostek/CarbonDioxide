@@ -148,19 +148,19 @@ package com.stardoll.carbondioxide.models.cd {
 		//////////////
 
 		public function get x():int {
-			return _parent.width * _x;
+			return Math.round(_parent.width * _x);
 		}
 
 		public function get y():int {
-			return _parent.height * _y;
+			return Math.round(_parent.height * _y);
 		}
 
 		public function get width():int {
-			return _parent.width * _width;
+			return Math.round(_parent.width * _width);
 		}
 
 		public function get height():int {
-			return _parent.height * _height;
+			return Math.round(_parent.height * _height);
 		}
 
 		public function get worldX():int {
