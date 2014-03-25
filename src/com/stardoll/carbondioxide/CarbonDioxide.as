@@ -4,6 +4,7 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.components.Menu;
 	import com.stardoll.carbondioxide.components.StatusBar;
 	import com.stardoll.carbondioxide.components.TreeDisplay;
+	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
@@ -66,6 +67,7 @@ package com.stardoll.carbondioxide {
 			new SettingsManager();
 			new DataModel();
 			new EventManager( stage );
+			new CutCopyPaste();
 			new UndoManager();
 			new Menu( stage );
 			new ViewsManager();

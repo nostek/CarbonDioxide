@@ -1,8 +1,8 @@
 package com.stardoll.carbondioxide.models {
 	import com.stardoll.carbondioxide.managers.SettingsManager;
-	import com.stardoll.carbondioxide.utils.ObjectEx;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDView;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 
 	import org.osflash.signals.Signal;
 

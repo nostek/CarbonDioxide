@@ -500,6 +500,8 @@ internal class TreeItem extends Sprite {
 		} else {
 			TreeDisplay.doSelectItems.dispatch( [_model] );
 		}
+
+		stage.focus = null;
 	}
 
 	private function onDblClick(e:MouseEvent):void {

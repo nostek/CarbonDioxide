@@ -185,6 +185,11 @@ package com.stardoll.carbondioxide.components {
 							callback: onOrigWidthHeight,
 							shortcut: "o"
 						},
+						{
+							name: "Wacom friendly copypaste",
+							callback: onWacomCopyPaste,
+							enabled: CutCopyPaste.WACOM_COPYPASTE
+						},
 					]
 				},
 
@@ -236,6 +241,10 @@ package com.stardoll.carbondioxide.components {
 
 			if( struct["callback"] != null ) {
 				itm.addEventListener(Event.SELECT, struct["callback"]);
+			}
+
+			if( struct["enabled"] != null ) {
+				itm.checked = struct["enabled"] as Boolean;
 			}
 
 			if( struct["shortcut"] != null ) {
@@ -429,6 +438,10 @@ package com.stardoll.carbondioxide.components {
 					item.height = bounds.height;
 				}
 			}
+		}
+
+		private function onWacomCopyPaste( e:Event ):void {
+			CutCopyPaste.wacomCopyPaste = !CutCopyPaste.WACOM_COPYPASTE;
 		}
 	}
 }

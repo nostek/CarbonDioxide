@@ -19,6 +19,7 @@ package com.stardoll.carbondioxide.managers {
 		public static const SETTINGS_BGCOLOR:String 	= "bgcolor";
 		public static const SETTINGS_RESOLUTION:String 	= "resolution";
 		public static const SETTINGS_IMAGES:String 		= "images";
+		public static const SETTINGS_COPYPASTE:String 	= "copypaste";
 
 		private static var _data:Object;
 

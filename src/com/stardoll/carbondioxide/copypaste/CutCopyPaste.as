@@ -1,8 +1,10 @@
 package com.stardoll.carbondioxide.copypaste {
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDText;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
@@ -10,6 +12,22 @@ package com.stardoll.carbondioxide.copypaste {
 	 * @author Simon
 	 */
 	public class CutCopyPaste {
+		public function CutCopyPaste() {
+			WACOM_COPYPASTE = ObjectEx.select(SettingsManager.getItem(SettingsManager.SETTINGS_COPYPASTE), "e", false) as Boolean;
+		}
+
+		////////////////////////////////////////////////////////////////////////
+
+		public static var WACOM_COPYPASTE:Boolean;
+
+		public static function set wacomCopyPaste( enabled:Boolean ):void {
+			WACOM_COPYPASTE = enabled;
+
+			SettingsManager.setItem(SettingsManager.SETTINGS_COPYPASTE, {e:enabled});
+		}
+
+		////////////////////////////////////////////////////////////////////////
+
 		public static function cut():void {
 			copy();
 
@@ -139,7 +157,7 @@ package com.stardoll.carbondioxide.copypaste {
 			};
 
 			for each( var obj:Object in items ) {
-				parseObject( obj, DataModel.currentLayer, true );
+				parseObject( obj, DataModel.currentLayer, WACOM_COPYPASTE ? false : true );
 			}
 		}
 	}
