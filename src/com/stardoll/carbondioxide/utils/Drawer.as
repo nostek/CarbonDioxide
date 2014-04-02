@@ -159,7 +159,8 @@ package com.stardoll.carbondioxide.utils {
 				if( mc != null && mc.scale9Grid != null ) {
 					model.scale9 = true;
 
-					model.scale9outer = mc;
+					model.scale9outer = new Sprite();
+					model.scale9outer.addChild( mc );
 
 					if( masker == null ) {
 						model.bounds = model.data.getBounds(model.scale9outer);
