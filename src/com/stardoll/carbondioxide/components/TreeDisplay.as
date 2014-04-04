@@ -660,7 +660,7 @@ package com.stardoll.carbondioxide.components {
 						const currW:int = item.width;
 						const currH:int = item.height;
 
-						if( DataModel.LOCK_CHILD_POSITION || DataModel.LOCK_CHILD_SCALE ) {
+						if( DataModel.LOCK_CHILD_POSITION || DataModel.LOCK_CHILD_SCALE || DataModel.LOCK_CHILD_WORLD_POSITION ) {
 							children = new Vector.<Rectangle>(item.children.length, true);
 
 							for( var i:int = 0; i < children.length; i++ ) {
@@ -679,7 +679,7 @@ package com.stardoll.carbondioxide.components {
 							Math.max( 0, currH + deltaHeight )
 						);
 
-						if( DataModel.LOCK_CHILD_POSITION || DataModel.LOCK_CHILD_SCALE ) {
+						if( DataModel.LOCK_CHILD_POSITION || DataModel.LOCK_CHILD_SCALE || DataModel.LOCK_CHILD_WORLD_POSITION ) {
 							UndoManager.GROUP_LAST_UNDO = true;
 
 							for( i = 0; i < children.length; i++ ) {
@@ -690,6 +690,10 @@ package com.stardoll.carbondioxide.components {
 								if( !DataModel.LOCK_CHILD_SCALE ) {
 									children[i].width 	= item.children[i].width;
 									children[i].height 	= item.children[i].height;
+								}
+								if( DataModel.LOCK_CHILD_WORLD_POSITION ) {
+									children[i].x 		-= deltaX;
+									children[i].y 		-= deltaY;
 								}
 
 								item.children[i].setXYWH(children[i].x, children[i].y, children[i].width, children[i].height);

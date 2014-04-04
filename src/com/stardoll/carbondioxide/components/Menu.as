@@ -173,12 +173,16 @@ package com.stardoll.carbondioxide.components {
 					name: "Options",
 					children: [
 						{
-							name: "Lock child positions",
+							name: "Lock child positions on scale",
 							callback: onLockChildPosition
 						},
 						{
-							name: "Lock child scale",
+							name: "Lock child scale on scale",
 							callback: onLockChildScale
+						},
+						{
+							name: "Lock child world position",
+							callback: onLockChildWorldPosition
 						},
 						{
 							name: "Original Width/Height",
@@ -413,15 +417,19 @@ package com.stardoll.carbondioxide.components {
 		private function onLockChildPosition( e:Event ):void {
 			DataModel.LOCK_CHILD_POSITION = !DataModel.LOCK_CHILD_POSITION;
 
-			(e.target as NativeMenuItem).label = DataModel.LOCK_CHILD_POSITION ? "Unlock child position" : "Lock child position";
 			(e.target as NativeMenuItem).checked = DataModel.LOCK_CHILD_POSITION;
 		}
 
 		private function onLockChildScale( e:Event ):void {
 			DataModel.LOCK_CHILD_SCALE = !DataModel.LOCK_CHILD_SCALE;
 
-			(e.target as NativeMenuItem).label = DataModel.LOCK_CHILD_SCALE ? "Unlock child scale" : "Lock child scale";
 			(e.target as NativeMenuItem).checked = DataModel.LOCK_CHILD_SCALE;
+		}
+
+		private function onLockChildWorldPosition( e:Event ):void {
+			DataModel.LOCK_CHILD_WORLD_POSITION = !DataModel.LOCK_CHILD_WORLD_POSITION;
+
+			(e.target as NativeMenuItem).checked = DataModel.LOCK_CHILD_WORLD_POSITION;
 		}
 
 		private function onOrigWidthHeight( e:Event ):void {
