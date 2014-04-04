@@ -179,20 +179,30 @@ package com.stardoll.carbondioxide.components {
 			if( e.target == this.stage ) {
 				if( e.commandKey || e.controlKey ) return;
 				const add:int = e.shiftKey ? 10 : 1;
-				for each( var item:ItemModel in DataModel.SELECTED ) {
-					switch( e.keyCode ) {
-						case Keyboard.UP:
-							item.item.y -= add;
-						break;
-						case Keyboard.DOWN:
-							item.item.y += add;
-						break;
-						case Keyboard.LEFT:
-							item.item.x -= add;
-						break;
-						case Keyboard.RIGHT:
-							item.item.x += add;
-						break;
+				switch( e.keyCode ) {
+					case Keyboard.UP:
+						moveItem( 0, -add );
+					break;
+					case Keyboard.DOWN:
+						moveItem( 0, add );
+					break;
+					case Keyboard.LEFT:
+						moveItem( -add, 0 );
+					break;
+					case Keyboard.RIGHT:
+						moveItem( add, 0 );
+					break;
+				}
+			}
+		}
+
+		private function moveItem( xadd:int, yadd:int ):void {
+			for each( var item:ItemModel in DataModel.SELECTED ) {
+				item.item.setXYWH(item.item.x+xadd, item.item.y+yadd, item.item.width, item.item.height);
+
+				if( DataModel.LOCK_CHILD_WORLD_POSITION ) {
+					for( var i:int = 0; i < item.item.children.length; i++ ) {
+						item.item.children[i].setXYWH(item.item.children[i].x-xadd, item.item.children[i].y-yadd, item.item.children[i].width, item.item.children[i].height);
 					}
 				}
 			}
