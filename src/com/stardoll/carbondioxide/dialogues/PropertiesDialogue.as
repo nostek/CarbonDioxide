@@ -192,6 +192,10 @@ package com.stardoll.carbondioxide.dialogues {
 						colorDlg.onSelect.addOnce( onColorSelected );
 					break;
 
+					case "asset":
+						item.asset = null;
+					break;
+
 					default : break;
 				}
 			}

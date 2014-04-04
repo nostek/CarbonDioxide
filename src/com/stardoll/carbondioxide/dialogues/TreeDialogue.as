@@ -607,7 +607,12 @@ internal class TreeItem extends Sprite {
 	}
 
 	private function onDelete(e:Event):void {
-		_model.parent.removeChild( _model );
+//		_model.parent.removeChild( _model );
+
+		var sel:Vector.<ItemModel> = DataModel.SELECTED.concat();
+		for each( var item:ItemModel in sel ) {
+			item.item.parent.removeChild( item.item );
+		}
 	}
 
 	private function onMoveTop( e:Event ):void {
