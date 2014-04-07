@@ -1,6 +1,6 @@
 package com.stardoll.carbondioxide.components {
-	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.managers.EventManager;
+	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
@@ -20,6 +20,7 @@ package com.stardoll.carbondioxide.components {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 
@@ -45,6 +46,7 @@ package com.stardoll.carbondioxide.components {
 			DataModel.onLayerChanged.add( onViewChanged );
 			DataModel.onItemChanged.add( onItemChanged );
 			DataModel.onBGColorChanged.add( onViewChanged );
+			DataModel.onSetRealSize.add( onRealViewSize );
 
 			_doSelectItems = new Signal( Array );
 			_doSelectItems.add( onSelectItems );
@@ -136,6 +138,27 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onResize(e:Event):void {
+			this.x = (stage.stageWidth - DataModel.SCREEN_WIDTH*this.scaleX) >> 1;
+			this.y = (stage.stageHeight - DataModel.SCREEN_HEIGHT*this.scaleY) >> 1;
+		}
+
+		private function onRealViewSize():void {
+			//109 @ 2560x1440@27"
+			var sdpi:Number = Math.sqrt( ((Capabilities.screenResolutionX/27)*(Capabilities.screenResolutionX/27)) + ((Capabilities.screenResolutionY/27)*(Capabilities.screenResolutionY/27)) );
+
+			var iw:Number = DataModel.SCREEN_WIDTH/DataModel.SCREEN_DPI;
+			var ih:Number = DataModel.SCREEN_HEIGHT/DataModel.SCREEN_DPI;
+
+			iw *= sdpi;
+			ih *= sdpi;
+
+			iw /= DataModel.SCREEN_WIDTH;
+			ih /= DataModel.SCREEN_HEIGHT;
+
+			DataModel.setResolution( DataModel.SCREEN_WIDTH * iw, DataModel.SCREEN_HEIGHT *ih, DataModel.SCREEN_DPI );
+
+			this.scaleX = this.scaleY = 1;
+
 			this.x = (stage.stageWidth - DataModel.SCREEN_WIDTH*this.scaleX) >> 1;
 			this.y = (stage.stageHeight - DataModel.SCREEN_HEIGHT*this.scaleY) >> 1;
 		}

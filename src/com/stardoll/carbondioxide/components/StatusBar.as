@@ -1,16 +1,16 @@
 package com.stardoll.carbondioxide.components {
-	import com.stardoll.carbondioxide.managers.SettingsManager;
-	import com.stardoll.carbondioxide.utils.ObjectEx;
 	import fl.controls.Button;
 	import fl.controls.ComboBox;
 
 	import com.stardoll.carbondioxide.dialogues.InputDialogue;
 	import com.stardoll.carbondioxide.dialogues.ManageViewsDialogue;
+	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDView;
 	import com.stardoll.carbondioxide.models.resolutions.ResolutionsModel;
+	import com.stardoll.carbondioxide.utils.ObjectEx;
 
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -48,7 +48,7 @@ package com.stardoll.carbondioxide.components {
 
 			_resolutions = new ComboBox();
 			_resolutions.addEventListener(Event.CHANGE, onResolutionChange);
-			_resolutions.width = 250;
+			_resolutions.width = 400;
 			initResolutions();
 			addChild(_resolutions);
 
@@ -71,6 +71,7 @@ package com.stardoll.carbondioxide.components {
 			stage.addEventListener(Event.RESIZE, onResize );
 
 			DataModel.onLayerChanged.add( onLayerChanged );
+			DataModel.onChangeResolution.add( onChangeResolution );
 			ViewsManager.onViewsChanged.add( onViewChanged );
 
 			onResolutionChange(null);
@@ -110,7 +111,30 @@ package com.stardoll.carbondioxide.components {
 			var reses:Array = ResolutionsModel.resolutions;
 
 			for each( var o:Object in reses ) {
-				_resolutions.addItem({label:"(" + Number(o["width"]) + "x" + Number(o["height"]) + ") " + String(o["label"])});
+				_resolutions.addItem({label:String(o["label"])});
+			}
+		}
+
+		private function onChangeResolution( name:String ):void {
+			const len:int = _resolutions.length;
+
+			for( var i:int = 0; i < len; i++ ) {
+				var o:Object = _resolutions.getItemAt(i);
+
+				if( o["label"] == name ) {
+					_resolutions.selectedIndex = i;
+
+					var reses:Array = ResolutionsModel.resolutions;
+					var data:Object = reses[ i ];
+
+					const width:int = data["width"];
+					const height:int = data["height"];
+					const dpi:int = data["dpi"];
+
+					DataModel.setResolution(width, height, dpi);
+
+					return;
+				}
 			}
 		}
 
@@ -130,8 +154,9 @@ package com.stardoll.carbondioxide.components {
 
 			const width:int = data["width"];
 			const height:int = data["height"];
+			const dpi:int = data["dpi"];
 
-			DataModel.setResolution(width, height);
+			DataModel.setResolution(width, height, dpi);
 		}
 
 		private function onViewChanged():void {

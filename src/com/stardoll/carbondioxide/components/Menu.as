@@ -4,6 +4,7 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
+	import com.stardoll.carbondioxide.dialogues.DPIDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
@@ -145,6 +146,10 @@ package com.stardoll.carbondioxide.components {
 							name: "Align",
 							callback: onAlign
 						},
+						{
+							name: "DPI",
+							callback: onDPI
+						},
 					]
 				},
 
@@ -188,6 +193,11 @@ package com.stardoll.carbondioxide.components {
 							name: "Original Width/Height",
 							callback: onOrigWidthHeight,
 							shortcut: "o"
+						},
+						{
+							name: "Real size",
+							callback: onRealSize,
+							shortcut: "r"
 						},
 						{
 							name: "Wacom friendly copypaste",
@@ -301,6 +311,10 @@ package com.stardoll.carbondioxide.components {
 
 		private function onAlign( e:Event ):void {
 			new AlignDialogue();
+		}
+
+		private function onDPI( e:Event ):void {
+			new DPIDialogue();
 		}
 
 		private function onResetWindows( e:Event ):void {
@@ -446,6 +460,10 @@ package com.stardoll.carbondioxide.components {
 					item.height = bounds.height;
 				}
 			}
+		}
+
+		private function onRealSize( e:Event ):void {
+			DataModel.onSetRealSize.dispatch();
 		}
 
 		private function onWacomCopyPaste( e:Event ):void {

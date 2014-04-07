@@ -54,10 +54,13 @@ package com.stardoll.carbondioxide.models {
 		}
 
 		//Resolution
-		public static var _SCREEN_WIDTH:int = 1024;
-		public static var _SCREEN_HEIGHT:int = 768;
+		private static var _SCREEN_WIDTH:int = 1024;
+		private static var _SCREEN_HEIGHT:int = 768;
+		private static var _SCREEN_DPI:int = 300;
 
 		public static var onResolutionChanged:Signal = new Signal();
+		public static var onChangeResolution:Signal = new Signal( String ); //Label
+		public static var onSetRealSize:Signal = new Signal();
 
 		public static function get SCREEN_WIDTH():int {
 			return _SCREEN_WIDTH;
@@ -67,9 +70,14 @@ package com.stardoll.carbondioxide.models {
 			return _SCREEN_HEIGHT;
 		}
 
-		public static function setResolution( width:int, height:int ):void {
+		public static function get SCREEN_DPI():int {
+			return _SCREEN_DPI;
+		}
+
+		public static function setResolution( width:int, height:int, dpi:int ):void {
 			_SCREEN_WIDTH = width;
 			_SCREEN_HEIGHT = height;
+			_SCREEN_DPI = dpi;
 
 			if( currentView != null ) {
 				currentView.updateDisplayProperties();
