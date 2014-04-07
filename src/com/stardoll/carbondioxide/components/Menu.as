@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.components {
+	import com.stardoll.carbondioxide.dialogues.MissingDialogue;
 	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
 	import com.stardoll.carbondioxide.dialogues.AlignDialogue;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
@@ -149,6 +150,10 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "DPI",
 							callback: onDPI
+						},
+						{
+							name: "Missing assets",
+							callback: onMissing
 						},
 					]
 				},
@@ -315,6 +320,10 @@ package com.stardoll.carbondioxide.components {
 
 		private function onDPI( e:Event ):void {
 			new DPIDialogue();
+		}
+
+		private function onMissing( e:Event ):void {
+			new MissingDialogue();
 		}
 
 		private function onResetWindows( e:Event ):void {
