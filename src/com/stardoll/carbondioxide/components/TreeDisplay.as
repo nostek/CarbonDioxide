@@ -155,9 +155,10 @@ package com.stardoll.carbondioxide.components {
 			iw /= DataModel.SCREEN_WIDTH;
 			ih /= DataModel.SCREEN_HEIGHT;
 
-			DataModel.setResolution( DataModel.SCREEN_WIDTH * iw, DataModel.SCREEN_HEIGHT *ih, DataModel.SCREEN_DPI );
+			//DataModel.setResolution( DataModel.SCREEN_WIDTH * iw, DataModel.SCREEN_HEIGHT *ih, DataModel.SCREEN_DPI );
 
-			this.scaleX = this.scaleY = 1;
+			this.scaleX = iw;
+			this.scaleY = ih;
 
 			this.x = (stage.stageWidth - DataModel.SCREEN_WIDTH*this.scaleX) >> 1;
 			this.y = (stage.stageHeight - DataModel.SCREEN_HEIGHT*this.scaleY) >> 1;
@@ -414,7 +415,7 @@ package com.stardoll.carbondioxide.components {
 				return drawShape( item, 0xff0000);
 			}
 
-			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
+			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ), "auto", true );
 		}
 
 		private function drawText( item:CDText ):DisplayObject {
@@ -424,7 +425,7 @@ package com.stardoll.carbondioxide.components {
 
 			var fmt:TextFormat = new TextFormat( null, null, null, null, null, null, null, null, CDText.getAlignAsFormat(item.align) );
 
-			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ) );
+			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ), "auto", true );
 		}
 
 		////////////
