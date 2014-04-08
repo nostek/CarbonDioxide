@@ -56,7 +56,7 @@ package com.stardoll.carbondioxide.utils {
 				for( var i:int = 0; i < len; i++ ) {
 					if( _frames[i] != null ) {
 						ret[ret.length] = {
-							name: _frames[i].name + ((_frames[i].scale9) ? ((_frames[i].scale9inside==null) ? " [9scale][WRONG SETUP]" : " [9scale]") : ""),
+							name: _frames[i].name + ((_frames[i].scale9) ? ((_frames[i].scale9inside==null) ? " [9scale]" : " [9scale][OLD SETUP]") : ""),
 							frame: _frames[i].name
 						};
 					}
@@ -172,10 +172,6 @@ package com.stardoll.carbondioxide.utils {
 							model.scale9inside = mc;
 						}
 					}
-
-					if( model.scale9inside == null ) {
-//						CB_trace.info(this, "Wrong scale9 setup on frame:", model.name);
-					}
 				}
 			}
 		}
@@ -264,6 +260,9 @@ package com.stardoll.carbondioxide.utils {
 		private static function get scaleResolution():Number {
 			return (1536 / DataModel.SCREEN_HEIGHT);
 		}
+		private static function get scaleResolutionInv():Number {
+			return (DataModel.SCREEN_HEIGHT / 1536);
+		}
 
 		//////////////////////////////////////////
 
@@ -301,12 +300,18 @@ package com.stardoll.carbondioxide.utils {
 					if( model.scale9inside != null ) {
 						model.scale9inside.width = width * scaleResolution;
 						model.scale9inside.height = height * scaleResolution;
+
+						model.data.width = width;
+						model.data.height = height;
+
+						_matrix.translate((-b.x)+x, (-b.y)+y);
+					} else {
+						model.data.width = width * scaleResolution;
+						model.data.height = height * scaleResolution;
+
+						_matrix.scale(scaleResolutionInv, scaleResolutionInv);
+						_matrix.translate((-b.x*scaleResolutionInv)+x, (-b.y*scaleResolutionInv)+y);
 					}
-
-					model.data.width = width;
-					model.data.height = height;
-
-					_matrix.translate((-b.x)+x, (-b.y)+y);
 
 					target.drawWithQuality(model.scale9outer, _matrix, null, null, null, true, QUALITY);
 				}
