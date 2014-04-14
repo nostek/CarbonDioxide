@@ -96,6 +96,8 @@ package com.stardoll.carbondioxide.models {
 		public static var onViewChanged:Signal = new Signal();
 
 		public static function setView( view:CDView ):void {
+			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_VIEW, view.name);
+
 			_currentView = view;
 			_currentLayer = view;
 

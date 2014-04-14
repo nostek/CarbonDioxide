@@ -68,10 +68,10 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "name"], 	label:"name: " + item.name});
 				_properties.addItem({data:[false, "path"], 	label:"path: " + item.path});
 				_properties.addItem({data:[false, "note"], 	label:"note: " + item.note});
-				_properties.addItem({data:[false, "x"], 	label:"x: " + item.x.toString()});
-				_properties.addItem({data:[false, "y"], 	label:"y: " + item.y.toString()});
-				_properties.addItem({data:[false, "w"], 	label:"width: " + item.width.toString()});
-				_properties.addItem({data:[false, "h"], 	label:"height: " + item.height.toString()});
+				_properties.addItem({data:[false, "x"], 	label:"x: " + item.xAsInt.toString()});
+				_properties.addItem({data:[false, "y"], 	label:"y: " + item.yAsInt.toString()});
+				_properties.addItem({data:[false, "w"], 	label:"width: " + item.widthAsInt.toString()});
+				_properties.addItem({data:[false, "h"], 	label:"height: " + item.heightAsInt.toString()});
 //				_properties.addItem({data:[false, "r"], label:"rotation: " + sprite.rotation.toString()});
 				_properties.addItem({data:[false, "visible"], label:"visible: " + ((item.visible) ? "true" : "false")});
 				_properties.addItem({data:[false, "enabled"], label:"enabled: " + ((item.enabled) ? "true" : "false")});
@@ -154,11 +154,11 @@ package com.stardoll.carbondioxide.dialogues {
 //					break;
 
 					case "ow":
-						item.width = bounds.width;
+						item.width = Math.round(bounds.width);
 					break;
 
 					case "oh":
-						item.height = bounds.height;
+						item.height = Math.round(bounds.height);
 					break;
 
 					case "text":

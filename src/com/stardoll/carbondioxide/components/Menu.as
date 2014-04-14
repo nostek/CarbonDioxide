@@ -50,6 +50,11 @@ package com.stardoll.carbondioxide.components {
 							callback: onOpenSilent
 						},
 						{
+							name: "Reopen",
+							callback: onReopen,
+							shortcut: "§"
+						},
+						{
 							name: "Save",
 							shortcut: "s",
 							callback: onSave
@@ -377,6 +382,10 @@ package com.stardoll.carbondioxide.components {
 			Load.run(true);
 		}
 
+		private function onReopen( e:Event ):void {
+			Load.reopen();
+		}
+
 		private function onSave( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU ) return;
 			Save.run( true );
@@ -465,8 +474,8 @@ package com.stardoll.carbondioxide.components {
 						bounds.height = Images.getImage(item.asset).height;
 					}
 
-					item.width = bounds.width;
-					item.height = bounds.height;
+					item.width 	= Math.round(bounds.width);
+					item.height = Math.round(bounds.height);
 				}
 			}
 		}

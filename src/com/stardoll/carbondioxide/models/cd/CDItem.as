@@ -147,28 +147,44 @@ package com.stardoll.carbondioxide.models.cd {
 
 		//////////////
 
-		public function get x():int {
-			return Math.round(_parent.width * _x);
+		public function get x():Number {
+			return _parent.width * _x;
 		}
 
-		public function get y():int {
-			return Math.round(_parent.height * _y);
+		public function get y():Number {
+			return _parent.height * _y;
 		}
 
-		public function get width():int {
-			return Math.round(_parent.width * _width);
+		public function get width():Number {
+			return _parent.width * _width;
 		}
 
-		public function get height():int {
-			return Math.round(_parent.height * _height);
+		public function get height():Number {
+			return _parent.height * _height;
 		}
 
 		public function get worldX():int {
-			return _parent.worldX + x;
+			return _parent.worldX + xAsInt;
 		}
 
-		public function get worldY():int {
-			return _parent.worldY + y;
+		public function get worldY():int  {
+			return _parent.worldY + yAsInt;
+		}
+
+		public function get xAsInt():int {
+			return Math.round(_parent.width * _x);
+		}
+
+		public function get yAsInt():int {
+			return Math.round(_parent.height * _y);
+		}
+
+		public function get widthAsInt():int {
+			return Math.round(_parent.width * _width);
+		}
+
+		public function get heightAsInt():int {
+			return Math.round(_parent.height * _height);
 		}
 
 		public function setXYWH( x:int, y:int, width:int, height:int ):void {
@@ -185,20 +201,20 @@ package com.stardoll.carbondioxide.models.cd {
 			itemChanged();
 		}
 
-		public function set x( value:int ):void {
-			setXYWH( value, this.y, this.width, this.height );
+		public function set x( value:Number ):void {
+			setXYWH( int(value), this.y, this.width, this.height );
 		}
 
-		public function set y( value:int ):void {
-			setXYWH( this.x, value, this.width, this.height );
+		public function set y( value:Number ):void {
+			setXYWH( this.x, int(value), this.width, this.height );
 		}
 
-		public function set width( value:int ):void {
-			setXYWH( this.x, this.y, value, this.height );
+		public function set width( value:Number ):void {
+			setXYWH( this.x, this.y, int(value), this.height );
 		}
 
-		public function set height( value:int ):void {
-			setXYWH( this.x, this.y, this.width, value );
+		public function set height( value:Number ):void {
+			setXYWH( this.x, this.y, this.width, int(value) );
 		}
 
 		//////////////
@@ -311,7 +327,11 @@ package com.stardoll.carbondioxide.models.cd {
 			var item:CDItem = this;
 
 			while( !(item is CDView) ) {
-				ret = "/" + item.name + ret;
+				if( (item.parent is CDView) ) {
+					ret = item.name + ret;
+				} else {
+					ret = "/" + item.name + ret;
+				}
 
 				item = item.parent;
 			}
@@ -321,7 +341,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 		//////////////
 
-		public static function toPercent( px:int, res:int ):Number {
+		public static function toPercent( px:Number, res:Number ):Number {
 			return px / res;
 		}
 
@@ -339,11 +359,11 @@ package com.stardoll.carbondioxide.models.cd {
 			_ar = state.aspectRatio;
 
 			if( aspectRatio != 0 ) {
-				const oldwidth:int 	= width;
-				const oldheight:int = height;
+				const oldwidth:Number 	= width;
+				const oldheight:Number 	= height;
 
-				var newwidth:int 	= height * state.aspectRatio;
-				var newheight:int 	= height;
+				var newwidth:Number 	= height * state.aspectRatio;
+				var newheight:Number 	= height;
 
 				const sa:Number = Math.min( oldwidth/newwidth, oldheight/newheight );
 				newwidth 	*= sa;

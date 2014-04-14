@@ -70,9 +70,10 @@ package com.stardoll.carbondioxide.components {
 			addEventListener(Event.ADDED_TO_STAGE, onResize );
 			stage.addEventListener(Event.RESIZE, onResize );
 
+			DataModel.onViewChanged.add( onViewChanged );
 			DataModel.onLayerChanged.add( onLayerChanged );
 			DataModel.onChangeResolution.add( onChangeResolution );
-			ViewsManager.onViewsChanged.add( onViewChanged );
+			ViewsManager.onViewsChanged.add( onViewsChanged );
 
 			onResolutionChange(null);
 		}
@@ -82,6 +83,8 @@ package com.stardoll.carbondioxide.components {
 			this.x = 0;
 
 			_bg.scrollRect = new Rectangle(0, 0, stage.stageWidth, HEIGHT);
+
+			_bg.width = Math.max( stage.stageWidth, _bg.bitmapData.width );
 
 			with( this.graphics ) {
 				clear();
@@ -112,6 +115,19 @@ package com.stardoll.carbondioxide.components {
 
 			for each( var o:Object in reses ) {
 				_resolutions.addItem({label:String(o["label"])});
+			}
+		}
+
+		private function onViewChanged():void {
+			var name:String = DataModel.currentView.name;
+
+			if( _viewBox.text != name ) {
+				for( var i:int = 0; i < _viewBox.length; i++ ) {
+					if( _viewBox.getItemAt(i)["label"] == name ) {
+						_viewBox.selectedIndex = i;
+						return;
+					}
+				}
 			}
 		}
 
@@ -159,7 +175,7 @@ package com.stardoll.carbondioxide.components {
 			DataModel.setResolution(width, height, dpi);
 		}
 
-		private function onViewChanged():void {
+		private function onViewsChanged():void {
 			_viewBox.removeAll();
 
 			for each( var view:CDView in ViewsManager.views ) {
@@ -218,7 +234,7 @@ package com.stardoll.carbondioxide.components {
 
 			DataModel.setView( view );
 
-			onViewChanged();
+			onViewsChanged();
 
 			_viewBox.selectedIndex = _viewBox.length-1;
 		}

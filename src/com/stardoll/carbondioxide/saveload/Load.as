@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.saveload {
+	import com.stardoll.carbondioxide.models.cd.CDView;
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.dialogues.YesNoDialogue;
 	import com.stardoll.carbondioxide.managers.SettingsManager;
@@ -51,6 +52,12 @@ package com.stardoll.carbondioxide.saveload {
 			var url:String = data[0];
 
 			doLoadFile( new File(url) );
+		}
+
+		public static function reopen():void {
+			if( DataModel.LAST_FILE != null ) {
+				doLoadFile( DataModel.LAST_FILE );
+			}
 		}
 
 		public static function run(doSilent:Boolean):void {
@@ -145,6 +152,15 @@ package com.stardoll.carbondioxide.saveload {
 				default:
 					error("Unknown version: " + version.toString());
 				return;
+			}
+
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_VIEW) ) {
+				var name:String = SettingsManager.getItem(SettingsManager.SETTINGS_LAST_VIEW) as String;
+				var view:CDView = ViewsManager.getViewByName(name);
+				if( view != null ) {
+					DataModel.setView(view);
+					return;
+				}
 			}
 
 			DataModel.setView( ViewsManager.views[0] );

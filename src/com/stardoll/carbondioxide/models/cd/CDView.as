@@ -13,11 +13,11 @@ package com.stardoll.carbondioxide.models.cd {
 			return TYPE_VIEW;
 		}
 
-		override public function get width():int {
+		override public function get width():Number {
 			return DataModel.SCREEN_WIDTH;
 		}
 
-		override public function get height():int {
+		override public function get height():Number {
 			return DataModel.SCREEN_HEIGHT;
 		}
 
