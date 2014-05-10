@@ -234,6 +234,13 @@ package com.stardoll.carbondioxide {
 					}
 				}
 			}
+
+			if( !DataModel.COMMAND_KEY && !DataModel.SHIFT_KEY && e.keyCode == Keyboard.DELETE ) {
+				var sel:Vector.<ItemModel> = DataModel.SELECTED.concat();
+				for each( var itemmodel:ItemModel in sel ) {
+					itemmodel.item.parent.removeChild( itemmodel.item );
+				}
+			}
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {

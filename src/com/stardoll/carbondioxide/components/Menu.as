@@ -109,11 +109,6 @@ package com.stardoll.carbondioxide.components {
 							shortcut: "v",
 							callback: onPaste
 						},
-						{
-							name: "Delete selected",
-							shortcut: "d",
-							callback: onDelete
-						}
 					]
 				},
 
@@ -435,15 +430,6 @@ package com.stardoll.carbondioxide.components {
 				return;
 			}
 			CutCopyPaste.paste();
-		}
-
-		private function onDelete( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
-				return;
-			}
-			for each( var item:ItemModel in DataModel.SELECTED ) {
-				item.item.parent.removeChild( item.item );
-			}
 		}
 
 		private function onLockChildPosition( e:Event ):void {
