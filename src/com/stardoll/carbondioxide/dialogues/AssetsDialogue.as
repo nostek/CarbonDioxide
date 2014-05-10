@@ -19,6 +19,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
+	import flash.geom.Matrix;
 	import flash.net.FileFilter;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
@@ -71,6 +72,8 @@ package com.stardoll.carbondioxide.dialogues {
 			_externals = new List();
 			_externals.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onSelectExternal);
 			_externals.addEventListener(Event.CHANGE, onSelectExternalChange);
+			_externals.cacheAsBitmap = true;
+			_externals.cacheAsBitmapMatrix = new Matrix();
 			container.addChild(_externals);
 
 			_filter = new TextInput();

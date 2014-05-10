@@ -11,6 +11,7 @@ package com.stardoll.carbondioxide.dialogues {
 
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 
 	/**
@@ -37,6 +38,8 @@ package com.stardoll.carbondioxide.dialogues {
 			container.addChild( _bg );
 
 			_tree = new Sprite();
+			_tree.cacheAsBitmap = true;
+			_tree.cacheAsBitmapMatrix = new Matrix();
 			_bg.addChild( _tree );
 
 			_scrollV = new ScrollBar();
@@ -202,6 +205,8 @@ internal class ExpandModel {
 	private static var expands:Dictionary = new Dictionary( true );
 
 	public static function minimize( model:CDItem, update:Boolean=true ):void {
+		if( !showResolutions && model.children.length == 0 ) return;
+
 		expands[ model ] = true;
 
 		if( update ) onChanged.dispatch();
@@ -607,8 +612,6 @@ internal class TreeItem extends Sprite {
 	}
 
 	private function onDelete(e:Event):void {
-//		_model.parent.removeChild( _model );
-
 		var sel:Vector.<ItemModel> = DataModel.SELECTED.concat();
 		for each( var item:ItemModel in sel ) {
 			item.item.parent.removeChild( item.item );

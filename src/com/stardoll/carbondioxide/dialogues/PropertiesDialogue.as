@@ -11,6 +11,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.utils.Drawer;
 	import com.stardoll.carbondioxide.utils.Images;
 
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 
 	/**
@@ -31,6 +32,8 @@ package com.stardoll.carbondioxide.dialogues {
 			_properties = new List();
 			_properties.doubleClickEnabled = true;
 			_properties.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onEditProperties);
+			_properties.cacheAsBitmap = true;
+			_properties.cacheAsBitmapMatrix = new Matrix();
 			container.addChild(_properties);
 
 			init( WIDTH, HEIGHT, 820, 10, !fullSize );
