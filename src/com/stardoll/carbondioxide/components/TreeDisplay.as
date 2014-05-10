@@ -40,6 +40,8 @@ package com.stardoll.carbondioxide.components {
 
 		private var _dragging:Boolean;
 
+        private var _skipDeselect:Boolean;
+
 		public function TreeDisplay() {
 			DataModel.onResolutionChanged.add( onViewChanged );
 			DataModel.onViewChanged.add( onViewChanged );
@@ -65,6 +67,8 @@ package com.stardoll.carbondioxide.components {
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 
 			_allowed = new Vector.<ItemModel>();
+
+            _skipDeselect = false;
 
 			_local = new Point();
 			_global = new Point();
@@ -92,8 +96,11 @@ package com.stardoll.carbondioxide.components {
 				this.mouseEnabled = this.mouseChildren = false;
 				return;
 			} else {
-				if( e.target == this || e.target == stage ) {
-					_start = new Point( this.mouseX, this.mouseY );
+				if( e.target == this ||
+					e.target == stage ||
+					( (e.target is ItemModel) && (!(e.target as ItemModel).item.visible || !(e.target as ItemModel).item.enabled) )
+					) {
+						_start = new Point( this.mouseX, this.mouseY );
 				}
 			}
 		}
@@ -134,6 +141,7 @@ package com.stardoll.carbondioxide.components {
 			if( _start != null ) {
 				updateSelectionBox( true );
 				_start = null;
+                _skipDeselect = true;
 			}
 		}
 
@@ -197,6 +205,8 @@ package com.stardoll.carbondioxide.components {
 				this.x -= ret.x;
 				this.y -= ret.y;
 			}
+
+            drawSelection();
 		}
 
 		private function onKeyDown(e:KeyboardEvent):void {
@@ -312,6 +322,11 @@ package com.stardoll.carbondioxide.components {
 		private function onDeselect( e:MouseEvent ):void {
 			if( e.target == _selection ) return;
 
+            if( _skipDeselect ) {
+                _skipDeselect = false;
+                return;
+            }
+
 			var obj:ItemModel = e.target as ItemModel;
 
 			if( obj == null ) {
@@ -384,7 +399,7 @@ package com.stardoll.carbondioxide.components {
 		private function drawImage( item:CDItem ):DisplayObject {
 			var s:Sprite = new Sprite();
 
-			var bm:Bitmap = new Bitmap( Images.getImage(item.asset), "auto", true );
+			var bm:Bitmap = new Bitmap( Images.getImage(item.asset) );
 			bm.width = item.width;
 			bm.height = item.height;
 			s.addChild(bm);
@@ -415,7 +430,7 @@ package com.stardoll.carbondioxide.components {
 				return drawShape( item, 0xff0000);
 			}
 
-			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ), "auto", true );
+			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
 		}
 
 		private function drawText( item:CDText ):DisplayObject {
@@ -425,7 +440,7 @@ package com.stardoll.carbondioxide.components {
 
 			var fmt:TextFormat = new TextFormat( null, null, null, null, null, null, null, null, CDText.getAlignAsFormat(item.align) );
 
-			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ), "auto", true );
+			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ) );
 		}
 
 		////////////
@@ -488,7 +503,7 @@ package com.stardoll.carbondioxide.components {
 			var pt:Point;
 
 			for each( item in _allowed ) {
-				if( item != null && item.item.enabled ) {
+				if( item != null && item.item.enabled && item.item.visible ) {
 					pt = this.globalToLocal(item.localToGlobal(PZERO));
 					rect = new Rectangle( pt.x, pt.y, item.item.width, item.item.height );
 
@@ -601,10 +616,10 @@ package com.stardoll.carbondioxide.components {
 			if( _local.y <= SelectionItem.SCALE_BORDER ) {
 				_state |= STATE_TOP;
 			}
-			if( _local.x >= _selection.width-SelectionItem.SCALE_BORDER ) {
+			if( _local.x >= _selection.rwidth-SelectionItem.SCALE_BORDER ) {
 				_state |= STATE_RIGHT;
 			}
-			if( _local.y >= _selection.height-SelectionItem.SCALE_BORDER ) {
+			if( _local.y >= _selection.rheight-SelectionItem.SCALE_BORDER ) {
 				_state |= STATE_BOTTOM;
 			}
 
@@ -640,25 +655,25 @@ package com.stardoll.carbondioxide.components {
 
 			if( _state & STATE_LEFT ) {
 				_selection.x = _selection.save_x + diffx;
-				_selection.width = _selection.save_width - diffx;
+				_selection.rwidth = _selection.save_width - diffx;
 			}
 			if( _state & STATE_TOP ) {
 				_selection.y = _selection.save_y + diffy;
-				_selection.height = _selection.save_height - diffy;
+				_selection.rheight = _selection.save_height - diffy;
 			}
 			if( _state & STATE_RIGHT ) {
-				_selection.width = _selection.save_width + diffx;
+				_selection.rwidth = _selection.save_width + diffx;
 			}
 			if( _state & STATE_BOTTOM ) {
-				_selection.height = _selection.save_height + diffy;
+				_selection.rheight = _selection.save_height + diffy;
 			}
 
-			_selection.width = Math.max( 0, _selection.width );
-			_selection.height = Math.max( 0, _selection.height );
-
-			updateSelection( false );
+			_selection.rwidth = Math.max( 0, _selection.rwidth );
+			_selection.rheight = Math.max( 0, _selection.rheight );
 
 			_selection.update();
+
+			updateSelection( false );
 		}
 
 		private function onMouseUp( e:MouseEvent ):void {
@@ -675,8 +690,8 @@ package com.stardoll.carbondioxide.components {
 		private function updateSelection( setValues:Boolean ):void {
 			var deltaX:int 		= _selection.x - _selection.save_x;
 			var deltaY:int 		= _selection.y - _selection.save_y;
-			var deltaWidth:int 	= _selection.width - _selection.save_width;
-			var deltaHeight:int = _selection.height - _selection.save_height;
+			var deltaWidth:int 	= _selection.rwidth - _selection.save_width;
+			var deltaHeight:int = _selection.rheight - _selection.save_height;
 
 			if( deltaX == 0 && deltaY == 0 && deltaWidth == 0 && deltaHeight == 0 ) return;
 
@@ -752,8 +767,10 @@ package com.stardoll.carbondioxide.components {
 
 
 
+import flash.display.JointStyle;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.geom.Matrix;
 import flash.geom.Rectangle;
 
 
@@ -764,12 +781,15 @@ internal class SelectionItem extends Sprite {
 	private var _localX:int;
 	private var _localY:int;
 
-	private var _width:int;
-	private var _height:int;
+	public var rwidth:int;
+	public var rheight:int;
 
 	public function SelectionItem() {
 		this.buttonMode = true;
 		this.doubleClickEnabled = true;
+
+        this.cacheAsBitmap = true;
+        this.cacheAsBitmapMatrix = new Matrix();
 
 		_localX = _localY = -1;
 
@@ -779,8 +799,8 @@ internal class SelectionItem extends Sprite {
 	public function save():void {
 		save_x 		= x;
 		save_y 		= y;
-		save_width 	= width;
-		save_height = height;
+		save_width 	= rwidth;
+		save_height = rheight;
 	}
 
 	public var save_x:Number;
@@ -791,7 +811,7 @@ internal class SelectionItem extends Sprite {
 	public function set rect( rect:Rectangle ):void {
 		this.graphics.clear();
 
-		this.scaleX = this.scaleY = 1;
+        rwidth = height = 0;
 
 		if( rect == null ) {
 			return;
@@ -804,40 +824,31 @@ internal class SelectionItem extends Sprite {
 	}
 
 	public function update():void {
-		const w:int = this.width;
-		const h:int = this.height;
-
-		this.scaleX = this.scaleY = 1;
-
-		draw( w, h );
+		draw( rwidth, rheight );
 	}
 
 	private function onMouseMove( e:MouseEvent ):void {
 		_localX = e.localX;
 		_localY = e.localY;
 
-		draw( _width, _height );
+		draw( rwidth, rheight );
 	}
 
 	private function draw( width:int, height:int ):void {
 		this.graphics.clear();
 
-		_width = width;
-		_height = height;
+		rwidth = width;
+		rheight = height;
 
 		with( this.graphics ) {
 			beginFill(0x000000, 0.1);
 			drawRect(0, 0, width, height);
 			endFill();
 
-			lineStyle(2, 0x00ff00, 0.8);
-			moveTo(0, 0);
-			lineTo(width, 0);
-			lineTo(width, height);
-			lineTo(0, height);
-			lineTo(0, 0);
+			lineStyle(1, 0x00ff00, 0.8, false, "none", "none", JointStyle.MITER);
+			drawRect(0,0,width,height);
 
-			lineStyle(3, 0xff00ff, 0.8);
+			lineStyle(1, 0xff00ff, 0.8, false, "none", "none", JointStyle.MITER);
 
 			if( !(_localX == -1 && _localY == -1) ) {
 				if( _localX <= SelectionItem.SCALE_BORDER ) {
@@ -859,7 +870,7 @@ internal class SelectionItem extends Sprite {
 			}
 		}
 
-		this.scrollRect = new Rectangle(0,0,width,height);
+        this.scaleX = this.scaleY = 1;
 	}
 }
 
@@ -899,14 +910,8 @@ internal class SelectionBox extends Sprite {
 			drawRect(0, 0, width, height);
 			endFill();
 
-			lineStyle(2, 0x00ff00, 0.8);
-			moveTo(0, 0);
-			lineTo(width, 0);
-			lineTo(width, height);
-			lineTo(0, height);
-			lineTo(0, 0);
+			lineStyle(1, 0x00ff00, 0.8, false, "none", "none", JointStyle.MITER);
+			drawRect(0,0,width,height);
 		}
-
-		this.scrollRect = new Rectangle(0,0,width,height);
 	}
 }
