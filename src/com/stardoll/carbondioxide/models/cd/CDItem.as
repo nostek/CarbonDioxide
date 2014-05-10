@@ -190,11 +190,12 @@ package com.stardoll.carbondioxide.models.cd {
 		public function setXYWH( x:int, y:int, width:int, height:int ):void {
 			saveUndo();
 
-			currentResolution.x 			= toPercent( x, _parent.width );
-			currentResolution.y 			= toPercent( y, _parent.height );
-			currentResolution.width 		= toPercent( width, _parent.width );
-			currentResolution.height 		= toPercent( height, _parent.height );
-			currentResolution.aspectRatio 	= width / height;
+			var res:CDResolution 	= currentResolution;
+			res.x 					= toPercent( x, _parent.width );
+			res.y 					= toPercent( y, _parent.height );
+			res.width 				= toPercent( width, _parent.width );
+			res.height 				= toPercent( height, _parent.height );
+			res.aspectRatio 		= width / height;
 
 			updateDisplayProperties();
 
