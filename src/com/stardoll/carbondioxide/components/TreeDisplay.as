@@ -70,7 +70,6 @@ package com.stardoll.carbondioxide.components {
 
             _skipDeselect = false;
 
-			_local = new Point();
 			_global = new Point();
 		}
 
@@ -98,7 +97,8 @@ package com.stardoll.carbondioxide.components {
 			} else {
 				if( e.target == this ||
 					e.target == stage ||
-					( (e.target is ItemModel) && (!(e.target as ItemModel).item.visible || !(e.target as ItemModel).item.enabled) )
+					( (e.target is ItemModel) && (!(e.target as ItemModel).item.visible || !(e.target as ItemModel).item.enabled) ) ||
+					( (e.target is ItemModel) && (e.target as ItemModel).mouseChildren )
 					) {
 						_start = new Point( this.mouseX, this.mouseY );
 				}
@@ -563,17 +563,10 @@ package com.stardoll.carbondioxide.components {
 
 		////////////
 
-		private static const STATE_MOVE:uint 	= 1 << 1;
-		private static const STATE_LEFT:uint 	= 1 << 2;
-		private static const STATE_RIGHT:uint 	= 1 << 3;
-		private static const STATE_TOP:uint 	= 1 << 4;
-		private static const STATE_BOTTOM:uint 	= 1 << 5;
-
 		private static const DIR_NONE:int 		= 0;
 		private static const DIR_HORIZONTAL:int = 1;
 		private static const DIR_VERTICAL:int 	= 2;
 
-		private var _local:Point;
 		private var _global:Point;
 		private var _state:uint;
 		private var _ascale:Boolean;
@@ -598,9 +591,6 @@ package com.stardoll.carbondioxide.components {
 
 			_selection.save();
 
-			_local.x = e.localX;
-			_local.y = e.localY;
-
 			_global.x = e.stageX;
 			_global.y = e.stageY;
 
@@ -610,20 +600,7 @@ package com.stardoll.carbondioxide.components {
 
 			_mdir = DIR_NONE;
 
-			if( _local.x <= SelectionItem.SCALE_BORDER ) {
-				_state |= STATE_LEFT;
-			}
-			if( _local.y <= SelectionItem.SCALE_BORDER ) {
-				_state |= STATE_TOP;
-			}
-			if( _local.x >= _selection.rwidth-SelectionItem.SCALE_BORDER ) {
-				_state |= STATE_RIGHT;
-			}
-			if( _local.y >= _selection.rheight-SelectionItem.SCALE_BORDER ) {
-				_state |= STATE_BOTTOM;
-			}
-
-			if( _state == 0 ) _state = STATE_MOVE;
+			_state = _selection.state;
 
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
@@ -633,7 +610,7 @@ package com.stardoll.carbondioxide.components {
 			var diffx:int = (e.stageX - _global.x) * (1/this.scaleX);
 			var diffy:int = (e.stageY - _global.y) * (1/this.scaleY);
 
-			if( _state == STATE_MOVE ) {
+			if( _state == SelectionItem.STATE_MOVE ) {
 				if( DataModel.SHIFT_KEY && _mdir == DIR_NONE ) {
 					_mdir = ( Math.abs(diffx) > Math.abs(diffy) ) ? DIR_HORIZONTAL : DIR_VERTICAL;
 				}
@@ -653,18 +630,18 @@ package com.stardoll.carbondioxide.components {
 				diffx = diffy = Math.min( diffx, diffy );
 			}
 
-			if( _state & STATE_LEFT ) {
+			if( _state & SelectionItem.STATE_LEFT ) {
 				_selection.x = _selection.save_x + diffx;
 				_selection.rwidth = _selection.save_width - diffx;
 			}
-			if( _state & STATE_TOP ) {
+			if( _state & SelectionItem.STATE_TOP ) {
 				_selection.y = _selection.save_y + diffy;
 				_selection.rheight = _selection.save_height - diffy;
 			}
-			if( _state & STATE_RIGHT ) {
+			if( _state & SelectionItem.STATE_RIGHT ) {
 				_selection.rwidth = _selection.save_width + diffx;
 			}
-			if( _state & STATE_BOTTOM ) {
+			if( _state & SelectionItem.STATE_BOTTOM ) {
 				_selection.rheight = _selection.save_height + diffy;
 			}
 
@@ -776,13 +753,23 @@ import flash.geom.Rectangle;
 
 
 internal class SelectionItem extends Sprite {
-	public static const SCALE_BORDER:int = 5;
+	public static const SCALE_BORDER:int = 10;
 
-	private var _localX:int;
-	private var _localY:int;
+	public static const STATE_MOVE:uint 	= 1 << 1;
+	public static const STATE_LEFT:uint 	= 1 << 2;
+	public static const STATE_RIGHT:uint 	= 1 << 3;
+	public static const STATE_TOP:uint 		= 1 << 4;
+	public static const STATE_BOTTOM:uint 	= 1 << 5;
+
+	private var _stageX:int;
+	private var _stageY:int;
+
+	private var _bounds:Rectangle;
 
 	public var rwidth:int;
 	public var rheight:int;
+
+	public var state:uint;
 
 	public function SelectionItem() {
 		this.buttonMode = true;
@@ -791,9 +778,12 @@ internal class SelectionItem extends Sprite {
         this.cacheAsBitmap = true;
         this.cacheAsBitmapMatrix = new Matrix();
 
-		_localX = _localY = -1;
+		_stageX = _stageY = -1;
+
+		_bounds = new Rectangle();
 
 		this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		this.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 	}
 
 	public function save():void {
@@ -828,8 +818,18 @@ internal class SelectionItem extends Sprite {
 	}
 
 	private function onMouseMove( e:MouseEvent ):void {
-		_localX = e.localX;
-		_localY = e.localY;
+		_bounds = this.getBounds(this.stage);
+
+		_stageX = e.stageX - _bounds.x;
+		_stageY = e.stageY - _bounds.y;
+
+		draw( rwidth, rheight );
+	}
+
+	private function onMouseOut( e:MouseEvent ):void {
+		_bounds = this.getBounds(this.stage);
+
+		_stageX = _stageY = -1;
 
 		draw( rwidth, rheight );
 	}
@@ -839,6 +839,8 @@ internal class SelectionItem extends Sprite {
 
 		rwidth = width;
 		rheight = height;
+
+		state = 0;
 
 		with( this.graphics ) {
 			beginFill(0x000000, 0.1);
@@ -850,22 +852,30 @@ internal class SelectionItem extends Sprite {
 
 			lineStyle(1, 0xff00ff, 0.8, false, "none", "none", JointStyle.MITER);
 
-			if( !(_localX == -1 && _localY == -1) ) {
-				if( _localX <= SelectionItem.SCALE_BORDER ) {
+			if( !(_stageX == -1 && _stageY == -1) ) {
+				if( _stageX <= SelectionItem.SCALE_BORDER ) {
 					moveTo(0, 0);
 					lineTo(0, height);
+					state |= STATE_LEFT;
 				}
-				if( _localY <= SelectionItem.SCALE_BORDER ) {
+				if( _stageY <= SelectionItem.SCALE_BORDER ) {
 					moveTo(0, 0);
 					lineTo(width, 0);
+					state |= STATE_TOP;
 				}
-				if( _localX >= width-SelectionItem.SCALE_BORDER ) {
+				if( _stageX >= _bounds.width-SelectionItem.SCALE_BORDER ) {
 					moveTo(width, 0);
 					lineTo(width, height);
+					state |= STATE_RIGHT;
 				}
-				if( _localY >= height-SelectionItem.SCALE_BORDER ) {
+				if( _stageY >= _bounds.height-SelectionItem.SCALE_BORDER ) {
 					moveTo(0, height);
 					lineTo(width, height);
+					state |= STATE_BOTTOM;
+				}
+
+				if( state == 0 && _stageX >= 0 && _stageY >= 0 && _stageX <= _bounds.width && _stageY <= _bounds.height ) {
+					state |= STATE_MOVE;
 				}
 			}
 		}
