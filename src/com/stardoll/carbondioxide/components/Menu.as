@@ -1,18 +1,20 @@
 package com.stardoll.carbondioxide.components {
-	import com.stardoll.carbondioxide.dialogues.MissingDialogue;
 	import com.stardoll.carbondioxide.copypaste.CutCopyPaste;
 	import com.stardoll.carbondioxide.dialogues.AlignDialogue;
+	import com.stardoll.carbondioxide.dialogues.AspectRatioDialogue;
 	import com.stardoll.carbondioxide.dialogues.AssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.BaseDialogue;
 	import com.stardoll.carbondioxide.dialogues.ColorDialogue;
 	import com.stardoll.carbondioxide.dialogues.DPIDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
+	import com.stardoll.carbondioxide.dialogues.MissingDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
+	import com.stardoll.carbondioxide.models.cd.CDAspectRatio;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.saveload.Load;
 	import com.stardoll.carbondioxide.saveload.Save;
@@ -203,6 +205,11 @@ package com.stardoll.carbondioxide.components {
 							name: "Real size",
 							callback: onRealSize,
 							shortcut: "r"
+						},
+						{
+							name: "Align",
+							callback: onAlignItems,
+							shortcut: "a"
 						},
 						{
 							name: "Wacom friendly copypaste",
@@ -468,6 +475,58 @@ package com.stardoll.carbondioxide.components {
 
 		private function onRealSize( e:Event ):void {
 			DataModel.onSetRealSize.dispatch();
+		}
+
+		private function onAlignItems( e:Event ):void {
+			var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
+			alignDlg.onSelect.addOnce( onAlignSelected );
+		}
+
+		private function onAlignSelected( ar:int ):void {
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				switch( ar ) {
+					case CDAspectRatio.NONE:
+					break;
+					case CDAspectRatio.TOP_LEFT:
+						item.item.x = 0;
+						item.item.y = 0;
+					break;
+					case CDAspectRatio.TOP:
+						item.item.x = (item.item.parent.width - item.item.width) * 0.5;
+						item.item.y = 0;
+					break;
+					case CDAspectRatio.TOP_RIGHT:
+						item.item.x = (item.item.parent.width - item.item.width);
+						item.item.y = 0;
+					break;
+					case CDAspectRatio.LEFT:
+						item.item.x = 0;
+						item.item.y = (item.item.parent.height - item.item.height) * 0.5;
+					break;
+					case CDAspectRatio.CENTER:
+						item.item.x = (item.item.parent.width - item.item.width) * 0.5;
+						item.item.y = (item.item.parent.height - item.item.height) * 0.5;
+					break;
+					case CDAspectRatio.RIGHT:
+						item.item.x = (item.item.parent.width - item.item.width);
+						item.item.y = (item.item.parent.height - item.item.height) * 0.5;
+					break;
+					case CDAspectRatio.BOTTOM_LEFT:
+						item.item.x = 0;
+						item.item.y = (item.item.parent.height - item.item.height);
+					break;
+					case CDAspectRatio.BOTTOM:
+						item.item.x = (item.item.parent.width - item.item.width) * 0.5;
+						item.item.y = (item.item.parent.height - item.item.height);
+					break;
+					case CDAspectRatio.BOTTOM_RIGHT:
+						item.item.x = (item.item.parent.width - item.item.width);
+						item.item.y = (item.item.parent.height - item.item.height);
+					break;
+				}
+			}
 		}
 
 		private function onWacomCopyPaste( e:Event ):void {

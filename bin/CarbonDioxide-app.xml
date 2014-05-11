@@ -22,7 +22,7 @@
   <!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade.
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
 	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
-  <versionNumber>1.65</versionNumber>
+  <versionNumber>1.66</versionNumber>
   <!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
   <!-- <versionLabel></versionLabel> -->
   <!-- Description, displayed in the AIR application installer.
@@ -202,6 +202,9 @@
     <image16x16>AppIcons/16x16-CarbonIcon_16.png</image16x16>
     <image32x32>AppIcons/32x32-CarbonIcon_32.png</image32x32>
     <image36x36>AppIcons/36x36-CarbonIcon_36.png</image36x36>
+    <image72x72>AppIcons/72x72-CarbonIcon_72.png</image72x72>
+    <image114x114>AppIcons/114x114-CarbonIcon_114.png</image114x114>
+    <image48x48>AppIcons/48x48-CarbonIcon_48.png</image48x48>
   </icon>
 </application>
 
