@@ -40,10 +40,6 @@ package com.stardoll.carbondioxide.utils {
 			exportFramesInit( mc );
 		}
 
-		public function setMovieClip( mc:MovieClip ):void {
-			exportFramesInit( mc );
-		}
-
 		public static function get isLoaded():Boolean {
 			return _matrix!=null;
 		}
@@ -67,8 +63,6 @@ package com.stardoll.carbondioxide.utils {
 		}
 
 		private function exportFramesInit( mc:MovieClip ):void {
-//			const time:uint = getTimer();
-
 			const len:int = mc.numChildren;
 
 			mc.gotoAndStop(1);
@@ -76,24 +70,13 @@ package com.stardoll.carbondioxide.utils {
 			_frames = new Vector.<FrameModel>( len, true );
 			_hash = {};
 
-//			CB_trace.info( this, "Data init:", getTimer()-time, "ms");
-
 			exportFrameStep( mc );
 		}
 
 		private function exportFrameStep( mc:MovieClip ):void {
-//			const t1:uint = getTimer();
-
 			exportFrames( mc );
-
-//			CB_trace.info( this, "Data steps completed in,", getTimer()-t1, "ms");
-
-//			const t2:uint = getTimer();
-
 			exportOptionsMultiple();
 			exportTextMultiple();
-
-//			CB_trace.info( this, "Data generation completed in,", getTimer()-t2, "ms");
 		}
 
 		private function exportFrames( mc:MovieClip ):void {
@@ -235,8 +218,6 @@ package com.stardoll.carbondioxide.utils {
 			if( model != null ) {
 				return model;
 			}
-
-//			CB_trace.error(this, "Could not find frame:", frame);
 
 			return null;
 		}
@@ -467,33 +448,6 @@ package com.stardoll.carbondioxide.utils {
 
 			return bm;
 		}
-
-//		public function drawTextOn( target:BitmapData, x:int, y:int, text:String, frame:Object, height:int, align:int = CB_textAlign.LEFT, width:int=0, fmt:TextFormat=null ):void {
-//			var tf:TextField = getTextField(frame, fmt);
-//
-//			fmt = tf.defaultTextFormat;
-//				fmt.size = height;
-//				fmt.align = (align==CB_textAlign.LEFT) ? TextFormatAlign.LEFT : ((align==CB_textAlign.CENTER) ? TextFormatAlign.CENTER : TextFormatAlign.RIGHT);
-//			tf.defaultTextFormat = fmt;
-//
-//			tf.width = width;
-//			tf.wordWrap = (width!=0);
-//
-//			tf.htmlText = text;
-//
-//			if( tf.defaultTextFormat.align == TextFormatAlign.CENTER ) {
-//				x -= Math.max( tf.width, tf.textWidth ) / 2;
-//			} else {
-//				if( tf.defaultTextFormat.align == TextFormatAlign.RIGHT ) {
-//					x -= Math.max( tf.width, tf.textWidth );
-//				}
-//			}
-//
-//			_matrix.identity();
-//			_matrix.translate(x, y);
-//
-//			target.drawWithQuality(tf, _matrix, null, null, null, true, QUALITY);
-//		}
 
 		///////
 
