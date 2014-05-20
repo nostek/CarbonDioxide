@@ -501,7 +501,7 @@ internal class TreeItem extends Sprite {
 
 			TreeDisplay.doSelectItems.dispatch( a );
 		} else {
-			TreeDisplay.doSelectItems.dispatch( [_model] );
+			EventManager.selectItems( [_model] );
 		}
 
 		stage.focus = null;

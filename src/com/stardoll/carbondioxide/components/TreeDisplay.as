@@ -796,7 +796,7 @@ internal class SelectionItem extends Sprite {
 	public function set rect( rect:Rectangle ):void {
 		this.graphics.clear();
 
-        rwidth = height = 0;
+        rwidth = rheight = 0;
 
 		if( rect == null ) {
 			return;

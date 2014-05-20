@@ -215,7 +215,11 @@ package com.stardoll.carbondioxide {
 				DataModel.COMMAND_KEY = true;
 			}
 
-			if( DataModel.COMMAND_KEY && DataModel.SHIFT_KEY ) {
+			if( BaseDialogue.BLOCK_MENU ) {
+				return;
+			}
+
+			if( DataModel.COMMAND_KEY && DataModel.SHIFT_KEY && !DataModel.ALT_KEY ) {
 				var holder:ItemModel;
 				var item:CDItem;
 
@@ -237,12 +241,28 @@ package com.stardoll.carbondioxide {
 				}
 			}
 
-			if( !DataModel.COMMAND_KEY && !DataModel.SHIFT_KEY && e.keyCode == Keyboard.DELETE ) {
+			if( !DataModel.COMMAND_KEY && !DataModel.SHIFT_KEY && !DataModel.ALT_KEY && e.keyCode == Keyboard.DELETE ) {
 				var sel:Vector.<ItemModel> = DataModel.SELECTED.concat();
 				for each( var itemmodel:ItemModel in sel ) {
 					itemmodel.item.parent.removeChild( itemmodel.item );
 				}
 			}
+
+			if( !DataModel.COMMAND_KEY && !DataModel.SHIFT_KEY && !DataModel.ALT_KEY && e.keyCode == Keyboard.ESCAPE ) {
+				if( DataModel.currentLayer != DataModel.currentView ) {
+					DataModel.setLayer( DataModel.currentLayer.parent );
+					TreeDisplay.doSelectItems.dispatch( [] );
+				}
+			}
+
+//			Need better key. Select all.
+//			if( DataModel.COMMAND_KEY && !DataModel.SHIFT_KEY && !DataModel.ALT_KEY && e.keyCode == Keyboard.A ) {
+//				var a:Array = [];
+//				for each( item in DataModel.currentLayer.children ) {
+//					a.push( item );
+//				}
+//				EventManager.selectItems(a);
+//			}
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {

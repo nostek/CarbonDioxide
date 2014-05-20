@@ -87,7 +87,7 @@ package com.stardoll.carbondioxide.models {
 		}
 
 		//View
-		public static var _currentView:CDView;
+		private static var _currentView:CDView;
 
 		public static function get currentView():CDView {
 			return _currentView;
@@ -108,7 +108,7 @@ package com.stardoll.carbondioxide.models {
 		}
 
 		//Layer
-		public static var _currentLayer:CDItem;
+		private static var _currentLayer:CDItem;
 
 		public static function get currentLayer():CDItem {
 			return _currentLayer;
