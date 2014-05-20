@@ -20,9 +20,13 @@ package com.stardoll.carbondioxide.dialogues {
 		private var _onYes:Signal;
 		private var _onNo:Signal;
 
-		public function YesNoDialogue( caption:String, text:String ) {
+		private var _data:Object;
+
+		public function YesNoDialogue( caption:String, text:String, data:Object=null ) {
 			const WIDTH:int = 300;
 			const HEIGHT:int = 150;
+
+			_data = data;
 
 			super(caption, false, true, false, false);
 
@@ -65,12 +69,20 @@ package com.stardoll.carbondioxide.dialogues {
 		}
 
 		private function onButtonYes(e:MouseEvent):void {
-			_onYes.dispatch();
+			if( _data != null ) {
+				_onYes.dispatch( _data );
+			} else {
+				_onYes.dispatch();
+			}
 			close();
 		}
 
 		private function onButtonNo(e:MouseEvent):void {
-			_onNo.dispatch();
+			if( _data != null ) {
+				_onNo.dispatch( _data );
+			} else {
+				_onNo.dispatch();
+			}
 			close();
 		}
 	}

@@ -20,15 +20,14 @@ package com.stardoll.carbondioxide.utils {
 	public class Drawer {
 		private static const QUALITY:String = StageQuality.BEST;
 
-		private static var _frames:Vector.<FrameModel>;
-		private static var _hash:Object;
-
 		private static var _matrix:Matrix;
 		private static var _point:Point;
 
 		private static var _textField:TextField;
 
-		public function Drawer( mc:MovieClip ) {
+		private static var _packs:Vector.<PackModel>;
+
+		public function Drawer() {
 			_matrix = new Matrix();
 			_point = new Point();
 
@@ -37,23 +36,23 @@ package com.stardoll.carbondioxide.utils {
 			_textField.antiAliasType = AntiAliasType.ADVANCED;
 			_textField.autoSize = TextFieldAutoSize.LEFT;
 
-			exportFramesInit( mc );
-		}
-
-		public static function get isLoaded():Boolean {
-			return _matrix!=null;
+			_packs = new Vector.<PackModel>();
 		}
 
 		public static function get names():Vector.<Object> {
 			var ret:Vector.<Object> = new Vector.<Object>();
 
-			if( _frames != null ) {
-				const len:int = _frames.length;
+			var len:int;
+			var model:FrameModel;
+
+			for( var y:int = 0; y < _packs.length; y++ ) {
+				len = _packs[y].frames.length;
 				for( var i:int = 0; i < len; i++ ) {
-					if( _frames[i] != null ) {
+					model = _packs[y].frames[i];
+					if( model != null ) {
 						ret[ret.length] = {
-							name: _frames[i].name + ((_frames[i].scale9) ? ((_frames[i].scale9inside==null) ? " [9scale]" : " [9scale][OLD SETUP]") : ""),
-							frame: _frames[i].name
+							name: model.name + ((model.scale9) ? ((model.scale9inside==null) ? " [9scale]" : " [9scale][OLD SETUP]") : ""),
+							frame: model.name
 						};
 					}
 				}
@@ -62,30 +61,71 @@ package com.stardoll.carbondioxide.utils {
 			return ret;
 		}
 
-		private function exportFramesInit( mc:MovieClip ):void {
+		public static function addPack( name:String, mc:MovieClip ):void {
+			var pack:PackModel = getPack( name );
+
+			exportFramesInit( mc, pack );
+		}
+
+		private static function getPack( name:String ):PackModel {
+			for( var i:int = 0; i < _packs.length; i++ ) {
+				if( _packs[i].name == name ) {
+					return _packs[i];
+				}
+			}
+
+			var model:PackModel = new PackModel();
+			model.name = name;
+			_packs.push( model );
+
+			optimizePacks();
+
+			return model;
+		}
+
+		private static function optimizePacks():void {
+			for( var i:int = 1; i < _packs.length; i++ ) {
+				if( _packs[i].name.indexOf("_") < 0 ) {
+					var model:PackModel = _packs[i];
+					_packs.splice( i, 1 );
+					_packs.splice( 0, 0, model );
+					return;
+				}
+			}
+		}
+
+		public static function getPackNameFromAsset( asset:String ):String {
+			if( asset == null ) return null;
+
+			for( var i:int = 0; i < _packs.length; i++ ) {
+				if( _packs[i].hash[ asset as String ] != null ) {
+					return _packs[i].name;
+				}
+			}
+
+			return null;
+		}
+
+		private static function exportFramesInit( mc:MovieClip, pack:PackModel ):void {
 			const len:int = mc.numChildren;
 
 			mc.gotoAndStop(1);
 
-			_frames = new Vector.<FrameModel>( len, true );
-			_hash = {};
+			pack.frames = new Vector.<FrameModel>( len, true );
+			pack.hash = {};
 
-			exportFrameStep( mc );
+			exportFrames( mc, pack );
+			exportOptionsMultiple( pack );
+			exportTextMultiple( pack );
 		}
 
-		private function exportFrameStep( mc:MovieClip ):void {
-			exportFrames( mc );
-			exportOptionsMultiple();
-			exportTextMultiple();
-		}
-
-		private function exportFrames( mc:MovieClip ):void {
+		private static function exportFrames( mc:MovieClip, pack:PackModel ):void {
 			var model:FrameModel;
 			var d:DisplayObject;
 
 			var frame:int = 0;
 
-			const len:int = _frames.length;
+			const len:int = pack.frames.length;
 
 			while( frame != len ) {
 				d = mc.getChildAt(frame);
@@ -98,9 +138,9 @@ package com.stardoll.carbondioxide.utils {
 					model.data = d as Sprite;
 					model.name = d.name;
 
-					_frames[frame] = model;
+					pack.frames[frame] = model;
 					if( d.name != null ) {
-						_hash[ d.name ] = model;
+						pack.hash[ d.name ] = model;
 					}
 				}
 
@@ -108,21 +148,21 @@ package com.stardoll.carbondioxide.utils {
 			}
 		}
 
-		private function exportOptionsMultiple():void {
+		private static function exportOptionsMultiple( pack:PackModel ):void {
 			var model:FrameModel;
 			var con:Sprite;
 			var masker:DisplayObject;
 			var mc:MovieClip;
 
-			const len:int = _frames.length;
+			const len:int = pack.frames.length;
 			for( var i:int = 0; i < len; i++ ) {
-				if( _frames[i] == null ) continue;
+				if( pack.frames[i] == null ) continue;
 
 				masker = null;
 				con = null;
 				mc = null;
 
-				model = _frames[i];
+				model = pack.frames[i];
 				con = model.data as Sprite;
 
 				model.bounds = model.data.getBounds(model.data);
@@ -159,7 +199,7 @@ package com.stardoll.carbondioxide.utils {
 			}
 		}
 
-		private function exportTextMultiple():void {
+		private static function exportTextMultiple( pack:PackModel ):void {
 			var con:Sprite;
 			var tf:TextField;
 			var filters:Array;
@@ -167,17 +207,19 @@ package com.stardoll.carbondioxide.utils {
 			var fmt:TextFormat;
 			var html:String;
 
-			const len:int = _frames.length;
+			const len:int = pack.frames.length;
 			for( var i:int = 0; i < len; i++ ) {
-				if( _frames[i] == null ) continue;
+				if( pack.frames[i] == null ) continue;
 
-				con = _frames[i].data as Sprite;
+				con = pack.frames[i].data as Sprite;
 
 				if( con.getChildAt(0) is MovieClip ) {
 					mc = con.getChildAt(0) as MovieClip;
-					tf = (mc.getChildAt(0) as TextField);
+					if( mc.numChildren > 0 ) {
+						tf = (mc.getChildAt(0) as TextField);
 
-					filters = mc.filters;
+						filters = mc.filters;
+					}
 				}
 
 				if( con.getChildAt(0) is TextField ) {
@@ -201,7 +243,7 @@ package com.stardoll.carbondioxide.utils {
 					tf.defaultTextFormat = fmt;
 					tf.filters = filters;
 
-					_frames[i].text = tf;
+					pack.frames[i].text = tf;
 				}
 			}
 		}
@@ -209,33 +251,23 @@ package com.stardoll.carbondioxide.utils {
 		private static function getFrame( frame:Object ):FrameModel {
 			var model:FrameModel;
 
-			if( frame is String ) {
-				model = _hash[ frame as String ];
-			} else {
-				model = _frames[ frame as int ];
-			}
+			for( var i:int = 0; i < _packs.length; i++ ) {
+				if( frame is String ) {
+					model = _packs[i].hash[ frame as String ];
+				} else {
+					model = _packs[i].frames[ frame as int ];
+				}
 
-			if( model != null ) {
-				return model;
+				if( model != null ) {
+					return model;
+				}
 			}
 
 			return null;
 		}
 
 		public static function haveFrame( frame:Object ):Boolean {
-			var model:FrameModel;
-
-			if( frame is String ) {
-				model = _hash[ frame as String ];
-			} else {
-				model = _frames[ frame as int ];
-			}
-
-			if( model != null ) {
-				return true;
-			}
-
-			return false;
+			return (getFrame( frame )!=null);
 		}
 
 		private static function get scaleResolution():Number {
@@ -469,6 +501,7 @@ import flash.geom.Rectangle;
 import flash.text.TextField;
 
 
+
 internal class FrameModel {
 	public var name:String;
 
@@ -480,4 +513,13 @@ internal class FrameModel {
 	public var scale9:Boolean;
 	public var scale9inside:MovieClip;
 	public var scale9outer:Sprite;
+}
+
+
+
+internal final class PackModel {
+	public var name:String;
+
+	public var frames:Vector.<FrameModel>;
+	public var hash:Object;
 }

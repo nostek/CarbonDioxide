@@ -461,7 +461,7 @@ package com.stardoll.carbondioxide.components {
 			for each( var holder:ItemModel in DataModel.SELECTED ) {
 				var item:CDItem = holder.item;
 				if( item != null ) {
-					var bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+					var bounds:Rectangle = ( item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
 					if( item.asset != null && Images.haveImage(item.asset) ) {
 						bounds.width = Images.getImage(item.asset).width;
 						bounds.height = Images.getImage(item.asset).height;

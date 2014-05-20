@@ -1,9 +1,12 @@
 package com.stardoll.carbondioxide.dialogues {
 	import fl.controls.List;
 	import fl.controls.TextInput;
+	import fl.events.ListEvent;
 
+	import com.stardoll.carbondioxide.managers.EventManager;
 	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
+	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDView;
 
@@ -25,6 +28,8 @@ package com.stardoll.carbondioxide.dialogues {
 			super("Find", true, false, true, true);
 
 			_list = new List();
+			_list.doubleClickEnabled = true;
+			_list.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onShowItem);
 			container.addChild( _list );
 
 			_filter = new TextInput();
@@ -53,14 +58,19 @@ package com.stardoll.carbondioxide.dialogues {
 		private function build():void {
 			_list.removeAll();
 
-			const name:String = _filter.text;
+			var name:String = _filter.text;
 			if( name == "" ) return;
+			name = name.toLowerCase();
 
 			const views:Vector.<CDView> = ViewsManager.views;
 
 			var rec:Function = function( view:CDView, item:CDItem, path:String ):void {
-				if( item.asset == name ) {
-					_list.addItem({label: view.name + " - " + path + "/" + item.name} );
+				if( item.asset != null && item.asset.toLowerCase().indexOf(name) >= 0 ) {
+					_list.addItem({
+						label: view.name + " - " + path + "/" + item.name,
+						view: view,
+						item: item
+					});
 				}
 
 				for each( var ch:CDItem in item.children ) {
@@ -74,11 +84,29 @@ package com.stardoll.carbondioxide.dialogues {
 				}
 			}
 		}
-		
+
 		override protected function close():void {
 			_filter.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			
+
 			super.close();
+		}
+
+		private function onShowItem(e:ListEvent):void {
+			const index:int = e.index;
+
+			var data:Object = _list.getItemAt(index);
+			var view:CDView = data["view"];
+			var item:CDItem = data["item"];
+
+			if( DataModel.currentView != view ) {
+				DataModel.setView(view);
+			}
+
+			if( item.parent != DataModel.currentLayer ) {
+				DataModel.setLayer( item.parent );
+			}
+
+			EventManager.selectItems([item]);
 		}
 	}
 }

@@ -1,5 +1,4 @@
 package com.stardoll.carbondioxide.utils {
-	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import flash.display.BitmapData;
 	/**
 	 * @author simonrodriguez
@@ -24,18 +23,11 @@ package com.stardoll.carbondioxide.utils {
 				}
 
 				var model:BitmapModel = new BitmapModel();
-				model.url = url;
 				model.name = name;
 				model.bmd = bmd;
 
 				_images.push( model );
 			}
-
-			var a:Array = [];
-			for each( model in _images ) {
-				a.push( model.url );
-			}
-			SettingsManager.setItem(SettingsManager.SETTINGS_IMAGES, a);
 		}
 
 		public static function getImage( url:String ):BitmapData {
@@ -92,7 +84,6 @@ package com.stardoll.carbondioxide.utils {
 
 import flash.display.BitmapData;
 internal class BitmapModel {
-	public var url:String;
 	public var name:String;
 	public var bmd:BitmapData;
 }

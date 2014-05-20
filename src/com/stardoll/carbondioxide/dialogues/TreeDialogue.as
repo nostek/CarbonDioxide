@@ -11,7 +11,6 @@ package com.stardoll.carbondioxide.dialogues {
 
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 
 	/**
@@ -38,8 +37,6 @@ package com.stardoll.carbondioxide.dialogues {
 			container.addChild( _bg );
 
 			_tree = new Sprite();
-			_tree.cacheAsBitmap = true;
-			_tree.cacheAsBitmapMatrix = new Matrix();
 			_bg.addChild( _tree );
 
 			_scrollV = new ScrollBar();
@@ -174,6 +171,7 @@ package com.stardoll.carbondioxide.dialogues {
 import com.stardoll.carbondioxide.components.TreeDisplay;
 import com.stardoll.carbondioxide.dialogues.InputDialogue;
 import com.stardoll.carbondioxide.dialogues.PopupDialogue;
+import com.stardoll.carbondioxide.managers.EventManager;
 import com.stardoll.carbondioxide.models.DataModel;
 import com.stardoll.carbondioxide.models.ItemModel;
 import com.stardoll.carbondioxide.models.cd.CDItem;
@@ -592,6 +590,12 @@ internal class TreeItem extends Sprite {
 			if( input.isCmd ) {
 				DataModel.onFilterAssets.dispatch( input.text );
 			}
+
+			if( item.parent != DataModel.currentLayer ) {
+				DataModel.setLayer( item.parent );
+			}
+
+			EventManager.selectItems([item]);
 		} else {
 			new PopupDialogue("ERROR", "ERROR: Name is already in use.");
 		}

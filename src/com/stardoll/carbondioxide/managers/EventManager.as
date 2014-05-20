@@ -1,6 +1,8 @@
 package com.stardoll.carbondioxide.managers {
+	import com.stardoll.carbondioxide.components.TreeDisplay;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
+
 	import flash.display.Stage;
 	import flash.events.Event;
 	/**
@@ -12,11 +14,15 @@ package com.stardoll.carbondioxide.managers {
 		private static var _onView:Function;
 		private static var _onTree:Function;
 
+		private static var _selects:Array;
+
 		public function EventManager( stage:Stage ) {
 			_list = new Vector.<CDItem>();
 
 			_onView = null;
 			_onTree = null;
+
+			_selects = null;
 
 			stage.addEventListener(Event.EXIT_FRAME, onRun);
 		}
@@ -43,6 +49,13 @@ package com.stardoll.carbondioxide.managers {
 				}
 				_list.length = 0;
 			}
+
+			if( _selects != null ) {
+				var sel:Array = _selects;
+				_selects = null;
+
+				TreeDisplay.doSelectItems.dispatch( sel );
+			}
 		}
 
 		public static function add( item:CDItem ):void {
@@ -57,6 +70,10 @@ package com.stardoll.carbondioxide.managers {
 
 		public static function treeChanged( cb:Function ):void {
 			_onTree = cb;
+		}
+
+		public static function selectItems( list:Array ):void {
+			_selects = list;
 		}
 	}
 }

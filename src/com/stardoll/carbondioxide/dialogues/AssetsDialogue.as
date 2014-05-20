@@ -16,10 +16,10 @@ package com.stardoll.carbondioxide.dialogues {
 	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.FileListEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
-	import flash.geom.Matrix;
 	import flash.net.FileFilter;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
@@ -43,8 +43,6 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private var _bitmap:Bitmap;
 		private var _bitmapSize:int;
-
-		private var _pendingImages:Array;
 
 		public function AssetsDialogue( fullSize:Boolean=true ) {
 			const WIDTH:int = 300;
@@ -72,8 +70,6 @@ package com.stardoll.carbondioxide.dialogues {
 			_externals = new List();
 			_externals.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onSelectExternal);
 			_externals.addEventListener(Event.CHANGE, onSelectExternalChange);
-			_externals.cacheAsBitmap = true;
-			_externals.cacheAsBitmapMatrix = new Matrix();
 			container.addChild(_externals);
 
 			_filter = new TextInput();
@@ -83,33 +79,68 @@ package com.stardoll.carbondioxide.dialogues {
 			_bitmap = new Bitmap( new BitmapData(1, 1, true, 0xffffffff), "auto", true );
 			container.addChild(_bitmap);
 
-			_pendingImages = [];
-
 			init( WIDTH, HEIGHT, 520, 10, !fullSize );
 
 			onPopulateList();
 		}
 
 		public function initSettings():void {
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_ASSETS) ||
+				SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_FONTS) ||
+				SettingsManager.haveItem(SettingsManager.SETTINGS_IMAGES) ) {
+					var dlg:YesNoDialogue = new YesNoDialogue("Load ALL assets ? ", "Without asking");
+					dlg.onYes.addOnce( onInitDontAsk );
+					dlg.onNo.addOnce( onInitAsk );
+			}
+		}
+
+		private function onInitDontAsk():void {
+			initAssets( false );
+		}
+		private function onInitAsk():void {
+			initAssets( true );
+		}
+
+		private function initAssets(ask:Boolean):void {
+			var files:Array;
+			var i:int;
+			var dlg:YesNoDialogue;
+
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_ASSETS) ) {
-				var dlg:YesNoDialogue = new YesNoDialogue("Load assets ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_ASSETS )[0]);
-				dlg.onYes.addOnce( onRestore );
-				dlg.onNo.addOnce( onNoRestore );
+				files = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_ASSETS ) as Array;
+
+				for( i = 0; i < files.length; i++ ) {
+					if( ask ) {
+						dlg = new YesNoDialogue("Load assets ? ", "Load file? " + files[i], files[i]);
+						dlg.onYes.addOnce( onRestoreAssets );
+						dlg.onNo.addOnce( onNoRestoreAssets );
+					} else {
+						onRestoreAssets(files[i]);
+					}
+				}
 			}
 
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_FONTS) ) {
-				var dlg2:YesNoDialogue = new YesNoDialogue("Load fonts ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0]);
-				dlg2.onYes.addOnce( onRestoreFonts );
-				dlg2.onNo.addOnce( onNoRestoreFonts );
+				if( ask ) {
+					dlg = new YesNoDialogue("Load fonts ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0], SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0]);
+					dlg.onYes.addOnce( onRestoreFonts );
+					dlg.onNo.addOnce( onNoRestoreFonts );
+				} else {
+					onRestoreFonts(SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0]);
+				}
 			}
 
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_IMAGES) ) {
-				_pendingImages = SettingsManager.getItem( SettingsManager.SETTINGS_IMAGES ) as Array;
+				files = SettingsManager.getItem( SettingsManager.SETTINGS_IMAGES ) as Array;
 
-				for( var i:int = _pendingImages.length-1; i >= 0; i-- ) {
-					var dlg3:YesNoDialogue = new YesNoDialogue("Load image ? ", "Load image? " + _pendingImages[i]);
-					dlg3.onYes.addOnce( onRestoreImage );
-					dlg3.onNo.addOnce( onNoRestoreImage );
+				for( i = 0; i < files.length; i++ ) {
+					if( ask ) {
+						dlg = new YesNoDialogue("Load image ? ", "Load image? " + files[i], files[i]);
+						dlg.onYes.addOnce( onRestoreImage );
+						dlg.onNo.addOnce( onNoRestoreImage );
+					} else {
+						onRestoreImage(files[i]);
+					}
 				}
 			}
 		}
@@ -145,16 +176,47 @@ package com.stardoll.carbondioxide.dialogues {
 
 		////
 
-		private function onNoRestoreImage():void {
-			_pendingImages.splice( 0, 1 );
+		private static function addToSaveList( id:String, url:String ):void {
+			var list:Array = SettingsManager.getItem(id) as Array;
 
-			Images.addImage(null, null);
+			if( list == null ) {
+				SettingsManager.setItem(id, [url]);
+				return;
+			}
+
+			if( list.indexOf(url) < 0 ) {
+				list.push( url );
+
+				SettingsManager.setItem(id, list);
+			}
 		}
 
-		private function onRestoreImage():void {
-			var url:String = _pendingImages[0];
+		private static function removeFromSaveList( id:String, url:String ):void {
+			var list:Array = SettingsManager.getItem(id) as Array;
 
-			_pendingImages.splice( 0, 1 );
+			if( list == null ) {
+				return;
+			}
+
+			if( list.indexOf(url) >= 0 ) {
+				list.splice( list.indexOf(url), 1 );
+
+				if( list.length == 0 ) {
+					SettingsManager.setItem(id, null);
+				} else {
+					SettingsManager.setItem(id, list);
+				}
+			}
+		}
+
+		////
+
+		private function onNoRestoreImage( url:String ):void {
+			removeFromSaveList(SettingsManager.SETTINGS_IMAGES, url);
+		}
+
+		private function onRestoreImage( url:String ):void {
+			addToSaveList( SettingsManager.SETTINGS_IMAGES, url );
 
 			doLoadFileImage( url );
 		}
@@ -162,14 +224,16 @@ package com.stardoll.carbondioxide.dialogues {
 		private function onLoadImages(e:Event):void {
 			var f:File = new File();
 
-			f.browseForOpen("Load Image", [ new FileFilter("PNG/JPG/BMP File", "*.png;*.jpg;*.bmp") ]);
-			f.addEventListener(Event.SELECT, onFileSelectedImage);
+			f.browseForOpenMultiple("Load Image", [ new FileFilter("PNG/JPG/BMP File", "*.png;*.jpg;*.bmp") ]);
+			f.addEventListener(FileListEvent.SELECT_MULTIPLE, onFileSelectedImage);
 		}
 
-		private function onFileSelectedImage(e:Event):void {
-			var target:File = e.target as File;
+		private function onFileSelectedImage(e:FileListEvent):void {
+			for each( var target:File in e.files ) {
+				addToSaveList( SettingsManager.SETTINGS_IMAGES, target.url );
 
-			doLoadFileImage( target.url );
+				doLoadFileImage( target.url );
+			}
 		}
 
 		private function doLoadFileImage( url:String ):void {
@@ -187,16 +251,20 @@ package com.stardoll.carbondioxide.dialogues {
 			Images.addImage(info.url, bm.bitmapData);
 
 			onPopulateList();
+
+			if( DataModel.currentView != null ) {
+				DataModel.setView( DataModel.currentView );
+			}
 		}
 
 		////
 
-		private function onNoRestore():void {
-			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_ASSETS, null);
+		private function onNoRestoreAssets( url:String ):void {
+			removeFromSaveList(SettingsManager.SETTINGS_LAST_ASSETS, url);
 		}
 
-		private function onRestore():void {
-			var url:String = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_ASSETS )[0];
+		private function onRestoreAssets( url:String ):void {
+			addToSaveList( SettingsManager.SETTINGS_LAST_ASSETS, url );
 
 			doLoadFile( url );
 		}
@@ -204,16 +272,16 @@ package com.stardoll.carbondioxide.dialogues {
 		private function onLoadSWF(e:Event):void {
 			var f:File = new File();
 
-			f.browseForOpen("Load SWF", [ new FileFilter("SWF File", "*.swf") ]);
-			f.addEventListener(Event.SELECT, onFileSelected);
+			f.browseForOpenMultiple("Load SWF", [ new FileFilter("SWF File", "*.swf") ]);
+			f.addEventListener(FileListEvent.SELECT_MULTIPLE, onFileSelected);
 		}
 
-		private function onFileSelected(e:Event):void {
-			var target:File = e.target as File;
+		private function onFileSelected(e:FileListEvent):void {
+			for each( var target:File in e.files ) {
+				addToSaveList( SettingsManager.SETTINGS_LAST_ASSETS, target.url );
 
-			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_ASSETS, [target.url]);
-
-			doLoadFile( target.url );
+				doLoadFile( target.url );
+			}
 		}
 
 		private function doLoadFile( url:String ):void {
@@ -229,7 +297,7 @@ package com.stardoll.carbondioxide.dialogues {
 			var mc:MovieClip = info.loader.content as MovieClip;
 			mc.gotoAndStop(1);
 
-			new Drawer( mc );
+			Drawer.addPack( nameFromURL(info.url), mc );
 
 			onPopulateList();
 
@@ -240,13 +308,11 @@ package com.stardoll.carbondioxide.dialogues {
 
 		////
 
-		private function onNoRestoreFonts():void {
+		private function onNoRestoreFonts( url:String ):void {
 			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_FONTS, null);
 		}
 
-		private function onRestoreFonts():void {
-			var url:String = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0];
-
+		private function onRestoreFonts( url:String ):void {
 			doLoadFonts( url );
 		}
 
@@ -299,6 +365,10 @@ package com.stardoll.carbondioxide.dialogues {
 					trace( "Register font:", fnt.fontName );
 					Font.registerFont(obj as Class);
 				}
+			}
+
+			if( DataModel.currentView != null ) {
+				DataModel.setView( DataModel.currentView );
 			}
 		}
 
@@ -373,6 +443,13 @@ package com.stardoll.carbondioxide.dialogues {
 			_filter.text = filter;
 
 			onPopulateList();
+		}
+
+		private static function nameFromURL( url:String ):String {
+			if( url.lastIndexOf("/") ) {
+				return url.substr( url.lastIndexOf("/")+1 );
+			}
+			return url;
 		}
 	}
 }

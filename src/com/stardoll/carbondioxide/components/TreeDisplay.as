@@ -382,7 +382,7 @@ package com.stardoll.carbondioxide.components {
 				return drawImage( item );
 			}
 
-			if( !Drawer.isLoaded || (item.asset == null || item.asset == "") ) {
+			if( (item.asset == null || item.asset == "") ) {
 				return drawShape( item );
 			} else {
 				if( item is CDText ) {
@@ -744,16 +744,14 @@ package com.stardoll.carbondioxide.components {
 
 
 
-import flash.display.JointStyle;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
-import flash.geom.Matrix;
 import flash.geom.Rectangle;
 
 
 
 internal class SelectionItem extends Sprite {
-	public static const SCALE_BORDER:int = 10;
+	public static const SCALE_BORDER:int = 5;
 
 	public static const STATE_MOVE:uint 	= 1 << 1;
 	public static const STATE_LEFT:uint 	= 1 << 2;
@@ -774,9 +772,6 @@ internal class SelectionItem extends Sprite {
 	public function SelectionItem() {
 		this.buttonMode = true;
 		this.doubleClickEnabled = true;
-
-        this.cacheAsBitmap = true;
-        this.cacheAsBitmapMatrix = new Matrix();
 
 		_stageX = _stageY = -1;
 
@@ -847,10 +842,10 @@ internal class SelectionItem extends Sprite {
 			drawRect(0, 0, width, height);
 			endFill();
 
-			lineStyle(1, 0x00ff00, 0.8, false, "none", "none", JointStyle.MITER);
+			lineStyle(1, 0x00ff00, 0.8, false, "none");
 			drawRect(0,0,width,height);
 
-			lineStyle(1, 0xff00ff, 0.8, false, "none", "none", JointStyle.MITER);
+			lineStyle(1, 0xff0000, 0.8, false, "none");
 
 			if( !(_stageX == -1 && _stageY == -1) ) {
 				if( _stageX <= SelectionItem.SCALE_BORDER ) {
@@ -920,7 +915,7 @@ internal class SelectionBox extends Sprite {
 			drawRect(0, 0, width, height);
 			endFill();
 
-			lineStyle(1, 0x00ff00, 0.8, false, "none", "none", JointStyle.MITER);
+			lineStyle(1, 0x00ff00, 0.8, false, "none");
 			drawRect(0,0,width,height);
 		}
 	}

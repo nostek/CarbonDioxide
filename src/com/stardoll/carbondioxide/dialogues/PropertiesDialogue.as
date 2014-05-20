@@ -11,7 +11,6 @@ package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.utils.Drawer;
 	import com.stardoll.carbondioxide.utils.Images;
 
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 
 	/**
@@ -32,8 +31,6 @@ package com.stardoll.carbondioxide.dialogues {
 			_properties = new List();
 			_properties.doubleClickEnabled = true;
 			_properties.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onEditProperties);
-			_properties.cacheAsBitmap = true;
-			_properties.cacheAsBitmapMatrix = new Matrix();
 			container.addChild(_properties);
 
 			init( WIDTH, HEIGHT, 820, 10, !fullSize );
@@ -62,7 +59,7 @@ package com.stardoll.carbondioxide.dialogues {
 				const holder:ItemModel = DataModel.SELECTED[0];
 				const item:CDItem = holder.item;
 
-				var bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+				var bounds:Rectangle = ( item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
 				if( item.asset != null && Images.haveImage(item.asset) ) {
 					bounds.width = Images.getImage(item.asset).width;
 					bounds.height = Images.getImage(item.asset).height;
@@ -81,7 +78,7 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "ow"], 	label:"original width: " + bounds.width.toString()});
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
 				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio: " + CDAspectRatio.toString( item.aspectRatio )});
-				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset});
+				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset + " [" + Drawer.getPackNameFromAsset(item.asset) + "]"});
 				_properties.addItem({data:[false, "color"],	label:"color: " + item.color.toString()});
 
 				if( item is CDText ) {
@@ -115,7 +112,7 @@ package com.stardoll.carbondioxide.dialogues {
 
 			const multiple:Boolean = (DataModel.SELECTED.length > 1);
 
-			var bounds:Rectangle = ( Drawer.isLoaded && item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
+			var bounds:Rectangle = ( item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
 			if( item.asset != null && Images.haveImage(item.asset) ) {
 				bounds.width = Images.getImage(item.asset).width;
 				bounds.height = Images.getImage(item.asset).height;

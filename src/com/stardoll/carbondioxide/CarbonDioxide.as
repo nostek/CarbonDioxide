@@ -19,6 +19,7 @@ package com.stardoll.carbondioxide {
 	import com.stardoll.carbondioxide.models.ItemModel;
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.saveload.Load;
+	import com.stardoll.carbondioxide.utils.Drawer;
 
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
@@ -68,6 +69,7 @@ package com.stardoll.carbondioxide {
 			new UndoManager();
 			new Menu( stage );
 			new ViewsManager();
+			new Drawer();
 
 			_bg = new Bitmap( DataModel.BG.bitmapData );
 			_bg.width = stage.stageWidth;
