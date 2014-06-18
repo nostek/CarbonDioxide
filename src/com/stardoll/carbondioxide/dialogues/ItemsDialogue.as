@@ -156,19 +156,6 @@ package com.stardoll.carbondioxide.dialogues {
 
 			var name:String;
 
-			var r:Object;
-
-			var resolutions:Array = ResolutionsModel.resolutions;
-
-			var getRes:Function = function( w:int, h:int ):Object {
-				for each( var o:Object in resolutions ) {
-					if( o["width"] == w && o["height"] == h ) {
-						return o;
-					}
-				}
-				return {label: "unidentified"};
-			};
-
 			for each( var item:CDItem in list ) {
 				name = item.name + " ";
 
@@ -182,12 +169,11 @@ package com.stardoll.carbondioxide.dialogues {
 				node = { label:name, object: item, children:[] };
 
 				for each( var screen:CDResolution in item.resolutions ) {
-					r = getRes( screen.screenWidth, screen.screenHeight );
-					(node["children"] as Array).push( 	{
-															label:"Resolution: " + r["label"] + " (" + screen.screenWidth.toString() + "x" + screen.screenHeight.toString() + ")",
-															screen:screen,
-															object: item
-														} );
+					(node["children"] as Array).push( {
+						label:"Resolution: " + ResolutionsModel.getResolutionNameFromModel(screen) + " (" + screen.screenWidth.toString() + "x" + screen.screenHeight.toString() + ")",
+						screen:screen,
+						object: item
+					} );
 				}
 
 				if( _lastData[name] != null ) {

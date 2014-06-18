@@ -1,24 +1,20 @@
 package com.stardoll.carbondioxide.saveload {
-	import com.stardoll.carbondioxide.models.resolutions.ResolutionsModel;
-	import com.stardoll.carbondioxide.models.cd.CDResolution;
-	import com.stardoll.carbondioxide.models.cd.CDText;
-	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
+	import com.stardoll.carbondioxide.models.cd.CDItem;
+	import com.stardoll.carbondioxide.models.cd.CDResolution;
+	import com.stardoll.carbondioxide.models.cd.CDText;
 	import com.stardoll.carbondioxide.models.cd.CDView;
 	import com.stardoll.carbondioxide.utils.ObjectEx;
 	/**
 	 * @author Simon
 	 */
-
-	/// DEAD DEAD DEAD DEAD DEAD
-
-	public class Load_v1 {
+	public class Load_v2 {
 		private static function error( msg:String ):void {
 			new PopupDialogue("ERROR", msg);
 		}
 
-		/// DEAD DEAD DEAD DEAD DEAD
+		///
 
 		private static var TEXTDB:Array;
 
@@ -96,6 +92,7 @@ package com.stardoll.carbondioxide.saveload {
 
 			item.asset 				= text( ObjectEx.select(data, SLKeys.ITEM_ASSET, -1), item.asset, true );
 			item.aspectRatioAlign	= ObjectEx.select(data, SLKeys.ITEM_ASPECTRATIO, item.aspectRatioAlign);
+			item.aspectRatioType	= ObjectEx.select(data, SLKeys.ITEM_ASPECTRATIOTYPE, item.aspectRatioType);
 
 			item.enabled = ObjectEx.select(data, SLKeys.ITEM_ENABLED, true) as Boolean;
 			item.visible = ObjectEx.select(data, SLKeys.ITEM_VISIBLE, true) as Boolean;
@@ -124,12 +121,11 @@ package com.stardoll.carbondioxide.saveload {
 		}
 
 		private static function parseResolution( item:CDItem, data:Array ):void {
-			const sw:int = data[ SLKeys.RES_SCREENWIDTH ];
-			const sh:int = data[ SLKeys.RES_SCREENHEIGHT ];
+			const sw:int 	= data[ SLKeys.RES_SCREENWIDTH ];
+			const sh:int 	= data[ SLKeys.RES_SCREENHEIGHT ];
+			const sdpi:int 	= data[ SLKeys.RES_DPI ];
 
-			var dpi:int = ResolutionsModel.getBestGuessFromWidthHeight(sw, sh)["dpi"];
-
-			var res:CDResolution = new CDResolution(sw, sh, dpi);
+			var res:CDResolution = new CDResolution(sw, sh, sdpi);
 			res.x 			= data[ SLKeys.RES_X ];
 			res.y 			= data[ SLKeys.RES_Y ];
 			res.width 		= data[ SLKeys.RES_W ];

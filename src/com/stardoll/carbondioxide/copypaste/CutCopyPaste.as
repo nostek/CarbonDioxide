@@ -57,7 +57,7 @@ package com.stardoll.carbondioxide.copypaste {
 					w: item.width,
 					h: item.height,
 					asset: item.asset,
-					ar: item.aspectRatio,
+					ar: item.aspectRatioAlign,
 					e: item.enabled,
 					v: item.visible,
 					c: item.color,
@@ -143,7 +143,7 @@ package com.stardoll.carbondioxide.copypaste {
 				);
 
 				item.asset = obj["asset"];
-				item.aspectRatio = obj["ar"];
+				item.aspectRatioAlign = obj["ar"];
 				item.enabled = obj["e"] as Boolean;
 				item.visible = obj["v"] as Boolean;
 				item.color = obj["c"] as uint;

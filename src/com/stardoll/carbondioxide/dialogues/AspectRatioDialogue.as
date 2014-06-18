@@ -17,7 +17,7 @@ package com.stardoll.carbondioxide.dialogues {
 			const WIDTH:int = 75 + EDGE + EDGE;
 			const HEIGHT:int = 165;
 
-			super("Align", false, true, false, false);
+			super("Align", false, true, false, true);
 
 			addButton( 0, 	0, CDAspectRatio.TOP_LEFT);
 			addButton( 25, 	0, CDAspectRatio.TOP);
@@ -44,6 +44,12 @@ package com.stardoll.carbondioxide.dialogues {
 			_onSelect = new Signal( int );
 
 			init(WIDTH, HEIGHT);
+		}
+
+		override protected function close():void {
+			_onSelect.removeAll();
+
+			super.close();
 		}
 
 		public function get onSelect():Signal { return _onSelect; }

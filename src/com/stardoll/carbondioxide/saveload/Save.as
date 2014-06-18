@@ -15,7 +15,7 @@ package com.stardoll.carbondioxide.saveload {
 	 * @author simonrodriguez
 	 */
 	public class Save {
-		public static const CURRENT_VERSION:int = 1;
+		public static const CURRENT_VERSION:int = 2;
 
 		private static var TEXTDB:Array;
 
@@ -127,8 +127,12 @@ package com.stardoll.carbondioxide.saveload {
 				data[ SLKeys.ITEM_ASSET ] = text( item.asset );
 			}
 
-			if( item.aspectRatio != CDAspectRatio.NONE ) {
-				data[ SLKeys.ITEM_ASPECTRATIO ] = item.aspectRatio;
+			if( item.aspectRatioAlign != CDAspectRatio.NONE ) {
+				data[ SLKeys.ITEM_ASPECTRATIO ] = item.aspectRatioAlign;
+			}
+
+			if( item.aspectRatioType != CDAspectRatio.ALIGN_BOTH ) {
+				data[ SLKeys.ITEM_ASPECTRATIOTYPE ] = item.aspectRatioType;
 			}
 
 			if( !EXPORT && item.enabled == false ) {
@@ -180,7 +184,8 @@ package com.stardoll.carbondioxide.saveload {
 				res.y,
 				res.width,
 				res.height,
-				res.aspectRatio
+				res.aspectRatio,
+				res.screenDPI
 			];
 		}
 	}

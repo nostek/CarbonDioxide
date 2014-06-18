@@ -197,6 +197,11 @@ package com.stardoll.carbondioxide.components {
 							callback: onLockChildWorldPosition
 						},
 						{
+							name: "Wacom friendly copypaste",
+							callback: onWacomCopyPaste,
+							enabled: CutCopyPaste.WACOM_COPYPASTE
+						},
+						{
 							name: "Original Width/Height",
 							callback: onOrigWidthHeight,
 							shortcut: "o"
@@ -212,9 +217,9 @@ package com.stardoll.carbondioxide.components {
 							shortcut: "a"
 						},
 						{
-							name: "Wacom friendly copypaste",
-							callback: onWacomCopyPaste,
-							enabled: CutCopyPaste.WACOM_COPYPASTE
+							name: "Toggle last screen",
+							callback: onToggleScreen,
+							shortcut: "l"
 						},
 					]
 				},
@@ -467,8 +472,7 @@ package com.stardoll.carbondioxide.components {
 						bounds.height = Images.getImage(item.asset).height;
 					}
 
-					item.width 	= Math.round(bounds.width);
-					item.height = Math.round(bounds.height);
+					item.setXYWH(item.x, item.y, Math.round(bounds.width), Math.round(bounds.height));
 				}
 			}
 		}
@@ -531,6 +535,12 @@ package com.stardoll.carbondioxide.components {
 
 		private function onWacomCopyPaste( e:Event ):void {
 			CutCopyPaste.wacomCopyPaste = !CutCopyPaste.WACOM_COPYPASTE;
+		}
+
+		private function onToggleScreen( e:Event ):void {
+			if( DataModel.LAST_SCREEN_NAME != null ) {
+				DataModel.onChangeResolution.dispatch( DataModel.LAST_SCREEN_NAME );
+			}
 		}
 	}
 }

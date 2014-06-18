@@ -8,6 +8,7 @@ package com.stardoll.carbondioxide.dialogues {
 	import com.stardoll.carbondioxide.models.resolutions.ResolutionsModel;
 
 	import flash.events.Event;
+	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
@@ -22,11 +23,13 @@ package com.stardoll.carbondioxide.dialogues {
 
 		private var _displays:Slider;
 
+		private var _name:TextField;
+
 		private var _curr:String;
 
 		public function DPIDialogue() {
 			const WIDTH:int = 420;
-			const HEIGHT:int = 400;
+			const HEIGHT:int = 420;
 
 			super("DPI", true, false, false, true);
 
@@ -66,6 +69,15 @@ package com.stardoll.carbondioxide.dialogues {
 			_displays.visible = false;
 			_displays.addEventListener(SliderEvent.THUMB_DRAG, onChange);
 			container.addChild(_displays);
+
+			_name = new TextField();
+			_name.y = _displays.y + _displays.height + 15;
+			_name.x = _displays.x + (_displays.width - _name.width) / 2;
+			_name.autoSize = TextFieldAutoSize.LEFT;
+			_name.wordWrap = _name.multiline = _name.selectable = false;
+			_name.defaultTextFormat = fmt;
+			_name.text = "";
+			container.addChild(_name);
 
 			init( WIDTH, HEIGHT );
 
@@ -137,6 +149,8 @@ package com.stardoll.carbondioxide.dialogues {
 
 			if( curr != _curr ) {
 				_curr = curr;
+				_name.text = curr;
+				_name.x = _displays.x + (_displays.width - _name.width) / 2;
 				DataModel.onChangeResolution.dispatch( _curr );
 				DataModel.onSetRealSize.dispatch();
 			}

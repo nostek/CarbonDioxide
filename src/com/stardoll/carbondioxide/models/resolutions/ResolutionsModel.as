@@ -1,4 +1,5 @@
 package com.stardoll.carbondioxide.models.resolutions {
+	import com.stardoll.carbondioxide.models.cd.CDResolution;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -97,6 +98,30 @@ package com.stardoll.carbondioxide.models.resolutions {
 			}
 
 			return ret;
+		}
+
+		public static function getResolutionNameFromModel( model:CDResolution ):String {
+			var res:Array = resolutions;
+
+			for each( var o:Object in res ) {
+				if( o["width"] == model.screenWidth && o["height"] == model.screenHeight && o["dpi"] == model.screenDPI ) {
+					return o["label"];
+				}
+			}
+
+			return "unidentified";
+		}
+
+		public static function getBestGuessFromWidthHeight( width:int, height:int ):Object {
+			var res:Array = resolutions;
+
+			for each( var o:Object in res ) {
+				if( o["width"] == width && o["height"] == height ) {
+					return o;
+				}
+			}
+
+			return null;
 		}
 	}
 }

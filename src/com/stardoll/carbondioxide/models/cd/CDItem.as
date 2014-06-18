@@ -29,7 +29,8 @@ package com.stardoll.carbondioxide.models.cd {
 
 		private var _name:String;
 		private var _asset:String;
-		private var _aspectRatio:int;
+		private var _aspectRatioAlign:int;
+		private var _aspectRatioType:int;
 
 		private var _note:String;
 
@@ -47,7 +48,8 @@ package com.stardoll.carbondioxide.models.cd {
 
 			_color = DEFAULT_COLOR;
 
-			_aspectRatio = CDAspectRatio.NONE;
+			_aspectRatioAlign = CDAspectRatio.NONE;
+			_aspectRatioType = CDAspectRatio.ALIGN_BOTH;
 
 			_enabled = _visible = true;
 
@@ -89,12 +91,26 @@ package com.stardoll.carbondioxide.models.cd {
 			itemChanged();
 		}
 
-		public function get aspectRatio():int {
-			return _aspectRatio;
+		public function get aspectRatioAlign():int {
+			return _aspectRatioAlign;
 		}
 
-		public function set aspectRatio( ar:int ):void {
-			_aspectRatio = ar;
+		public function set aspectRatioAlign( ar:int ):void {
+			_aspectRatioAlign = ar;
+
+			updateDisplayProperties();
+
+			itemChanged();
+		}
+
+		public function get aspectRatioType():int {
+			return _aspectRatioType;
+		}
+
+		public function set aspectRatioType( t:int ):void {
+			_aspectRatioType = t;
+
+			updateDisplayProperties();
 
 			itemChanged();
 		}
@@ -187,6 +203,10 @@ package com.stardoll.carbondioxide.models.cd {
 			return Math.round(_parent.height * _height);
 		}
 
+		public function get aspectRatio():Number {
+			return widthAsInt / heightAsInt;
+		}
+
 		public function setXYWH( x:int, y:int, width:int, height:int ):void {
 			saveUndo();
 
@@ -241,12 +261,14 @@ package com.stardoll.carbondioxide.models.cd {
 		public function get currentResolution():CDResolution {
 			const len:int = _resolutions.length;
 			for( var i:int = 0; i < len; i++ ) {
-				if( _resolutions[i].screenWidth == DataModel.SCREEN_WIDTH && _resolutions[i].screenHeight == DataModel.SCREEN_HEIGHT) {
-					return _resolutions[i];
+				if( _resolutions[i].screenWidth == DataModel.SCREEN_WIDTH &&
+					_resolutions[i].screenHeight == DataModel.SCREEN_HEIGHT &&
+					_resolutions[i].screenDPI == DataModel.SCREEN_DPI ) {
+						return _resolutions[i];
 				}
 			}
 
-			var res:CDResolution = new CDResolution(DataModel.SCREEN_WIDTH, DataModel.SCREEN_HEIGHT);
+			var res:CDResolution = new CDResolution(DataModel.SCREEN_WIDTH, DataModel.SCREEN_HEIGHT, DataModel.SCREEN_DPI);
 			res.x = _x;
 			res.y = _y;
 			res.width = _width;
@@ -349,6 +371,8 @@ package com.stardoll.carbondioxide.models.cd {
 		//////////////
 
 		public function updateDisplayProperties():void {
+			if( _resolutions.length == 0 ) return; //For loading only
+
 			var state:CDResolution = getInterpolatedState();
 
 			_x = state.x;
@@ -359,21 +383,26 @@ package com.stardoll.carbondioxide.models.cd {
 
 			_ar = state.aspectRatio;
 
-			if( aspectRatio != 0 ) {
+			if( _aspectRatioAlign != 0 ) {
 				const oldwidth:Number 	= width;
 				const oldheight:Number 	= height;
 
-				var newwidth:Number 	= height * state.aspectRatio;
-				var newheight:Number 	= height;
+				var newwidth:Number 	= oldheight * state.aspectRatio;
+				var newheight:Number 	= oldheight;
 
-				const sa:Number = Math.min( oldwidth/newwidth, oldheight/newheight );
-				newwidth 	*= sa;
-				newheight 	*= sa;
+				var sa:Number;
+				if( _aspectRatioType == CDAspectRatio.ALIGN_BOTH ) {
+					sa = Math.min( oldwidth/newwidth, oldheight/newheight );
+				} else {
+					sa = (_aspectRatioType == CDAspectRatio.ALIGN_WIDTH) ? oldwidth/newwidth : oldheight/newheight;
+				}
+				newwidth  *= sa;
+				newheight *= sa;
 
 				_width 	= toPercent( newwidth, _parent.width );
 				_height = toPercent( newheight, _parent.height );
 
-				switch( aspectRatio ) {
+				switch( _aspectRatioAlign ) {
 					case CDAspectRatio.TOP_LEFT:
 						//Nothing
 					break;
@@ -434,6 +463,7 @@ package com.stardoll.carbondioxide.models.cd {
 
 			const screenWidth:int 	= DataModel.SCREEN_WIDTH;
 			const screenHeight:int 	= DataModel.SCREEN_HEIGHT;
+			const screenDPI:int		= DataModel.SCREEN_DPI;
 
 			var state:CDResolution;
 
@@ -442,7 +472,7 @@ package com.stardoll.carbondioxide.models.cd {
 			for( var i:int = 0; i < len; i++ ) {
 				state = _resolutions[i];
 
-				if( state.screenWidth == screenWidth && state.screenHeight == screenHeight ) {
+				if( state.screenWidth == screenWidth && state.screenHeight == screenHeight && state.screenDPI == screenDPI ) {
 					return state;
 				}
 			}

@@ -14,6 +14,10 @@ package com.stardoll.carbondioxide.models.cd {
 		public static const BOTTOM:int 			= 8;
 		public static const BOTTOM_RIGHT:int 	= 9;
 
+		public static const ALIGN_BOTH:int		= 0;
+		public static const ALIGN_WIDTH:int		= 1;
+		public static const ALIGN_HEIGHT:int	= 2;
+
 		static public function toString( id:int ):String {
 			switch( id ) {
 				case 0:
@@ -36,6 +40,18 @@ package com.stardoll.carbondioxide.models.cd {
 					return "BOTTOM";
 				case 9:
 					return "BOTTOM_RIGHT";
+			}
+			return null;
+		}
+
+		static public function toAlignString( id:int ):String {
+			switch( id ) {
+				case 0:
+					return "BOTH";
+				case 1:
+					return "WIDTH";
+				case 2:
+					return "HEIGHT";
 			}
 			return null;
 		}

@@ -251,20 +251,7 @@ internal class ResolutionItem extends Sprite {
 		_parent = parent;
 		_model = model;
 
-		var name:String = "unidentified";
-
-		const resolutions:Array = ResolutionsModel.resolutions;
-
-		for each( var o:Object in resolutions ) {
-			if( o["width"] == model.screenWidth && o["height"] == model.screenHeight ) {
-				name = o["label"];
-				break;
-			}
-		}
-
-		name += " (" + model.screenWidth + "x" + model.screenHeight + ")";
-
-		_name = buildName( name );
+		_name = buildName( ResolutionsModel.getResolutionNameFromModel(model) + " (" + model.screenWidth + "x" + model.screenHeight + ")" );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);

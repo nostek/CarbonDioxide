@@ -72,12 +72,17 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "y"], 	label:"y: " + item.yAsInt.toString()});
 				_properties.addItem({data:[false, "w"], 	label:"width: " + item.widthAsInt.toString()});
 				_properties.addItem({data:[false, "h"], 	label:"height: " + item.heightAsInt.toString()});
+				_properties.addItem({data:[false, "whr"], 	label:"aspect ratio: " + item.aspectRatio});
 //				_properties.addItem({data:[false, "r"], label:"rotation: " + sprite.rotation.toString()});
+
+				_properties.addItem({data:[false, "---"], label:"------------------------------"});
+
 				_properties.addItem({data:[false, "visible"], label:"visible: " + ((item.visible) ? "true" : "false")});
 				_properties.addItem({data:[false, "enabled"], label:"enabled: " + ((item.enabled) ? "true" : "false")});
 				_properties.addItem({data:[false, "ow"], 	label:"original width: " + bounds.width.toString()});
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
-				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio: " + CDAspectRatio.toString( item.aspectRatio )});
+				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio align: " + CDAspectRatio.toString( item.aspectRatioAlign )});
+				_properties.addItem({data:[false, "art"], 	label:"aspect ratio type: " + CDAspectRatio.toAlignString( item.aspectRatioType )});
 				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset + " [" + Drawer.getPackNameFromAsset(item.asset) + "]"});
 				_properties.addItem({data:[false, "color"],	label:"color: " + item.color.toString()});
 
@@ -91,9 +96,13 @@ package com.stardoll.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "w"], label:"width: (-)"});
 				_properties.addItem({data:[false, "h"], label:"height: (-)"});
 //				_properties.addItem({data:[false, "r"], label:"rotation: (-)"});
+
+				_properties.addItem({data:[false, "---"], label:"------------------------------"});
+
 				_properties.addItem({data:[false, "visible"], label:"visible: (-)"});
 				_properties.addItem({data:[false, "enabled"], label:"enabled: (-)"});
-				_properties.addItem({data:[false, "ar"], label:"aspect ratio: (-)"});
+				_properties.addItem({data:[false, "ar"], label:"aspect ratio align: (-)"});
+				_properties.addItem({data:[false, "art"], label:"aspect ratio type: (-)"});
 				_properties.addItem({data:[false, "color"],	label:"color: (-)"});
 			}
 		}
@@ -185,6 +194,11 @@ package com.stardoll.carbondioxide.dialogues {
 					case "ar":
 						var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
 						alignDlg.onSelect.addOnce( onAlignSelected );
+					break;
+
+					case "art":
+						var alignTypeDlg:AspectRatioTypeDialogue = new AspectRatioTypeDialogue();
+						alignTypeDlg.onSelect.addOnce( onAlignTypeSelected );
 					break;
 
 					case "color":
@@ -291,7 +305,15 @@ package com.stardoll.carbondioxide.dialogues {
 			var item:ItemModel;
 
 			for each( item in DataModel.SELECTED ) {
-				item.item.aspectRatio = ar;
+				item.item.aspectRatioAlign = ar;
+			}
+		}
+
+		private function onAlignTypeSelected( art:int ):void {
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				item.item.aspectRatioType = art;
 			}
 		}
 

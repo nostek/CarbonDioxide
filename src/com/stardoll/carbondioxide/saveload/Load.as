@@ -149,6 +149,10 @@ package com.stardoll.carbondioxide.saveload {
 					Load_v1.parseViews( data );
 				break;
 
+				case 2:
+					Load_v2.parseViews( data );
+				break;
+
 				default:
 					error("Unknown version: " + version.toString());
 				return;
