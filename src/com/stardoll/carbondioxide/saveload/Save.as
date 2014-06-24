@@ -34,20 +34,20 @@ package com.stardoll.carbondioxide.saveload {
 
 		///
 
-		private static var EXPORT:Boolean = false;
-
-		public static function run( reuse:Boolean, export:Boolean=false ):void {
-			Save.EXPORT = export;
-
-			if( reuse && DataModel.LAST_FILE != null ) {
-				onSaveFile(null);
-				return;
+		public static function run( reuse:Boolean ):Boolean {
+			if( reuse ) {
+				if( DataModel.LAST_FILE != null ) {
+					onSaveFile(null);
+					return true;
+				}
+				return false;
 			}
 
 			var f:File = new File();
 
 			f.browseForSave("Save Design");
 			f.addEventListener(Event.SELECT, onSaveFile);
+			return true;
 		}
 
 		private static function onSaveFile( e:Event ):void {
@@ -68,6 +68,7 @@ package com.stardoll.carbondioxide.saveload {
 
 			data[ SLKeys.MAIN_KEY ] = "cbdd";
 			data[ SLKeys.MAIN_VERSION ] = CURRENT_VERSION;
+			data[ SLKeys.MAIN_RANDOM ] = getRandomCharacters();
 
 			var v:Array = [];
 
@@ -114,7 +115,7 @@ package com.stardoll.carbondioxide.saveload {
 			data[ SLKeys.ITEM_TYPE ] = item.type;
 			data[ SLKeys.ITEM_NAME ] = text( item.name );
 
-			if( !EXPORT && item is CDText ) {
+			if( item is CDText ) {
 				data[ SLKeys.ITEM_TEXT ] = text( (item as CDText).text );
 				if( (item as CDText).align != CDText.ALIGN_LEFT) data[ SLKeys.ITEM_TEXT_ALIGN ] = (item as CDText).align;
 			}
@@ -135,15 +136,15 @@ package com.stardoll.carbondioxide.saveload {
 				data[ SLKeys.ITEM_ASPECTRATIOTYPE ] = item.aspectRatioType;
 			}
 
-			if( !EXPORT && item.enabled == false ) {
+			if( item.enabled == false ) {
 				data[ SLKeys.ITEM_ENABLED ] = false;
 			}
 
-			if( !EXPORT && item.visible == false ) {
+			if( item.visible == false ) {
 				data[ SLKeys.ITEM_VISIBLE ] = false;
 			}
 
-			if( !EXPORT && item.isColorDefined ) {
+			if( item.isColorDefined ) {
 				data[ SLKeys.ITEM_COLOR ] = item.color;
 			}
 
@@ -187,6 +188,14 @@ package com.stardoll.carbondioxide.saveload {
 				res.aspectRatio,
 				res.screenDPI
 			];
+		}
+
+		private static function getRandomCharacters():String {
+			var r:String ="";
+			for( var i:int = 0; i < 32; i++ ) {
+				r += String.fromCharCode( int(65 + ((90-65)*Math.random())) );
+			}
+			return r;
 		}
 	}
 }

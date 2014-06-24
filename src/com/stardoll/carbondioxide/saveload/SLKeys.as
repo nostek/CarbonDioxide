@@ -7,6 +7,7 @@ package com.stardoll.carbondioxide.saveload {
 		public static const MAIN_VERSION:String = "v";
 		public static const MAIN_VIEWS:String 	= "c";
 		public static const MAIN_TEXTS:String 	= "t";
+		public static const MAIN_RANDOM:String 	= "x";
 
 		public static const ITEM_TYPE:String 			= "t";
 		public static const ITEM_NAME:String 			= "n";

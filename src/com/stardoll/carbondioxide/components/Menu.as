@@ -8,6 +8,7 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.dialogues.DPIDialogue;
 	import com.stardoll.carbondioxide.dialogues.FindAssetsDialogue;
 	import com.stardoll.carbondioxide.dialogues.MissingDialogue;
+	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
@@ -64,10 +65,6 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "Save As",
 							callback: onSaveNew
-						},
-						{
-							name: "Export",
-							callback: onExport
 						},
 						{
 							name: "Close",
@@ -395,15 +392,13 @@ package com.stardoll.carbondioxide.components {
 
 		private function onSave( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU ) return;
-			Save.run( true );
+			if( !Save.run( true ) ) {
+				new PopupDialogue("ERROR", "Nothing to save to, use Save As.");
+			}
 		}
 
 		private function onSaveNew( e:Event ):void {
 			Save.run( false );
-		}
-
-		private function onExport( e:Event ):void {
-			Save.run( false, true );
 		}
 
 		private function onUndo( e:Event ):void {

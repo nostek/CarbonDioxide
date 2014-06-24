@@ -1,10 +1,10 @@
 package com.stardoll.carbondioxide.saveload {
-	import com.stardoll.carbondioxide.models.cd.CDView;
 	import com.stardoll.carbondioxide.dialogues.PopupDialogue;
 	import com.stardoll.carbondioxide.dialogues.YesNoDialogue;
 	import com.stardoll.carbondioxide.managers.SettingsManager;
 	import com.stardoll.carbondioxide.managers.ViewsManager;
 	import com.stardoll.carbondioxide.models.DataModel;
+	import com.stardoll.carbondioxide.models.cd.CDView;
 
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -81,10 +81,6 @@ package com.stardoll.carbondioxide.saveload {
 
 			checkLock( f );
 
-			DataModel.LAST_FILE = f;
-
-			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_LAYOUT, [f.url, SILENT]);
-
 			var file:FileStream = new FileStream();
 			file.open(f, FileMode.READ);
 				var json:String = file.readUTFBytes(file.bytesAvailable);
@@ -93,7 +89,13 @@ package com.stardoll.carbondioxide.saveload {
 			var data:Object = loadData( json );
 
 			if( data != null ) {
+				DataModel.LAST_FILE = f;
+
+				SettingsManager.setItem(SettingsManager.SETTINGS_LAST_LAYOUT, [f.url, SILENT]);
+
 				parseData( data );
+			} else {
+				SettingsManager.setItem(SettingsManager.SETTINGS_LAST_LAYOUT, null);
 			}
 		}
 
