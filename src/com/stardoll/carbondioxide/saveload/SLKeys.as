@@ -3,11 +3,12 @@ package com.stardoll.carbondioxide.saveload {
 	 * @author simonrodriguez
 	 */
 	public class SLKeys {
-		public static const MAIN_KEY:String 	= "k";
-		public static const MAIN_VERSION:String = "v";
-		public static const MAIN_VIEWS:String 	= "c";
-		public static const MAIN_TEXTS:String 	= "t";
-		public static const MAIN_RANDOM:String 	= "x";
+		public static const MAIN_KEY:String 			= "k";
+		public static const MAIN_VERSION:String 		= "v";
+		public static const MAIN_VIEWS:String 			= "c";
+		public static const MAIN_TEXTS:String 			= "t";
+		public static const MAIN_RESOLUTIONS:String 	= "r";
+		public static const MAIN_RANDOM:String 			= "x";
 
 		public static const ITEM_TYPE:String 			= "t";
 		public static const ITEM_NAME:String 			= "n";
@@ -31,5 +32,12 @@ package com.stardoll.carbondioxide.saveload {
 		public static const RES_H:int 				= 5;
 		public static const RES_ASPECTRATIO:int		= 6;
 		public static const RES_DPI:int				= 7;
+
+		public static const RES_V3_SCREEN_ID:int 	= 0;
+		public static const RES_V3_X:int 			= 1;
+		public static const RES_V3_Y:int 			= 2;
+		public static const RES_V3_W:int 			= 3;
+		public static const RES_V3_H:int 			= 4;
+		public static const RES_V3_ASPECTRATIO:int	= 5;
 	}
 }

@@ -145,6 +145,8 @@ package com.stardoll.carbondioxide.saveload {
 
 		private static function parseData( data:Object ):void {
 			const version:int = data[ SLKeys.MAIN_VERSION ];
+			
+			trace( "Load version:", version );
 
 			switch( version ) {
 				case 1:
@@ -153,6 +155,10 @@ package com.stardoll.carbondioxide.saveload {
 
 				case 2:
 					Load_v2.parseViews( data );
+				break;
+
+				case 3:
+					Load_v3.parseViews( data );
 				break;
 
 				default:

@@ -15,9 +15,10 @@ package com.stardoll.carbondioxide.saveload {
 	 * @author simonrodriguez
 	 */
 	public class Save {
-		public static const CURRENT_VERSION:int = 2;
+		public static const CURRENT_VERSION:int = 3;
 
 		private static var TEXTDB:Array;
+		private static var RESDB:Array;
 
 		private static function text( txt:String ):int {
 			var index:int = TEXTDB.indexOf( txt );
@@ -31,7 +32,26 @@ package com.stardoll.carbondioxide.saveload {
 
 			return index;
 		}
-
+		
+		private static function resolution( model:CDResolution ):int {
+			const len:int = RESDB.length;
+			
+			var m:CDResolution;
+			
+			for( var i:int = 0; i < len; i++ ) {
+				m = RESDB[i];
+				
+				if( m.screenWidth == model.screenWidth &&
+					m.screenHeight == model.screenHeight &&
+					m.screenDPI == model.screenDPI ) {
+						return i;		
+				}
+			}
+			
+			RESDB.push( model );
+			return len;
+		}
+		
 		///
 
 		public static function run( reuse:Boolean ):Boolean {
@@ -63,6 +83,7 @@ package com.stardoll.carbondioxide.saveload {
 
 		private static function saveData():String {
 			TEXTDB = [];
+			RESDB = [];
 
 			var data:Object = {};
 
@@ -82,8 +103,11 @@ package com.stardoll.carbondioxide.saveload {
 			data[ SLKeys.MAIN_VIEWS ] = v;
 
 			data[ SLKeys.MAIN_TEXTS ] = TEXTDB;
+			
+			data[ SLKeys.MAIN_RESOLUTIONS ] = saveResDB();
 
 			TEXTDB = null;
+			RESDB = null;
 
 			return JSON.stringify(data);
 		}
@@ -179,14 +203,12 @@ package com.stardoll.carbondioxide.saveload {
 
 		private static function saveResolutions( res:CDResolution ):Array {
 			return [
-				res.screenWidth,
-				res.screenHeight,
+				resolution( res ),
 				res.x,
 				res.y,
 				res.width,
 				res.height,
 				res.aspectRatio,
-				res.screenDPI
 			];
 		}
 
@@ -196,6 +218,21 @@ package com.stardoll.carbondioxide.saveload {
 				r += String.fromCharCode( int(65 + ((90-65)*Math.random())) );
 			}
 			return r;
+		}
+		
+		private static function saveResDB():Array {
+			var a:Array = [];
+			
+			var m:CDResolution;
+			
+			const len:int = RESDB.length;
+			for( var i:int = 0; i < len; i++ ) {
+				m = RESDB[i];
+				
+				a.push( m.screenWidth, m.screenHeight, m.screenDPI );
+			}
+			
+			return a;
 		}
 	}
 }
