@@ -17,8 +17,8 @@ package com.stardoll.carbondioxide.saveload {
 	public class Save {
 		public static const CURRENT_VERSION:int = 3;
 
-		private static var TEXTDB:Array;
-		private static var RESDB:Array;
+		private static var TEXTDB:Vector.<String>;
+		private static var RESDB:Vector.<CDResolution>;
 
 		private static function text( txt:String ):int {
 			var index:int = TEXTDB.indexOf( txt );
@@ -82,8 +82,8 @@ package com.stardoll.carbondioxide.saveload {
 		}
 
 		private static function saveData():String {
-			TEXTDB = [];
-			RESDB = [];
+			TEXTDB = new Vector.<String>();
+			RESDB = new Vector.<CDResolution>();
 
 			var data:Object = {};
 

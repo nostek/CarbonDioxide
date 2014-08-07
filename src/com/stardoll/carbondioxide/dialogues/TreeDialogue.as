@@ -108,8 +108,10 @@ package com.stardoll.carbondioxide.dialogues {
 			_height = 2;
 
 			if( DataModel.currentView == null ) return;
+			
+			var resbuffer:Vector.<CDResolution> = new Vector.<CDResolution>();
 
-			buildNode( DataModel.currentView, 2 );
+			buildNode( DataModel.currentView, 2, resbuffer );
 
 			////
 
@@ -132,31 +134,63 @@ package com.stardoll.carbondioxide.dialogues {
 			_scrollH.visible = (diffH>0);
 		}
 
-		private function buildNode( node:CDItem, offset:int ):void {
+		private function buildNode( node:CDItem, offset:int, resbuffer:Vector.<CDResolution> ):void {
 			var i:TreeItem = new TreeItem( node );
 			i.x = offset;
 			i.y = _height;
 			_tree.addChild( i );
 
 			_height += i.height + 1;
-
+			
 			if( ExpandModel.isMaximized( node ) ) {
 				if( ExpandModel.isShowingResolutions ) {
 					for each( var res:CDResolution in node.resolutions ) {
-						buildResolution( res, node, offset + 13 );
+						buildResolution( resbuffer, res, node, offset + 13 );
 					}
 				}
 
 				var reverse:Vector.<CDItem> = node.children.concat().reverse();
 
 				for each( var child:CDItem in reverse ) {
-					buildNode( child, offset + 13 );
+					buildNode( child, offset + 13, resbuffer );
 				}
 			}
 		}
 
-		private function buildResolution( res:CDResolution, node:CDItem, offset:int ):void {
-			var i:ResolutionItem = new ResolutionItem( res, node );
+		private function buildResolution( buffer:Vector.<CDResolution>, res:CDResolution, node:CDItem, offset:int ):void {
+			var cindex:int = -1;
+			
+			var m:CDResolution;
+			
+			const len:int = buffer.length;
+			for( var x:int = 0; x < len; x++ ) {
+				m = buffer[x];
+				if( m.screenWidth == res.screenWidth && m.screenHeight == res.screenHeight && m.screenDPI == res.screenDPI ) {
+					cindex = x;
+					break;
+				}
+			}
+			
+			if( cindex == -1 ) {
+				buffer.push( res );
+				cindex = buffer.length-1;
+			}
+			
+			var color:uint = 0;
+			switch( cindex ) {
+				case 0: color = 0x0000ff; break;
+				case 1: color = 0xff0000; break;
+				case 2: color = 0x00ff00; break;
+				case 3: color = 0xffffff; break;
+				case 4: color = 0xff00ff; break;
+				case 5: color = 0x00ffff; break;
+				case 6: color = 0xffff00; break;
+				case 7: color = 0xa0a0a0; break;
+				case 8: color = 0xaaffff; break;
+				case 9: color = 0xffaaff; break;
+			}
+			
+			var i:ResolutionItem = new ResolutionItem( res, node, color );
 			i.x = offset;
 			i.y = _height;
 			_tree.addChild( i );
@@ -245,19 +279,19 @@ internal class ResolutionItem extends Sprite {
 	private var _parent:CDItem;
 	private var _model:CDResolution;
 
-	public function ResolutionItem( model:CDResolution, parent:CDItem ) {
+	public function ResolutionItem( model:CDResolution, parent:CDItem, color:uint ) {
 		super();
 
 		_parent = parent;
 		_model = model;
 
-		_name = buildName( ResolutionsModel.getResolutionNameFromModel(model) + " (" + model.screenWidth + "x" + model.screenHeight + ")" );
+		_name = buildName( ResolutionsModel.getResolutionNameFromModel(model) + " (" + model.screenWidth + "x" + model.screenHeight + ")", color );
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
 	}
 
-	private function buildName( text:String ):Sprite {
+	private function buildName( text:String, color:uint ):Sprite {
 		var dot:Sprite = new Sprite();
 		dot.buttonMode = true;
 		dot.mouseChildren = false;
@@ -266,6 +300,10 @@ internal class ResolutionItem extends Sprite {
 
 			beginFill(0x77bb77, 1);
 			drawRoundRect(16, 0, 300, HEIGHT, 16, 16);
+			endFill();
+			
+			beginFill(color, 1);
+			drawCircle(16+8, 8, 6);
 			endFill();
 		}
 
@@ -276,7 +314,7 @@ internal class ResolutionItem extends Sprite {
 		t.selectable = false;
 		t.defaultTextFormat = fmt;
 		t.text = text;
-		t.x = 20;
+		t.x = 40;
 		t.y = (HEIGHT - t.height) / 2;
 		dot.addChild(t);
 

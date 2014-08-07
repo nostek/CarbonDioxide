@@ -16,8 +16,8 @@ package com.stardoll.carbondioxide.saveload {
 
 		///
 
-		private static var TEXTDB:Array;
-		private static var RESDB:Array;
+		private static var TEXTDB:Vector.<String>;
+		private static var RESDB:Vector.<CDResolution>;
 
 		private static function text( txt:int, _def:String=null, _defNull:Boolean=false ):String {
 			if( txt < 0 || txt >= TEXTDB.length ) {
@@ -27,8 +27,19 @@ package com.stardoll.carbondioxide.saveload {
 			return TEXTDB[ txt ];
 		}
 		
-		private static function loadResolution( indata:Array ):Array {
-			var a:Array = [];
+		private static function loadTexts( indata:Array ):Vector.<String> {
+			var a:Vector.<String> = new Vector.<String>();
+			
+			const len:int = indata.length;
+			for( var i:int = 0; i < len; i++ ) {
+				a.push( indata[i] );
+			}
+			
+			return a;
+		}
+		
+		private static function loadResolution( indata:Array ):Vector.<CDResolution> {
+			var a:Vector.<CDResolution> = new Vector.<CDResolution>();
 			
 			const len:int = indata.length;
 			for( var i:int = 0; i < len; i+=3 ) {
@@ -54,7 +65,7 @@ package com.stardoll.carbondioxide.saveload {
 				return;
 			}
 
-			TEXTDB = ObjectEx.select(data, SLKeys.MAIN_TEXTS, null);
+			TEXTDB = loadTexts( ObjectEx.select(data, SLKeys.MAIN_TEXTS, []) );
 			RESDB = loadResolution( ObjectEx.select(data, SLKeys.MAIN_RESOLUTIONS, []) );
 
 			const len:int = views.length;
