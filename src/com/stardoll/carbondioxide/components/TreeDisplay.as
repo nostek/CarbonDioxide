@@ -232,7 +232,7 @@ package com.stardoll.carbondioxide.components {
 
 		private function moveItem( xadd:int, yadd:int ):void {
 			for each( var item:ItemModel in DataModel.SELECTED ) {
-				item.item.setXYWH(item.item.x+xadd, item.item.y+yadd, item.item.width, item.item.height);
+				item.item.setXYWH(item.item.xAsInt+xadd, item.item.yAsInt+yadd, item.item.width, item.item.height);
 
 				if( DataModel.LOCK_CHILD_WORLD_POSITION ) {
 					for( var i:int = 0; i < item.item.children.length; i++ ) {
@@ -681,8 +681,8 @@ package com.stardoll.carbondioxide.components {
 					item = d.item;
 
 					if( setValues ) {
-						const currX:int = item.x;
-						const currY:int = item.y;
+						const currX:int = item.xAsInt;
+						const currY:int = item.yAsInt;
 						const currW:int = item.width;
 						const currH:int = item.height;
 

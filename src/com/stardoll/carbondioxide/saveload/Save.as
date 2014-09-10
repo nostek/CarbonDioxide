@@ -32,26 +32,26 @@ package com.stardoll.carbondioxide.saveload {
 
 			return index;
 		}
-		
+
 		private static function resolution( model:CDResolution ):int {
 			const len:int = RESDB.length;
-			
+
 			var m:CDResolution;
-			
+
 			for( var i:int = 0; i < len; i++ ) {
 				m = RESDB[i];
-				
+
 				if( m.screenWidth == model.screenWidth &&
 					m.screenHeight == model.screenHeight &&
 					m.screenDPI == model.screenDPI ) {
-						return i;		
+						return i;
 				}
 			}
-			
+
 			RESDB.push( model );
 			return len;
 		}
-		
+
 		///
 
 		public static function run( reuse:Boolean ):Boolean {
@@ -103,7 +103,7 @@ package com.stardoll.carbondioxide.saveload {
 			data[ SLKeys.MAIN_VIEWS ] = v;
 
 			data[ SLKeys.MAIN_TEXTS ] = TEXTDB;
-			
+
 			data[ SLKeys.MAIN_RESOLUTIONS ] = saveResDB();
 
 			TEXTDB = null;
@@ -180,7 +180,7 @@ package com.stardoll.carbondioxide.saveload {
 				var r:Array = [];
 
 				for( i = 0; i < rlen; i++ ) {
-					r.push( saveResolutions( resolutions[i] ) );
+					saveResolutions( resolutions[i], r );
 				}
 
 				data[ SLKeys.ITEM_RESOLUTIONS ] = r;
@@ -201,15 +201,15 @@ package com.stardoll.carbondioxide.saveload {
 			return data;
 		}
 
-		private static function saveResolutions( res:CDResolution ):Array {
-			return [
+		private static function saveResolutions( res:CDResolution, r:Array ):void {
+			r.push(
 				resolution( res ),
 				res.x,
 				res.y,
 				res.width,
 				res.height,
-				res.aspectRatio,
-			];
+				res.aspectRatio
+			);
 		}
 
 		private static function getRandomCharacters():String {
@@ -219,19 +219,19 @@ package com.stardoll.carbondioxide.saveload {
 			}
 			return r;
 		}
-		
+
 		private static function saveResDB():Array {
 			var a:Array = [];
-			
+
 			var m:CDResolution;
-			
+
 			const len:int = RESDB.length;
 			for( var i:int = 0; i < len; i++ ) {
 				m = RESDB[i];
-				
+
 				a.push( m.screenWidth, m.screenHeight, m.screenDPI );
 			}
-			
+
 			return a;
 		}
 	}

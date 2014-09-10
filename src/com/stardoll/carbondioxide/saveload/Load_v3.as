@@ -26,21 +26,21 @@ package com.stardoll.carbondioxide.saveload {
 			}
 			return TEXTDB[ txt ];
 		}
-		
+
 		private static function loadTexts( indata:Array ):Vector.<String> {
 			var a:Vector.<String> = new Vector.<String>();
-			
+
 			const len:int = indata.length;
 			for( var i:int = 0; i < len; i++ ) {
 				a.push( indata[i] );
 			}
-			
+
 			return a;
 		}
-		
+
 		private static function loadResolution( indata:Array ):Vector.<CDResolution> {
 			var a:Vector.<CDResolution> = new Vector.<CDResolution>();
-			
+
 			const len:int = indata.length;
 			for( var i:int = 0; i < len; i+=3 ) {
 				a.push( new CDResolution(
@@ -49,7 +49,7 @@ package com.stardoll.carbondioxide.saveload {
 					indata[i+2]
 				) );
 			}
-			
+
 			return a;
 		}
 
@@ -132,9 +132,9 @@ package com.stardoll.carbondioxide.saveload {
 
 			var resolutions:Array = ObjectEx.select(data, SLKeys.ITEM_RESOLUTIONS, null);
 			if( resolutions != null ) {
-				const rlen:int = resolutions.length;
+				const rlen:int = resolutions.length / 6;
 				for( i = 0; i < rlen; i++ ) {
-					parseResolution(item, resolutions[i]);
+					parseResolution(item, resolutions, i * 6);
 				}
 			}
 
@@ -149,15 +149,15 @@ package com.stardoll.carbondioxide.saveload {
 			parent.addChild( item );
 		}
 
-		private static function parseResolution( item:CDItem, data:Array ):void {
-			var ires:CDResolution = RESDB[ data[ SLKeys.RES_V3_SCREEN_ID ] ];
+		private static function parseResolution( item:CDItem, data:Array, offset:int ):void {
+			var ires:CDResolution = RESDB[ data[ offset+SLKeys.RES_V3_SCREEN_ID ] ];
 
 			var res:CDResolution = new CDResolution(ires.screenWidth, ires.screenHeight, ires.screenDPI);
-			res.x 			= data[ SLKeys.RES_V3_X ];
-			res.y 			= data[ SLKeys.RES_V3_Y ];
-			res.width 		= data[ SLKeys.RES_V3_W ];
-			res.height 		= data[ SLKeys.RES_V3_H ];
-			res.aspectRatio = data[ SLKeys.RES_V3_ASPECTRATIO ];
+			res.x 			= data[ offset+SLKeys.RES_V3_X ];
+			res.y 			= data[ offset+SLKeys.RES_V3_Y ];
+			res.width 		= data[ offset+SLKeys.RES_V3_W ];
+			res.height 		= data[ offset+SLKeys.RES_V3_H ];
+			res.aspectRatio = data[ offset+SLKeys.RES_V3_ASPECTRATIO ];
 
 			item.addResolution( res );
 		}
