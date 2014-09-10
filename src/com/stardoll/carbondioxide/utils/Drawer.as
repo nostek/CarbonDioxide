@@ -138,6 +138,12 @@ package com.stardoll.carbondioxide.utils {
 					model.data = d as Sprite;
 					model.name = d.name;
 
+					/*
+					if( model.name.substr(0, "instance".length) == "instance" ) {
+						CB_trace.info(this, "Bad asset name:", model.name, getQualifiedClassName(d), d.x, d.y);
+					}
+					*/
+
 					pack.frames[frame] = model;
 					if( d.name != null ) {
 						pack.hash[ d.name ] = model;
@@ -217,8 +223,11 @@ package com.stardoll.carbondioxide.utils {
 					mc = con.getChildAt(0) as MovieClip;
 					if( mc.numChildren > 0 ) {
 						tf = (mc.getChildAt(0) as TextField);
+						if( tf != null ) {
+							//CB_trace.warning(this, "Wrong text setting: Should be a TextField only.", pack.frames[i].name);
 
-						filters = mc.filters;
+							tf = null;
+						}
 					}
 				}
 
@@ -238,6 +247,10 @@ package com.stardoll.carbondioxide.utils {
 						fmt.bold = (html.indexOf("<b>") >= 0);
 						fmt.italic = (html.indexOf("<i>") >= 0);
 						fmt.kerning = (html.indexOf('kerning="1"') >= 0);
+					}
+
+					if( fmt.italic != true && (fmt.font.toLowerCase().indexOf(" italic") >= 0) ) {
+						fmt.italic = true;
 					}
 
 					tf.defaultTextFormat = fmt;
