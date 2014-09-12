@@ -39,5 +39,6 @@ package com.stardoll.carbondioxide.saveload {
 		public static const RES_V3_W:int 			= 3;
 		public static const RES_V3_H:int 			= 4;
 		public static const RES_V3_ASPECTRATIO:int	= 5;
+		public static const RES_V3_VALUES:int		= 6;
 	}
 }

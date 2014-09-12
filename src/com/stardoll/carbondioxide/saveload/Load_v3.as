@@ -132,9 +132,9 @@ package com.stardoll.carbondioxide.saveload {
 
 			var resolutions:Array = ObjectEx.select(data, SLKeys.ITEM_RESOLUTIONS, null);
 			if( resolutions != null ) {
-				const rlen:int = resolutions.length / 6;
-				for( i = 0; i < rlen; i++ ) {
-					parseResolution(item, resolutions, i * 6);
+				const rlen:int = resolutions.length;
+				for( i = 0; i < rlen; i += SLKeys.RES_V3_VALUES ) {
+					parseResolution(item, resolutions, i );
 				}
 			}
 
