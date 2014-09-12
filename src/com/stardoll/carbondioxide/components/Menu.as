@@ -12,6 +12,7 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.dialogues.PropertiesDialogue;
 	import com.stardoll.carbondioxide.dialogues.TreeDialogue;
 	import com.stardoll.carbondioxide.dialogues.ZoomDialogue;
+	import com.stardoll.carbondioxide.managers.ReportManager;
 	import com.stardoll.carbondioxide.managers.UndoManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 	import com.stardoll.carbondioxide.models.ItemModel;
@@ -153,6 +154,10 @@ package com.stardoll.carbondioxide.components {
 						{
 							name: "Missing assets",
 							callback: onMissing
+						},
+						{
+							name: "Report",
+							callback: onReport
 						},
 					]
 				},
@@ -333,6 +338,10 @@ package com.stardoll.carbondioxide.components {
 
 		private function onMissing( e:Event ):void {
 			new MissingDialogue();
+		}
+		
+		private function onReport( e:Event ):void {
+			ReportManager.compile();
 		}
 
 		private function onResetWindows( e:Event ):void {

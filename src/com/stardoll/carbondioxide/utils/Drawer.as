@@ -1,13 +1,14 @@
 package com.stardoll.carbondioxide.utils {
-	import flash.filters.GlowFilter;
-	import flash.display.DisplayObjectContainer;
+	import com.stardoll.carbondioxide.managers.ReportManager;
 	import com.stardoll.carbondioxide.models.DataModel;
 
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
+	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -16,6 +17,7 @@ package com.stardoll.carbondioxide.utils {
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
+	import flash.utils.getQualifiedClassName;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -133,18 +135,16 @@ package com.stardoll.carbondioxide.utils {
 				d = mc.getChildAt(frame);
 
 				if( (d as Sprite) == null ) {
-//					CB_trace.info(this, "Dead object", frame, d.name, "text:", mc.getChildAt(frame) is TextField );
+					ReportManager.add(Drawer, "Dead object! Frame:", frame, "Name:", d.name, "isText:", mc.getChildAt(frame) is TextField );
 				} else {
 					model = new FrameModel();
 
 					model.data = d as Sprite;
 					model.name = d.name;
 
-					/*
 					if( model.name.substr(0, "instance".length) == "instance" ) {
-						CB_trace.info(this, "Bad asset name:", model.name, getQualifiedClassName(d), d.x, d.y);
+						ReportManager.add(Drawer, "Bad asset name:", model.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y);
 					}
-					*/
 
 					pack.frames[frame] = model;
 					if( d.name != null ) {
@@ -226,7 +226,7 @@ package com.stardoll.carbondioxide.utils {
 					if( mc.numChildren > 0 ) {
 						tf = (mc.getChildAt(0) as TextField);
 						if( tf != null ) {
-							//CB_trace.warning(this, "Wrong text setting: Should be a TextField only.", pack.frames[i].name);
+							ReportManager.add(Drawer, "Wrong text setting: Should be a TextField only. Name:", pack.frames[i].name);
 
 							tf = null;
 						}
