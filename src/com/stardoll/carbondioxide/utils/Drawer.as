@@ -1,4 +1,6 @@
 package com.stardoll.carbondioxide.utils {
+	import flash.filters.GlowFilter;
+	import flash.display.DisplayObjectContainer;
 	import com.stardoll.carbondioxide.models.DataModel;
 
 	import flash.display.BitmapData;
@@ -413,6 +415,10 @@ package com.stardoll.carbondioxide.utils {
 
 				var sx:Number = Math.min( width/b.width, height/b.height);
 
+				trace( 10*sx, (10*sx) * (1/sx) );
+
+				changeEffects( model.data, sx, sx );
+
 				x += (width - b.width*sx) / 2;
 				y += (height - b.height*sx) / 2;
 
@@ -421,6 +427,35 @@ package com.stardoll.carbondioxide.utils {
 				_matrix.translate((-b.x*sx)+x, (-b.y*sx)+y);
 
 				target.drawWithQuality(model.data, _matrix, null, null, null, true, QUALITY);
+
+				changeEffects( model.data, 1/sx, 1/sx );
+			}
+		}
+
+		private static function changeEffects( mc:DisplayObject, sx:Number, sy:Number ):void {
+			var a:Array;
+
+			if( mc.filters != null ) {
+				a = mc.filters;
+			} else {
+				a = null;
+			}
+
+			if( a != null ) {
+				for each( var o:Object in a ) {
+					if( o is GlowFilter ) {
+						(o as GlowFilter).blurX *= sx;
+						(o as GlowFilter).blurY *= sy;
+						trace( o, (o as GlowFilter).blurX, (o as GlowFilter).blurY );
+					}
+				}
+				mc.filters = a;
+			}
+
+			if( mc is DisplayObjectContainer ) {
+				for( var i:int = 0; i < (mc as DisplayObjectContainer).numChildren; i++ ) {
+					changeEffects((mc as DisplayObjectContainer).getChildAt(i), sx, sy);
+				}
 			}
 		}
 
