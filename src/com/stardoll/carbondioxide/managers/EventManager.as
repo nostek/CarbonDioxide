@@ -13,6 +13,8 @@ package com.stardoll.carbondioxide.managers {
 
 		private static var _onView:Function;
 		private static var _onTree:Function;
+		
+		private static var _onReport:Function;
 
 		private static var _selects:Array;
 
@@ -39,6 +41,12 @@ package com.stardoll.carbondioxide.managers {
 			if( _onTree != null ) {
 				f = _onTree;
 				_onTree = null;
+				f();
+			}
+			
+			if( _onReport != null ) {
+				f = _onReport;
+				_onReport = null;
 				f();
 			}
 
@@ -74,6 +82,10 @@ package com.stardoll.carbondioxide.managers {
 
 		public static function selectItems( list:Array ):void {
 			_selects = list;
+		}
+		
+		public static function showReport( cb:Function ):void {
+			_onReport = cb;
 		}
 	}
 }
