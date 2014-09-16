@@ -30,12 +30,15 @@ package com.stardoll.carbondioxide.managers {
 		
 		private static function onShow():void {
 			new ReportDialogue(TEXT);
+			
+			TEXT = "";
 		}
 		
 		public static function compile():void {
 			clear();
 			compileMissing();
 			compileNotUsed();
+			compileDepth();
 		}
 		
 		private static function compileMissing():void {
@@ -74,7 +77,6 @@ package com.stardoll.carbondioxide.managers {
 			for each( var s:String in needed ) {
 				add( s );
 			}
-			
 			
 			add("");
 		}
@@ -135,21 +137,19 @@ package com.stardoll.carbondioxide.managers {
 				}
 			}
 			
-			
-			/*
-			for each( var o:Object in names ) {
-				if( needed.indexOf(o["frame"]) >= 0 ) {
-					needed.splice( needed.indexOf(o["frame"]), 1 );
-				}
-			}
-			*/
-			
 			for each( var o:Object in names ) {
 				if( o != null ) {
-					add( o["frame"] );	
+					add( o["frame"] + " (" + o["pack"] + ")" );	
 				}
 			}
 			
+			add("");
+		}
+		
+		private static function compileDepth():void {
+			add("_= Draw calls =_");
+			
+			add( Drawer.analyze );
 			
 			add("");
 		}

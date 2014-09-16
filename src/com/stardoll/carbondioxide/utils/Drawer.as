@@ -63,13 +63,68 @@ package com.stardoll.carbondioxide.utils {
 					if( model != null ) {
 						ret[ret.length] = {
 							name: model.name + ((model.scale9) ? ((model.scale9inside==null) ? " [9scale]" : " [9scale][OLD SETUP]") : ""),
-							frame: model.name
+							frame: model.name,
+							pack: _packs[y].name
 						};
 					}
 				}
 			}
 
 			return ret;
+		}
+		
+		public static function get analyze():String {
+			var r:String = "";
+			
+			var pack:PackModel;
+			var model:FrameModel;
+			var frames:int;
+			var count:int;
+			
+			var countChildren:Function = function ( ooo:DisplayObject ):int {
+				if( ooo is DisplayObjectContainer ) {
+					var ccc:int = 0;
+					
+					ccc = (ooo as DisplayObjectContainer).numChildren;
+					
+					for( var iii:int = 0; iii < (ooo as DisplayObjectContainer).numChildren; iii++ ) {
+						ccc += countChildren( (ooo as DisplayObjectContainer).getChildAt(iii) );
+					}
+					
+					return ccc;	
+				}
+				
+				return 0;
+			};
+			
+			var finds:Vector.<Object> = new Vector.<Object>();
+			
+			const len:int = _packs.length;
+			for( var x:int = 0; x < len; x++ ) {
+				pack = _packs[x];
+				
+				frames = pack.frames.length;
+				for( var i:int = 0; i < frames; i++ ) {
+					model = pack.frames[i];
+					if( model != null && model.data != null ) {
+						count = countChildren( model.data );
+						if( count > 20 ) {
+							finds.push( {c:count, n:model.name + " : " + count.toString() + " (" + pack.name + ")"} );
+						}
+					}
+				}
+			}
+			
+			finds = finds.sort( function(a:Object, b:Object):int {
+				if( int(a["c"]) == int(b["c"]) ) return 0;
+				return (int(a["c"]) < int(b["c"])) ? 1 : -1;
+			});
+			
+			for each( var obj:Object in finds ) {
+				r += obj["n"] + "\n";
+			}
+			
+			return r;
 		}
 
 		public static function addPack( name:String, mc:MovieClip ):void {
@@ -150,35 +205,38 @@ package com.stardoll.carbondioxide.utils {
 		}
 		
 		private static function exportEffectsRecursive( o:DisplayObject, bm:BitmapData, model:FrameModel ):BitmapData {
-			var r:Rectangle;
+			var r:Boolean;
 			
 			if( o.filters != null && o.filters.length > 0 ) {
 				for each( var x:Object in o.filters ) {
-					r = null;
+					r = false;
 					
 					if( x is GlowFilter ) {
-						if( bm == null ) {
-							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
-						}
-						r = bm.generateFilterRect(bm.rect, (x as GlowFilter));						
+//						if( bm == null ) {
+//							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
+//						}
+//						r = bm.generateFilterRect(bm.rect, (x as GlowFilter));						
+						r = true;
 					} else if( x is DropShadowFilter ) {
-						if( bm == null ) {
-							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
-						}
-						r = bm.generateFilterRect(bm.rect, (x as DropShadowFilter));						
+//						if( bm == null ) {
+//							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
+//						}
+//						r = bm.generateFilterRect(bm.rect, (x as DropShadowFilter));
+						r = true;						
 					} else if( x is BlurFilter ) {
-						if( bm == null ) {
-							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
-						}
-						r = bm.generateFilterRect(bm.rect, (x as BlurFilter));						
+//						if( bm == null ) {
+//							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
+//						}
+//						r = bm.generateFilterRect(bm.rect, (x as BlurFilter));
+						r = true;						
 					} else if( x is ColorMatrixFilter ) {
 						//Nothing
 					} else {
 						ReportManager.add(Drawer, "MISSING EFFECT:", x);
 					}
 					
-					if( r != null ) {
-						model.bounds = model.bounds.union(r);
+					if( r == true ) {
+						//model.bounds = model.bounds.union(r);
 						
 						if( model.effects == null ) model.effects = new Vector.<DisplayObject>();
 						
