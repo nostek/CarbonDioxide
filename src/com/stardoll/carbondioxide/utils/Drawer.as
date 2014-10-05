@@ -201,6 +201,10 @@ package com.stardoll.carbondioxide.utils {
 				if( bm != null ) {
 					bm.dispose();
 				}
+				
+				if( model.effects != null && (_effects.buffer == null || _effects.buffer.length < model.effects.length) ) {
+					_effects.buffer = new Vector.<Number>( model.effects.length, true );
+				}
 			}
 		}
 		
@@ -767,8 +771,6 @@ internal final class EffectModel {
 	public var index:int;
 	
 	public function EffectModel() {
-		buffer = new Vector.<Number>();
-		
 		index = 0;
 	}
 }
