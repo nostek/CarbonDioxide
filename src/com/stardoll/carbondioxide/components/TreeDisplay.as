@@ -473,6 +473,8 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onClick( e:MouseEvent ):void {
+			stage.focus = null;
+			
 			const model:ItemModel = e.target as ItemModel;
 
 			if( model == null || !model.item.visible || !model.item.enabled ) {

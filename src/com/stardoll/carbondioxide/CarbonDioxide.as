@@ -146,7 +146,7 @@ package com.stardoll.carbondioxide {
 		}
 
 		private function onClick(e:MouseEvent):void {
-			if( e.target == stage ) {
+			if( e.target == stage || e.target == _tree ) {
 				stage.focus = null;
 			}
 		}

@@ -293,6 +293,10 @@ package com.stardoll.carbondioxide.components {
 		////////////////////
 
 		private function onExit( e:Event ):void {
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
+
 		    var exitingEvent:Event = new Event(Event.EXITING, false, true);
 		    NativeApplication.nativeApplication.dispatchEvent(exitingEvent);
 		    if (!exitingEvent.isDefaultPrevented()) {
@@ -396,6 +400,7 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onReopen( e:Event ):void {
+			if( BaseDialogue.BLOCK_MENU ) return;
 			Load.reopen();
 		}
 
@@ -467,6 +472,10 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onOrigWidthHeight( e:Event ):void {
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
+
 			for each( var holder:ItemModel in DataModel.SELECTED ) {
 				var item:CDItem = holder.item;
 				if( item != null ) {
@@ -482,10 +491,18 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onRealSize( e:Event ):void {
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
+			
 			DataModel.onSetRealSize.dispatch();
 		}
 
 		private function onAlignItems( e:Event ):void {
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
+			
 			var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
 			alignDlg.onSelect.addOnce( onAlignSelected );
 		}
@@ -542,6 +559,10 @@ package com.stardoll.carbondioxide.components {
 		}
 
 		private function onToggleScreen( e:Event ):void {
+			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				return;
+			}
+			
 			if( DataModel.LAST_SCREEN_NAME != null ) {
 				DataModel.onChangeResolution.dispatch( DataModel.LAST_SCREEN_NAME );
 			}
