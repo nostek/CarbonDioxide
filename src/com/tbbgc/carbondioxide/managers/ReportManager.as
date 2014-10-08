@@ -105,10 +105,11 @@ package com.tbbgc.carbondioxide.managers {
 				for each( var l:String in leg ) {
 					needed.push( l );
 
-					stile( l, "_DOWN", "_UP", "_ACTIVE", "_INACTIVE" );
-					stile( l, "_UP", "_DOWN", "_ACTIVE", "_INACTIVE" );
-					stile( l, "_ACTIVE", "_DOWN", "_UP", "_INACTIVE" );
-					stile( l, "_INACTIVE", "_DOWN", "_UP", "_ACTIVE" );
+					stile( l, "_DOWN", "_UP", "_ACTIVE", "_INACTIVE", "_DISABLED" );
+					stile( l, "_UP", "_DOWN", "_ACTIVE", "_INACTIVE", "_DISABLED" );
+					stile( l, "_ACTIVE", "_DOWN", "_UP", "_INACTIVE", "_DISABLED" );
+					stile( l, "_INACTIVE", "_DOWN", "_UP", "_ACTIVE", "_DISABLED" );
+					stile( l, "_DISABLED", "_INACTIVE", "_DOWN", "_UP", "_ACTIVE" );
 				}
 			}
 
@@ -122,10 +123,11 @@ package com.tbbgc.carbondioxide.managers {
 						stile( item.asset, "_inactive", "_active" );
 						stile( item.asset, "_active", "_inactive" );
 
-						stile( item.asset, "_DOWN", "_UP", "_ACTIVE", "_INACTIVE" );
-						stile( item.asset, "_UP", "_DOWN", "_ACTIVE", "_INACTIVE" );
-						stile( item.asset, "_ACTIVE", "_DOWN", "_UP", "_INACTIVE" );
-						stile( item.asset, "_INACTIVE", "_DOWN", "_UP", "_ACTIVE" );
+						stile( item.asset, "_DOWN", "_UP", "_ACTIVE", "_INACTIVE", "_DISABLED" );
+						stile( item.asset, "_UP", "_DOWN", "_ACTIVE", "_INACTIVE", "_DISABLED" );
+						stile( item.asset, "_ACTIVE", "_DOWN", "_UP", "_INACTIVE", "_DISABLED" );
+						stile( item.asset, "_INACTIVE", "_DOWN", "_UP", "_ACTIVE", "_DISABLED" );
+						stile( item.asset, "_DISABLED", "_INACTIVE", "_DOWN", "_UP", "_ACTIVE" );
 					}
 				}
 

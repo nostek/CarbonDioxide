@@ -417,6 +417,8 @@ package com.tbbgc.carbondioxide.dialogues {
 						for each( var item:ItemModel in DataModel.SELECTED ) {
 							item.item.asset = frame;
 						}
+
+						stage.focus = null;
 					}
 				}
 			}

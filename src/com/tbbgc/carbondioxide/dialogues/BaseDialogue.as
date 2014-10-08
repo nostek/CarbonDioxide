@@ -16,7 +16,9 @@ package com.tbbgc.carbondioxide.dialogues {
 	public class BaseDialogue extends Sprite {
 		public static var DIALOGUES:Sprite;
 
-		public static var BLOCK_MENU:Boolean=false;
+		public static var BLOCK_MENU_COUNT:int=0;
+
+		public static function get BLOCK_MENU():Boolean { return BLOCK_MENU_COUNT > 0; }
 
 		public static const HEADER:int 	= 20;
 		public static const EDGE:int 	= 10;
@@ -52,7 +54,7 @@ package com.tbbgc.carbondioxide.dialogues {
 				}
 				BaseDialogue.DIALOGUES.addChild(_noclick);
 
-				BLOCK_MENU = true;
+				BLOCK_MENU_COUNT++;
 			}
 
 			_canScale = canScale;
@@ -125,7 +127,10 @@ package com.tbbgc.carbondioxide.dialogues {
 		protected function close():void {
 			if( _noclick != null ) {
 				_noclick.parent.removeChild(_noclick);
-				BLOCK_MENU = false;
+				BLOCK_MENU_COUNT--;
+				if( BLOCK_MENU_COUNT == 0 ) {
+					stage.focus = null;
+				}
 			}
 
 			this.parent.removeChild(this);
