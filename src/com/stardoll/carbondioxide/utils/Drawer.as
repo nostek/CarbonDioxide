@@ -202,8 +202,8 @@ package com.stardoll.carbondioxide.utils {
 					bm.dispose();
 				}
 				
-				if( model.effects != null && (_effects.buffer == null || _effects.buffer.length < model.effects.length) ) {
-					_effects.buffer = new Vector.<Number>( model.effects.length, true );
+				if( model.effects != null && (_effects.buffer == null || _effects.buffer.length < model.effects.length * 2) ) {
+					_effects.buffer = new Vector.<Number>( model.effects.length * 2, true );
 				}
 			}
 		}

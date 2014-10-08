@@ -22,6 +22,7 @@ package com.stardoll.carbondioxide.components {
 	import com.stardoll.carbondioxide.saveload.Save;
 	import com.stardoll.carbondioxide.utils.Drawer;
 	import com.stardoll.carbondioxide.utils.Images;
+	import com.stardoll.carbondioxide.utils.Legacy;
 
 	import flash.desktop.NativeApplication;
 	import flash.display.DisplayObject;
@@ -223,6 +224,16 @@ package com.stardoll.carbondioxide.components {
 							callback: onToggleScreen,
 							shortcut: "l"
 						},
+					]
+				},
+
+				{
+					name: "Extra",
+					children: [
+						{
+							name: "Load legacy Carbon",
+							callback: onLoadLegacy
+						}
 					]
 				},
 
@@ -500,6 +511,7 @@ package com.stardoll.carbondioxide.components {
 
 		private function onAlignItems( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
+				NativeApplication.nativeApplication.selectAll();
 				return;
 			}
 			
@@ -566,6 +578,10 @@ package com.stardoll.carbondioxide.components {
 			if( DataModel.LAST_SCREEN_NAME != null ) {
 				DataModel.onChangeResolution.dispatch( DataModel.LAST_SCREEN_NAME );
 			}
+		}
+		
+		private function onLoadLegacy( e:Event ):void {
+			Legacy.load();
 		}
 	}
 }

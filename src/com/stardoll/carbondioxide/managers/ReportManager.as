@@ -3,6 +3,7 @@ package com.stardoll.carbondioxide.managers {
 	import com.stardoll.carbondioxide.models.cd.CDItem;
 	import com.stardoll.carbondioxide.models.cd.CDView;
 	import com.stardoll.carbondioxide.utils.Drawer;
+	import com.stardoll.carbondioxide.utils.Legacy;
 	/**
 	 * @author Simon
 	 */
@@ -44,7 +45,7 @@ package com.stardoll.carbondioxide.managers {
 		private static function compileMissing():void {
 			add("_= Missing Assets =_");
 			
-			var needed:Array = [];
+			var needed:Array = Legacy.LEGACY ? Legacy.LEGACY.concat() : [];
 
 			const views:Vector.<CDView> = ViewsManager.views;
 
@@ -84,7 +85,7 @@ package com.stardoll.carbondioxide.managers {
 		private static function compileNotUsed():void {
 			add("_= Not used =_");
 			
-			var needed:Array = [];
+			var needed:Array = Legacy.LEGACY ? Legacy.LEGACY.concat() : [];
 
 			const views:Vector.<CDView> = ViewsManager.views;
 
