@@ -33,7 +33,7 @@ package com.stardoll.carbondioxide.utils {
 		private static var _textField:TextField;
 
 		private static var _packs:Vector.<PackModel>;
-		
+
 		private static var _effects:EffectModel;
 
 		public function Drawer() {
@@ -46,7 +46,7 @@ package com.stardoll.carbondioxide.utils {
 			_textField.autoSize = TextFieldAutoSize.LEFT;
 
 			_packs = new Vector.<PackModel>();
-			
+
 			_effects = new EffectModel();
 		}
 
@@ -72,37 +72,37 @@ package com.stardoll.carbondioxide.utils {
 
 			return ret;
 		}
-		
+
 		public static function get analyze():String {
 			var r:String = "";
-			
+
 			var pack:PackModel;
 			var model:FrameModel;
 			var frames:int;
 			var count:int;
-			
+
 			var countChildren:Function = function ( ooo:DisplayObject ):int {
 				if( ooo is DisplayObjectContainer ) {
 					var ccc:int = 0;
-					
+
 					ccc = (ooo as DisplayObjectContainer).numChildren;
-					
+
 					for( var iii:int = 0; iii < (ooo as DisplayObjectContainer).numChildren; iii++ ) {
 						ccc += countChildren( (ooo as DisplayObjectContainer).getChildAt(iii) );
 					}
-					
-					return ccc;	
+
+					return ccc;
 				}
-				
+
 				return 0;
 			};
-			
+
 			var finds:Vector.<Object> = new Vector.<Object>();
-			
+
 			const len:int = _packs.length;
 			for( var x:int = 0; x < len; x++ ) {
 				pack = _packs[x];
-				
+
 				frames = pack.frames.length;
 				for( var i:int = 0; i < frames; i++ ) {
 					model = pack.frames[i];
@@ -114,16 +114,16 @@ package com.stardoll.carbondioxide.utils {
 					}
 				}
 			}
-			
+
 			finds = finds.sort( function(a:Object, b:Object):int {
 				if( int(a["c"]) == int(b["c"]) ) return 0;
 				return (int(a["c"]) < int(b["c"])) ? 1 : -1;
 			});
-			
+
 			for each( var obj:Object in finds ) {
 				r += obj["n"] + "\n";
 			}
-			
+
 			return r;
 		}
 
@@ -185,7 +185,7 @@ package com.stardoll.carbondioxide.utils {
 			exportTextMultiple( pack );
 			exportEffects( pack );
 		}
-		
+
 		private static function exportEffects( pack:PackModel ):void {
 			var model:FrameModel;
 			var con:Sprite;
@@ -193,70 +193,70 @@ package com.stardoll.carbondioxide.utils {
 			const len:int = pack.frames.length;
 			for( var i:int = 0; i < len; i++ ) {
 				if( pack.frames[i] == null ) continue;
-				
+
 				model = pack.frames[i];
 				con = model.data as Sprite;
-				
+
 				var bm:BitmapData = exportEffectsRecursive(con, null, model);
 				if( bm != null ) {
 					bm.dispose();
 				}
-				
+
 				if( model.effects != null && (_effects.buffer == null || _effects.buffer.length < model.effects.length * 2) ) {
 					_effects.buffer = new Vector.<Number>( model.effects.length * 2, true );
 				}
 			}
 		}
-		
+
 		private static function exportEffectsRecursive( o:DisplayObject, bm:BitmapData, model:FrameModel ):BitmapData {
 			var r:Boolean;
-			
+
 			if( o.filters != null && o.filters.length > 0 ) {
 				for each( var x:Object in o.filters ) {
 					r = false;
-					
+
 					if( x is GlowFilter ) {
 //						if( bm == null ) {
 //							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
 //						}
-//						r = bm.generateFilterRect(bm.rect, (x as GlowFilter));						
+//						r = bm.generateFilterRect(bm.rect, (x as GlowFilter));
 						r = true;
 					} else if( x is DropShadowFilter ) {
 //						if( bm == null ) {
 //							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
 //						}
 //						r = bm.generateFilterRect(bm.rect, (x as DropShadowFilter));
-						r = true;						
+						r = true;
 					} else if( x is BlurFilter ) {
 //						if( bm == null ) {
 //							bm = new BitmapData(model.bounds.width, model.bounds.height, true, 0x0);
 //						}
 //						r = bm.generateFilterRect(bm.rect, (x as BlurFilter));
-						r = true;						
+						r = true;
 					} else if( x is ColorMatrixFilter ) {
 						//Nothing
 					} else {
 						ReportManager.add(Drawer, "MISSING EFFECT:", x);
 					}
-					
+
 					if( r == true ) {
 						//model.bounds = model.bounds.union(r);
-						
+
 						if( model.effects == null ) model.effects = new Vector.<DisplayObject>();
-						
+
 						if( model.effects.indexOf(o) < 0 ) model.effects.push( o );
 					}
 				}
 			}
-			
+
 			if( o is DisplayObjectContainer ) {
 				var c:DisplayObjectContainer = o as DisplayObjectContainer;
-				 
+
 				for( var i:int = 0; i < c.numChildren; i++ ) {
 					bm = exportEffectsRecursive(c.getChildAt(i), bm, model);
 				}
 			}
-			
+
 			return bm;
 		}
 
@@ -272,7 +272,7 @@ package com.stardoll.carbondioxide.utils {
 				d = mc.getChildAt(frame);
 
 				if( (d as Sprite) == null ) {
-					ReportManager.add(Drawer, "Dead object! Frame:", frame, "Name:", d.name, "isText:", mc.getChildAt(frame) is TextField );
+					ReportManager.add(Drawer, "Dead object! Pack:", pack.name, "Frame:", frame, "Name:", d.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y );
 				} else {
 					model = new FrameModel();
 
@@ -280,7 +280,7 @@ package com.stardoll.carbondioxide.utils {
 					model.name = d.name;
 
 					if( model.name.substr(0, "instance".length) == "instance" ) {
-						ReportManager.add(Drawer, "Bad asset name:", model.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y);
+						ReportManager.add(Drawer, "Bad asset Pack:", pack.name, "Name:", model.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y);
 					}
 
 					pack.frames[frame] = model;
@@ -357,7 +357,7 @@ package com.stardoll.carbondioxide.utils {
 				if( pack.frames[i] == null ) continue;
 
 				tf = null;
-				
+
 				con = pack.frames[i].data as Sprite;
 
 				if( con.getChildAt(0) is MovieClip ) {
@@ -478,14 +478,14 @@ package com.stardoll.carbondioxide.utils {
 				if( !model.scale9 ) {
 					const sx:Number = width / b.width;
 					const sy:Number = height / b.height;
-					
+
 					if( model.effects ) changeEffects( model, sx, sx );
 
 					_matrix.scale(sx, sy);
 					_matrix.translate((-b.x*sx)+x, (-b.y*sy)+y);
 
 					target.drawWithQuality(model.data, _matrix, null, null, null, true, QUALITY);
-					
+
 					if( model.effects ) restoreEffects( model );
 				} else {
 					if( model.scale9inside != null ) {
@@ -572,58 +572,58 @@ package com.stardoll.carbondioxide.utils {
 //				}
 //			}
 //		}
-		
+
 		///////
 
 		private static function changeEffects( model:FrameModel, sx:Number, sy:Number ):void {
 			_effects.sx = sx;
 			_effects.sy = sy;
 			_effects.index = 0;
-			
+
 			var a:Array;
-			
+
 			const len:int = model.effects.length;
 			for( var i:int = 0; i < len; i++ ) {
-				a = model.effects[ i ].filters;				
-				
+				a = model.effects[ i ].filters;
+
 				for each( var o:Object in a ) {
 					if( o is GlowFilter ) {
-						_effects.buffer[ _effects.index++ ] = (o as GlowFilter).blurX; 
+						_effects.buffer[ _effects.index++ ] = (o as GlowFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as GlowFilter).blurY;
-						 
+
 						(o as GlowFilter).blurX *= _effects.sx;
 						(o as GlowFilter).blurY *= _effects.sy;
 //						trace( "set", o, (o as GlowFilter).blurX, (o as GlowFilter).blurY );
 					} else if ( o is DropShadowFilter ) {
-						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurX; 
+						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurY;
-						 
+
 						(o as DropShadowFilter).blurX *= _effects.sx;
 						(o as DropShadowFilter).blurY *= _effects.sy;
 //						trace( "set", o, (o as DropShadowFilter).blurX, (o as DropShadowFilter).blurY );
 					} else if( o is BlurFilter ) {
-						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurX; 
+						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurY;
-						 
+
 						(o as BlurFilter).blurX *= _effects.sx;
 						(o as BlurFilter).blurY *= _effects.sy;
 //						trace( "set", o, (o as BlurFilter).blurX, (o as BlurFilter).blurY );
 					}
 				}
-				
+
 				model.effects[ i ].filters = a;
 			}
 		}
-		
+
 		private static function restoreEffects( model:FrameModel ):void {
 			_effects.index = 0;
-			
+
 			var a:Array;
-			
+
 			const len:int = model.effects.length;
 			for( var i:int = 0; i < len; i++ ) {
 				a = model.effects[ i ].filters;
-				
+
 				for each( var o:Object in a ) {
 					if( o is GlowFilter ) {
 						(o as GlowFilter).blurX = _effects.buffer[ _effects.index++ ];
@@ -639,9 +639,9 @@ package com.stardoll.carbondioxide.utils {
 //						trace( "restore", o, (o as BlurFilter).blurX, (o as BlurFilter).blurY );
 					}
 				}
-				
-				model.effects[ i ].filters = a;			
-			}				
+
+				model.effects[ i ].filters = a;
+			}
 		}
 
 		///////
@@ -747,7 +747,7 @@ internal class FrameModel {
 	public var scale9:Boolean;
 	public var scale9inside:MovieClip;
 	public var scale9outer:Sprite;
-	
+
 	public var effects:Vector.<DisplayObject>;
 }
 
@@ -765,11 +765,11 @@ internal final class PackModel {
 internal final class EffectModel {
 	public var sx:Number;
 	public var sy:Number;
-	
+
 	public var buffer:Vector.<Number>;
-	
+
 	public var index:int;
-	
+
 	public function EffectModel() {
 		index = 0;
 	}

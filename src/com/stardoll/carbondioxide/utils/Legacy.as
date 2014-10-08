@@ -9,7 +9,7 @@ package com.stardoll.carbondioxide.utils {
 	 */
 	public class Legacy {
 		public static var LEGACY:Array;
-		
+
 		public static function load():void {
 			var f:File = new File();
 			var filter:FileFilter = new FileFilter("Design", "*.json");
@@ -17,7 +17,7 @@ package com.stardoll.carbondioxide.utils {
 			f.browseForOpen("Load Design", [filter]);
 			f.addEventListener(Event.SELECT, onSelectedFile);
 		}
-		
+
 		private static function onSelectedFile( e:Event ):void {
 			var f:File = e.target as File;
 
@@ -32,30 +32,31 @@ package com.stardoll.carbondioxide.utils {
 
 			LEGACY = loadData( json );
 		}
-		
+
 		private static function loadData( data:Object ):Array {
 			var r:Array = [];
-			
+
 			var items:Object;
 			var item:Object;
 			var name:String;
-			
+
 			for each( var view:Object in data ) {
 				items = view["items"];
 				if( items != null ) {
-					
+
 					for each( item in items ) {
 						if( item["parameters"] != null && item["parameters"]["asset"] != null ) {
 							name = item["parameters"]["asset"];
+
 							if( r.indexOf( name ) <= 0 ) {
 								r.push( name );
 							}
 						}
 					}
-						
+
 				}
 			}
-			
+
 			return r.length > 0 ? r : null;
 		}
 	}

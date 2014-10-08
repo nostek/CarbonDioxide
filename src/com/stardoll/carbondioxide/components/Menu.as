@@ -304,10 +304,6 @@ package com.stardoll.carbondioxide.components {
 		////////////////////
 
 		private function onExit( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
-				return;
-			}
-
 		    var exitingEvent:Event = new Event(Event.EXITING, false, true);
 		    NativeApplication.nativeApplication.dispatchEvent(exitingEvent);
 		    if (!exitingEvent.isDefaultPrevented()) {
@@ -354,7 +350,7 @@ package com.stardoll.carbondioxide.components {
 		private function onMissing( e:Event ):void {
 			new MissingDialogue();
 		}
-		
+
 		private function onReport( e:Event ):void {
 			ReportManager.compile();
 		}
@@ -505,7 +501,7 @@ package com.stardoll.carbondioxide.components {
 			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
 				return;
 			}
-			
+
 			DataModel.onSetRealSize.dispatch();
 		}
 
@@ -514,7 +510,7 @@ package com.stardoll.carbondioxide.components {
 				NativeApplication.nativeApplication.selectAll();
 				return;
 			}
-			
+
 			var alignDlg:AspectRatioDialogue = new AspectRatioDialogue();
 			alignDlg.onSelect.addOnce( onAlignSelected );
 		}
@@ -574,12 +570,12 @@ package com.stardoll.carbondioxide.components {
 			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
 				return;
 			}
-			
+
 			if( DataModel.LAST_SCREEN_NAME != null ) {
 				DataModel.onChangeResolution.dispatch( DataModel.LAST_SCREEN_NAME );
 			}
 		}
-		
+
 		private function onLoadLegacy( e:Event ):void {
 			Legacy.load();
 		}
