@@ -593,21 +593,18 @@ package com.tbbgc.carbondioxide.utils {
 
 						(o as GlowFilter).blurX *= _effects.sx;
 						(o as GlowFilter).blurY *= _effects.sy;
-//						trace( "set", o, (o as GlowFilter).blurX, (o as GlowFilter).blurY );
 					} else if ( o is DropShadowFilter ) {
 						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurY;
 
 						(o as DropShadowFilter).blurX *= _effects.sx;
 						(o as DropShadowFilter).blurY *= _effects.sy;
-//						trace( "set", o, (o as DropShadowFilter).blurX, (o as DropShadowFilter).blurY );
 					} else if( o is BlurFilter ) {
 						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurY;
 
 						(o as BlurFilter).blurX *= _effects.sx;
 						(o as BlurFilter).blurY *= _effects.sy;
-//						trace( "set", o, (o as BlurFilter).blurX, (o as BlurFilter).blurY );
 					}
 				}
 
@@ -628,15 +625,12 @@ package com.tbbgc.carbondioxide.utils {
 					if( o is GlowFilter ) {
 						(o as GlowFilter).blurX = _effects.buffer[ _effects.index++ ];
 						(o as GlowFilter).blurY = _effects.buffer[ _effects.index++ ];
-//						trace( "restore", o, (o as GlowFilter).blurX, (o as GlowFilter).blurY );
 					} else if( o is DropShadowFilter ) {
 						(o as DropShadowFilter).blurX = _effects.buffer[ _effects.index++ ];
 						(o as DropShadowFilter).blurY = _effects.buffer[ _effects.index++ ];
-//						trace( "restore", o, (o as DropShadowFilter).blurX, (o as DropShadowFilter).blurY );
 					} else if( o is BlurFilter ) {
 						(o as BlurFilter).blurX = _effects.buffer[ _effects.index++ ];
 						(o as BlurFilter).blurY = _effects.buffer[ _effects.index++ ];
-//						trace( "restore", o, (o as BlurFilter).blurX, (o as BlurFilter).blurY );
 					}
 				}
 
