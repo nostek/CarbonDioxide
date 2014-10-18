@@ -9,6 +9,7 @@ package com.tbbgc.carbondioxide.models.resolutions {
 			{name:"iPhone3Gs", 				width:320, 	height:480,  status:20, dpi:163},
 			{name:"iPhone4/4s", 			width:640, 	height:960,  status:40, dpi:326},
 			{name:"iPhone5/5s/5c",			width:640, 	height:1136, status:40, dpi:326},
+			{name:"iPhone6",				width:750, 	height:1334, status:40, dpi:326},
 			{name:"iPad1/2", 				width:768, 	height:1024, status:20, dpi:132},
 			{name:"iPad3/4/Air", 			width:1536, height:2048, status:40, dpi:264},
 			{name:"iPad Mini", 				width:768,  height:1024,            dpi:163},
