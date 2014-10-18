@@ -28,6 +28,9 @@ package com.tbbgc.carbondioxide.models {
 		public static var ALT_KEY:Boolean = false;
 		public static var COMMAND_KEY:Boolean = false;
 
+		//Computer screen size
+		public static var COMPUTER_SCREEN_SIZE:int = -1;
+
 		//File
 		public static var LAST_FILE:File;
 		public static var DID_LOCK:Boolean = false;

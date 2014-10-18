@@ -7,6 +7,7 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.dialogues.ColorDialogue;
 	import com.tbbgc.carbondioxide.dialogues.DPIDialogue;
 	import com.tbbgc.carbondioxide.dialogues.FindAssetsDialogue;
+	import com.tbbgc.carbondioxide.dialogues.InputDialogue;
 	import com.tbbgc.carbondioxide.dialogues.MissingDialogue;
 	import com.tbbgc.carbondioxide.dialogues.PopupDialogue;
 	import com.tbbgc.carbondioxide.dialogues.PropertiesDialogue;
@@ -502,7 +503,24 @@ package com.tbbgc.carbondioxide.components {
 				return;
 			}
 
+			if( DataModel.COMPUTER_SCREEN_SIZE == -1 ) {
+				var dlg:InputDialogue = new InputDialogue("Screen Size", "Enter your monitors inch size", "27");
+				dlg.onOK.addOnce( onScreenSize );
+				return;
+			}
+
 			DataModel.onSetRealSize.dispatch();
+		}
+
+		private function onScreenSize( dlg:InputDialogue ):void {
+			var t:String = dlg.text;
+			
+			if( t != null && t != "" ) {
+				var n:Number = Number(t);
+				if( !isNaN(n) ) {
+					DataModel.COMPUTER_SCREEN_SIZE = int(n);
+				}
+			}
 		}
 
 		private function onAlignItems( e:Event ):void {

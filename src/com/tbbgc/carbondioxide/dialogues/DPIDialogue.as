@@ -82,11 +82,27 @@ package com.tbbgc.carbondioxide.dialogues {
 			init( WIDTH, HEIGHT );
 
 			populate();
+			
+			if( DataModel.COMPUTER_SCREEN_SIZE == -1 ) {
+				var dlg:InputDialogue = new InputDialogue("Screen Size", "Enter your monitors inch size", "27");
+				dlg.onOK.addOnce( onScreenSize );
+			}
 		}
 
 		override protected function onResize( width:int, height:int ):void {
 		}
 
+		private function onScreenSize( dlg:InputDialogue ):void {
+			var t:String = dlg.text;
+			
+			if( t != null && t != "" ) {
+				var n:Number = Number(t);
+				if( !isNaN(n) ) {
+					DataModel.COMPUTER_SCREEN_SIZE = int(n);
+				}
+			}
+		}
+		
 		private function onCheckbox( e:Event ):void {
 			populate();
 

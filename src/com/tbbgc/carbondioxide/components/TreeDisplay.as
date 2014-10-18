@@ -152,7 +152,7 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onRealViewSize():void {
 			//109 @ 2560x1440@27"
-			var sdpi:Number = Math.sqrt( ((Capabilities.screenResolutionX/27)*(Capabilities.screenResolutionX/27)) + ((Capabilities.screenResolutionY/27)*(Capabilities.screenResolutionY/27)) );
+			var sdpi:Number = Math.sqrt( ((Capabilities.screenResolutionX/DataModel.COMPUTER_SCREEN_SIZE)*(Capabilities.screenResolutionX/DataModel.COMPUTER_SCREEN_SIZE)) + ((Capabilities.screenResolutionY/DataModel.COMPUTER_SCREEN_SIZE)*(Capabilities.screenResolutionY/DataModel.COMPUTER_SCREEN_SIZE)) );
 
 			var iw:Number = DataModel.SCREEN_WIDTH/DataModel.SCREEN_DPI;
 			var ih:Number = DataModel.SCREEN_HEIGHT/DataModel.SCREEN_DPI;
@@ -162,8 +162,6 @@ package com.tbbgc.carbondioxide.components {
 
 			iw /= DataModel.SCREEN_WIDTH;
 			ih /= DataModel.SCREEN_HEIGHT;
-
-			//DataModel.setResolution( DataModel.SCREEN_WIDTH * iw, DataModel.SCREEN_HEIGHT *ih, DataModel.SCREEN_DPI );
 
 			this.scaleX = iw;
 			this.scaleY = ih;
