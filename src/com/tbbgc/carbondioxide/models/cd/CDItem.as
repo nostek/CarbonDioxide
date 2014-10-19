@@ -1,4 +1,5 @@
 package com.tbbgc.carbondioxide.models.cd {
+	import com.tbbgc.carbondioxide.models.resolutions.ResolutionsModel;
 	import com.tbbgc.carbondioxide.managers.EventManager;
 	import com.tbbgc.carbondioxide.managers.UndoManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
@@ -456,7 +457,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		}
 
 		private function getInterpolatedState():CDResolution {
-			//Check for first state
+			//Check for single state
 			if( _resolutions.length == 1 ) {
 				return _resolutions[0];
 			}
@@ -477,50 +478,67 @@ package com.tbbgc.carbondioxide.models.cd {
 				}
 			}
 
-			var finds:Array = [10000];
+			//Find.
 
-			const targetar:Number = screenWidth/screenHeight;
+			var screenSize:Number = ResolutionsModel.getScreenSize(screenWidth, screenHeight, screenDPI);
 
-			var ar:Number;
+			var s:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
+			var m:SortResolutionModel;
 
-			//Check for best
 			for( i = 0; i < len; i++ ) {
 				state = _resolutions[i];
 
-				ar = state.screenWidth / state.screenHeight;
+				m = new SortResolutionModel();
+				m.model = state;
 
-				ar = Math.abs(targetar - ar);
+				m.screenWidth 	= state.screenWidth;
+				m.screenHeight 	= state.screenHeight;
+				m.screenDPI 	= state.screenDPI;
 
-				if( ar < finds[0] ) {
-					finds = [ ar, state ];
+				m.screenSizeDiff = Math.abs( ResolutionsModel.getScreenSize(m.screenWidth, m.screenHeight, m.screenDPI) - screenSize );
+				m.screenDPIDiff = Math.abs( m.screenDPI - screenDPI );
+
+				if( s.length == 0 ) {
+					s[0] = m;
 				} else {
-					if( ar == finds[0] ) {
-						finds.push( state );
+					if( m.screenSizeDiff < s[0].screenSizeDiff ) {
+						s.length = 0;
+						s[0] = m;
+					} else if( m.screenSizeDiff == s[0].screenSizeDiff ) {
+						s[ s.length ] = m;
 					}
 				}
 			}
 
-			//sort on best
-			if( finds.length > 2 ) {
-				var bestAr:Number = 10000;
-				var bestState:CDResolution = null;
-
-				for( i = 1; i < finds.length; i++ ) {
-					ar = 	(screenWidth / (finds[i] as CDResolution).screenWidth) *
-							(screenHeight / (finds[i] as CDResolution).screenHeight);
-
-					ar = Math.abs( 1 - ar );
-
-					if( ar < bestAr ) {
-						bestState = finds[i];
-						bestAr = ar;
-					}
-				}
-
-				return bestState;
+			if( s.length == 0 ) {
+				return s[0].model;
 			}
 
-			return finds[1];
+			s = s.sort(sortResolutionDPI);
+
+			return s[0].model;
+		}
+
+		private static function sortResolutionDPI( a:SortResolutionModel, b:SortResolutionModel ):int {
+			if( a.screenDPIDiff == b.screenDPIDiff ) return 0;
+			return ( a.screenDPIDiff > b.screenDPIDiff ) ? 1 : -1;
 		}
 	}
+}
+
+
+
+import com.tbbgc.carbondioxide.models.cd.CDResolution;
+
+
+
+internal final class SortResolutionModel {
+	public var screenWidth:int;
+	public var screenHeight:int;
+	public var screenDPI:int;
+
+	public var screenSizeDiff:Number;
+	public var screenDPIDiff:int;
+
+	public var model:CDResolution;
 }
