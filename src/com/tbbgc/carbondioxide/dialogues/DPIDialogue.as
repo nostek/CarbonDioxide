@@ -82,7 +82,7 @@ package com.tbbgc.carbondioxide.dialogues {
 			init( WIDTH, HEIGHT );
 
 			populate();
-			
+
 			if( DataModel.COMPUTER_SCREEN_SIZE == -1 ) {
 				var dlg:InputDialogue = new InputDialogue("Screen Size", "Enter your monitors inch size", "27");
 				dlg.onOK.addOnce( onScreenSize );
@@ -94,7 +94,7 @@ package com.tbbgc.carbondioxide.dialogues {
 
 		private function onScreenSize( dlg:InputDialogue ):void {
 			var t:String = dlg.text;
-			
+
 			if( t != null && t != "" ) {
 				var n:Number = Number(t);
 				if( !isNaN(n) ) {
@@ -102,7 +102,7 @@ package com.tbbgc.carbondioxide.dialogues {
 				}
 			}
 		}
-		
+
 		private function onCheckbox( e:Event ):void {
 			populate();
 
@@ -137,7 +137,12 @@ package com.tbbgc.carbondioxide.dialogues {
 		}
 
 		private static function sort( a:Object, b:Object ):int {
-			if( Number(a["size"]) == Number(b["size"]) ) return 0;
+			if( Number(a["size"]) == Number(b["size"]) ) {
+				var ai:int = a["width"] * a["height"];
+				var bi:int = b["width"] * b["height"];
+				if( ai == bi ) return 0;
+				return (ai < bi) ? -1 : 1;
+			}
 			return (Number(a["size"]) < Number(b["size"])) ? -1 : 1;
 		}
 
