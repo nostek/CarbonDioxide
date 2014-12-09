@@ -201,10 +201,6 @@ package com.tbbgc.carbondioxide.utils {
 				if( bm != null ) {
 					bm.dispose();
 				}
-
-				if( model.effects != null && (_effects.buffer == null || _effects.buffer.length < model.effects.length * 2) ) {
-					_effects.buffer = new Vector.<Number>( model.effects.length * 2, true );
-				}
 			}
 		}
 
@@ -479,7 +475,7 @@ package com.tbbgc.carbondioxide.utils {
 					const sx:Number = width / b.width;
 					const sy:Number = height / b.height;
 
-					if( model.effects ) changeEffects( model, sx, sx );
+					if( model.effects ) changeEffects( model, sx, sy );
 
 					_matrix.scale(sx, sy);
 					_matrix.translate((-b.x*sx)+x, (-b.y*sy)+y);
@@ -578,6 +574,7 @@ package com.tbbgc.carbondioxide.utils {
 		private static function changeEffects( model:FrameModel, sx:Number, sy:Number ):void {
 			_effects.sx = sx;
 			_effects.sy = sy;
+			_effects.sa = (sx < sy) ? sx : sy;
 			_effects.index = 0;
 
 			var a:Array;
@@ -596,9 +593,11 @@ package com.tbbgc.carbondioxide.utils {
 					} else if ( o is DropShadowFilter ) {
 						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).blurY;
+						_effects.buffer[ _effects.index++ ] = (o as DropShadowFilter).distance;
 
 						(o as DropShadowFilter).blurX *= _effects.sx;
 						(o as DropShadowFilter).blurY *= _effects.sy;
+						(o as DropShadowFilter).distance *= _effects.sa;
 					} else if( o is BlurFilter ) {
 						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurX;
 						_effects.buffer[ _effects.index++ ] = (o as BlurFilter).blurY;
@@ -628,6 +627,7 @@ package com.tbbgc.carbondioxide.utils {
 					} else if( o is DropShadowFilter ) {
 						(o as DropShadowFilter).blurX = _effects.buffer[ _effects.index++ ];
 						(o as DropShadowFilter).blurY = _effects.buffer[ _effects.index++ ];
+						(o as DropShadowFilter).distance = _effects.buffer[ _effects.index++ ];
 					} else if( o is BlurFilter ) {
 						(o as BlurFilter).blurX = _effects.buffer[ _effects.index++ ];
 						(o as BlurFilter).blurY = _effects.buffer[ _effects.index++ ];
@@ -759,6 +759,7 @@ internal final class PackModel {
 internal final class EffectModel {
 	public var sx:Number;
 	public var sy:Number;
+	public var sa:Number;
 
 	public var buffer:Vector.<Number>;
 
@@ -766,5 +767,7 @@ internal final class EffectModel {
 
 	public function EffectModel() {
 		index = 0;
+
+		buffer = new Vector.<Number>();
 	}
 }
