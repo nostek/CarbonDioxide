@@ -9,28 +9,16 @@ package com.tbbgc.carbondioxide.models {
 	 */
 	public class ItemModel extends Sprite {
 		private var _item:CDItem;
-		private var _child:DisplayObject;
 
 		public function ItemModel( item:CDItem, child:DisplayObject ) {
 			super();
 
 			_item = item;
-			_child = child;
 
 			addChild( child );
 		}
 
 		public function get item():CDItem { return _item; }
-
-		public function get child():DisplayObject{ return _child; }
-
-		public function update( item:DisplayObject ):void {
-			_child = item;
-			addChild( item );
-
-			this.x = _item.x;
-			this.y = _item.y;
-		}
 
 		public function save():void {
 			save_x 		= _item.x;

@@ -36,12 +36,14 @@ package com.tbbgc.carbondioxide.models.cd {
 
 		private var _note:String;
 
+		private var _needsRedraw:Boolean;
 		private var _enabled:Boolean;
 		private var _visible:Boolean;
 
 		private var _color:uint;
 
 		public function CDItem( parent:CDItem, name:String ) {
+
 			_parent = parent;
 
 			_name = name;
@@ -53,6 +55,7 @@ package com.tbbgc.carbondioxide.models.cd {
 			_aspectRatioAlign = CDAspectRatio.NONE;
 			_aspectRatioType = CDAspectRatio.ALIGN_BOTH;
 
+			_needsRedraw = false;
 			_enabled = _visible = true;
 
 			_children = new Vector.<CDItem>();
@@ -63,7 +66,12 @@ package com.tbbgc.carbondioxide.models.cd {
 			return TYPE_ITEM;
 		}
 
-		protected function itemChanged():void {
+		public function get needsRedraw():Boolean {
+			return _needsRedraw;
+		}
+
+		protected function itemChanged( needsRedraw:Boolean ):void {
+			_needsRedraw = needsRedraw;
 			EventManager.add( this );
 		}
 
@@ -80,7 +88,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set name( name:String ):void {
 			_name = name;
 
-			itemChanged();
+			itemChanged( false );
 		}
 
 		public function get asset():String {
@@ -90,7 +98,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set asset( asset:String ):void {
 			_asset = asset;
 
-			itemChanged();
+			itemChanged( true );
 		}
 
 		public function get aspectRatioAlign():int {
@@ -102,7 +110,7 @@ package com.tbbgc.carbondioxide.models.cd {
 
 			updateDisplayProperties();
 
-			itemChanged();
+			itemChanged( true );
 		}
 
 		public function get aspectRatioType():int {
@@ -114,7 +122,7 @@ package com.tbbgc.carbondioxide.models.cd {
 
 			updateDisplayProperties();
 
-			itemChanged();
+			itemChanged( true );
 		}
 
 		public function get note():String {
@@ -124,7 +132,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set note( note:String ):void {
 			_note = note;
 
-			itemChanged();
+			itemChanged( false );
 		}
 
 		//////////////
@@ -136,7 +144,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set enabled( value:Boolean ):void {
 			_enabled = value;
 
-			itemChanged();
+			itemChanged( false );
 		}
 
 		public function get visible():Boolean {
@@ -146,7 +154,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set visible( value:Boolean ):void {
 			_visible = value;
 
-			itemChanged();
+			itemChanged( false );
 		}
 
 		public function get isColorDefined():Boolean {
@@ -160,7 +168,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set color( value:uint ):void {
 			_color = value;
 
-			itemChanged();
+			itemChanged( true );
 		}
 
 		//////////////
@@ -212,6 +220,8 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function setXYWH( x:int, y:int, width:int, height:int ):void {
 			saveUndo();
 
+			var needsRedraw:Boolean = (width != widthAsInt || height != heightAsInt);
+
 			var res:CDResolution 	= currentResolution;
 			res.x 					= toPercent( x, _parent.width );
 			res.y 					= toPercent( y, _parent.height );
@@ -221,7 +231,7 @@ package com.tbbgc.carbondioxide.models.cd {
 
 			updateDisplayProperties();
 
-			itemChanged();
+			itemChanged( needsRedraw );
 		}
 
 		public function set x( value:Number ):void {
@@ -245,7 +255,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function addResolution( res:CDResolution ):CDResolution {
 			_resolutions.push( res );
 
-			itemChanged();
+			itemChanged( true );
 
 			return res;
 		}
@@ -255,7 +265,7 @@ package com.tbbgc.carbondioxide.models.cd {
 			if( _resolutions.length > 1 && index >= 0 ) {
 				_resolutions.splice( index, 1 );
 
-				itemChanged();
+				itemChanged( true );
 			}
 			return res;
 		}
@@ -293,7 +303,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function addChild( item:CDItem ):CDItem {
 			_children.push( item );
 
-			itemChanged();
+			itemChanged( true );
 
 			return item;
 		}
@@ -303,7 +313,7 @@ package com.tbbgc.carbondioxide.models.cd {
 			if( index >= 0 ) {
 				_children.splice(index, 1);
 
-				itemChanged();
+				itemChanged( true );
 			}
 			return item;
 		}
@@ -329,7 +339,7 @@ package com.tbbgc.carbondioxide.models.cd {
 			_children.splice(current, 1);
 			_children.splice(index, 0, item);
 
-			itemChanged();
+			itemChanged( true );
 		}
 
 		public function getChildIndex( item:CDItem ):int {

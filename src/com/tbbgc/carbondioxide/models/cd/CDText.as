@@ -54,7 +54,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set text( text:String ):void {
 			_text = text;
 
-			itemChanged();
+			itemChanged( true );
 		}
 
 		public function get align():int {
@@ -64,7 +64,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public function set align( a:int ):void {
 			_align = a;
 
-			itemChanged();
+			itemChanged( true );
 		}
 	}
 }

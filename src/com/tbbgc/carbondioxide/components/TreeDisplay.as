@@ -262,21 +262,26 @@ package com.tbbgc.carbondioxide.components {
 
 			var holder:ItemModel = findHolder( item );
 			if( holder != null ) {
-				holder.scaleX = holder.scaleY = 1;
-
-				var d:DisplayObject = drawFromData( item );
-
-				holder.removeChildren();
-
-				holder.update( d );
-
 				holder.visible = item.visible;
 
 				if( !item.enabled || !item.visible ) {
 					removeFromSelection(holder);
 				}
 
-				drawChildren( item, holder );
+				holder.x = item.x;
+				holder.y = item.y;
+
+				if( item.needsRedraw ) {
+					holder.scaleX = holder.scaleY = 1;
+
+					var d:DisplayObject = drawFromData( item );
+
+					holder.removeChildren();
+
+					holder.addChild( d );
+
+					drawChildren( item, holder );
+				}
 
 				drawSelection();
 			} else {
@@ -418,24 +423,24 @@ package com.tbbgc.carbondioxide.components {
 			var argbToHex:Function = function( a:int, r:int, g:int, b:int ):uint {
 				return a << 24 | r << 16 | g << 8 | b;
 			};
-			
+
 			var bm:BitmapData = new BitmapData( Math.max(1,item.width), Math.max(1,item.height), true, 0xffffffff );
-			
+
 			var r1:int = getR(item.getCornerColor(0));
 			var r2:int = getR(item.getCornerColor(1));
 			var r3:int = getR(item.getCornerColor(2));
 			var r4:int = getR(item.getCornerColor(3));
-			
+
 			var g1:int = getG(item.getCornerColor(0));
 			var g2:int = getG(item.getCornerColor(1));
 			var g3:int = getG(item.getCornerColor(2));
 			var g4:int = getG(item.getCornerColor(3));
-			
+
 			var b1:int = getB(item.getCornerColor(0));
 			var b2:int = getB(item.getCornerColor(1));
 			var b3:int = getB(item.getCornerColor(2));
 			var b4:int = getB(item.getCornerColor(3));
-			
+
 			var a1:int = 255 * item.getCornerAlpha(0);
 			var a2:int = 255 * item.getCornerAlpha(1);
 			var a3:int = 255 * item.getCornerAlpha(2);
@@ -445,19 +450,19 @@ package com.tbbgc.carbondioxide.components {
 				for( var x:int = 0; x < bm.width; x++ ) {
 					var t:Number = x / bm.width;
 					var s:Number = y / bm.height;
-					
+
 					var r:int = interpolate( r1, r2, r3, r4, t, s );
 					var g:int = interpolate( g1, g2, g3, g4, t, s );
 					var b:int = interpolate( b1, b2, b3, b4, t, s );
 					var a:int = interpolate( a1, a2, a3, a4, t, s );
-					
+
 					bm.setPixel32(x, y, argbToHex(a,r,g,b));
 				}
 			}
-			
+
 			return new Bitmap( bm );
 		}
-		
+
 		private function drawImage( item:CDItem ):DisplayObject {
 			var s:Sprite = new Sprite();
 
@@ -536,7 +541,7 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onClick( e:MouseEvent ):void {
 			stage.focus = null;
-			
+
 			const model:ItemModel = e.target as ItemModel;
 
 			if( model == null || !model.item.visible || !model.item.enabled ) {
