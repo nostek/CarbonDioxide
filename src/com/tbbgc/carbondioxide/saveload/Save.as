@@ -2,6 +2,7 @@ package com.tbbgc.carbondioxide.saveload {
 	import com.tbbgc.carbondioxide.managers.ViewsManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.cd.CDAspectRatio;
+	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDResolution;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
@@ -143,7 +144,12 @@ package com.tbbgc.carbondioxide.saveload {
 				data[ SLKeys.ITEM_TEXT ] = text( (item as CDText).text );
 				if( (item as CDText).align != CDText.ALIGN_LEFT) data[ SLKeys.ITEM_TEXT_ALIGN ] = (item as CDText).align;
 			}
-
+			
+			if( item is CDGradient ) {
+				data[ SLKeys.ITEM_GRADIENT_COLORS ] = (item as CDGradient).colors;
+				data[ SLKeys.ITEM_GRADIENT_ALPHAS ] = (item as CDGradient).alphas;
+			}
+			
 			if( item.note != null ) {
 				data[ SLKeys.ITEM_NOTE ] = text( item.note );
 			}

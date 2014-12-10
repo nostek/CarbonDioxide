@@ -2,6 +2,7 @@ package com.tbbgc.carbondioxide.copypaste {
 	import com.tbbgc.carbondioxide.managers.SettingsManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.ItemModel;
+	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
 	import com.tbbgc.carbondioxide.utils.ObjectEx;
@@ -69,6 +70,11 @@ package com.tbbgc.carbondioxide.copypaste {
 					o["text"] = (item as CDText).text;
 					o["texta"] = (item as CDText).align;
 				}
+				
+				if( item is CDGradient ) {
+					o["gcolors"] = (item as CDGradient).colors;
+					o["galphas"] = (item as CDGradient).alphas;
+				}
 
 				var c:Array = [];
 					for each( var child:CDItem in item.children ) {
@@ -130,6 +136,13 @@ package com.tbbgc.carbondioxide.copypaste {
 
 						(item as CDText).text = obj["text"];
 						(item as CDText).align = obj["texta"];
+					break;
+					
+					case CDItem.TYPE_GRADIENT:
+						item = new CDGradient( parent, validName(obj["name"], parent) );
+						
+						(item as CDGradient).colors = obj["gcolors"];
+						(item as CDGradient).alphas = obj["galphas"];
 					break;
 
 					default:

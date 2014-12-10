@@ -208,6 +208,7 @@ import com.tbbgc.carbondioxide.dialogues.PopupDialogue;
 import com.tbbgc.carbondioxide.managers.EventManager;
 import com.tbbgc.carbondioxide.models.DataModel;
 import com.tbbgc.carbondioxide.models.ItemModel;
+import com.tbbgc.carbondioxide.models.cd.CDGradient;
 import com.tbbgc.carbondioxide.models.cd.CDItem;
 import com.tbbgc.carbondioxide.models.cd.CDResolution;
 import com.tbbgc.carbondioxide.models.cd.CDText;
@@ -554,6 +555,7 @@ internal class TreeItem extends Sprite {
 
 		additem( "Add Item", onAddItemItem );
 		additem( "Add Text", onAddItemText );
+		additem( "Add Gradient", onAddItemGradient );
 		additem( "Delete", onDelete );
 		additem( null, null );
 		additem( "Move Top", onMoveTop );
@@ -570,8 +572,9 @@ internal class TreeItem extends Sprite {
 		s.display( this.stage, global.x, global.y );
 	}
 
-	private static const ADD_ITEM:int = 0;
-	private static const ADD_TEXT:int = 1;
+	private static const ADD_ITEM:int 		= 0;
+	private static const ADD_TEXT:int 		= 1;
+	private static const ADD_GRADIENT:int 	= 2;
 	private var _addType:int;
 
 	private function onAddItemItem(e:Event):void {
@@ -581,6 +584,11 @@ internal class TreeItem extends Sprite {
 
 	private function onAddItemText(e:Event):void {
 		_addType = ADD_TEXT;
+		onAddItem();
+	}
+	
+	private function onAddItemGradient(e:Event):void {
+		_addType = ADD_GRADIENT;
 		onAddItem();
 	}
 
@@ -607,6 +615,10 @@ internal class TreeItem extends Sprite {
 
 				case ADD_TEXT:
 					item = _model.addChild( new CDText(_model, input.text) );
+				break;
+				
+				case ADD_GRADIENT:
+					item = _model.addChild( new CDGradient(_model, input.text) );
 				break;
 			}
 

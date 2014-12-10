@@ -108,6 +108,16 @@ package com.tbbgc.carbondioxide.dialogues {
 				minimize();
 			}
 		}
+		
+		protected function clearDisable():void {
+			with( _noclick.graphics ) {
+				clear();
+				beginFill( 0x000000, 1 );
+				drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+				endFill();
+			}
+			_noclick.alpha = 0.1;
+		}
 
 		private function saveDialogue():void {
 			const id:String = dialogueID;

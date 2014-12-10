@@ -3,6 +3,7 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.managers.UndoManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.ItemModel;
+	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
 	import com.tbbgc.carbondioxide.utils.Drawer;
@@ -11,6 +12,7 @@ package com.tbbgc.carbondioxide.components {
 	import org.osflash.signals.Signal;
 
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
@@ -381,6 +383,9 @@ package com.tbbgc.carbondioxide.components {
 			}
 
 			if( (item.asset == null || item.asset == "") ) {
+				if( item is CDGradient ) {
+					return drawGradient( item as CDGradient );
+				}
 				return drawShape( item );
 			} else {
 				if( item is CDText ) {
@@ -394,6 +399,65 @@ package com.tbbgc.carbondioxide.components {
 			/*FDT_IGNORE*/
 		}
 
+		private function drawGradient( item:CDGradient ):DisplayObject {
+			var getR:Function = function( c:uint ):int {
+				return (c >> 16) & 0xFF;
+			};
+			var getG:Function = function( c:uint ):int {
+				return (c >> 8) & 0xFF;
+			};
+			var getB:Function = function( c:uint ):int {
+				return (c) & 0xFF;
+			};
+			var interpolate:Function = function( a:int, b:int, c:int, d:int, t:Number, s:Number ):int {
+				return (a*(1-t)*(1-s) + b*t*(1-s) + c*(1-t)*s + d*t*s);
+			};
+			var interpolateNumber:Function = function( a:Number, b:Number, c:Number, d:Number, t:Number, s:Number ):int {
+				return (a*(1-t)*(1-s) + b*t*(1-s) + c*(1-t)*s + d*t*s);
+			};
+			var argbToHex:Function = function( a:int, r:int, g:int, b:int ):uint {
+				return a << 24 | r << 16 | g << 8 | b;
+			};
+			
+			var bm:BitmapData = new BitmapData( Math.max(1,item.width), Math.max(1,item.height), true, 0xffffffff );
+			
+			var r1:int = getR(item.getCornerColor(0));
+			var r2:int = getR(item.getCornerColor(1));
+			var r3:int = getR(item.getCornerColor(2));
+			var r4:int = getR(item.getCornerColor(3));
+			
+			var g1:int = getG(item.getCornerColor(0));
+			var g2:int = getG(item.getCornerColor(1));
+			var g3:int = getG(item.getCornerColor(2));
+			var g4:int = getG(item.getCornerColor(3));
+			
+			var b1:int = getB(item.getCornerColor(0));
+			var b2:int = getB(item.getCornerColor(1));
+			var b3:int = getB(item.getCornerColor(2));
+			var b4:int = getB(item.getCornerColor(3));
+			
+			var a1:int = 255 * item.getCornerAlpha(0);
+			var a2:int = 255 * item.getCornerAlpha(1);
+			var a3:int = 255 * item.getCornerAlpha(2);
+			var a4:int = 255 * item.getCornerAlpha(3);
+
+			for( var y:int = 0; y < bm.height; y++ ) {
+				for( var x:int = 0; x < bm.width; x++ ) {
+					var t:Number = x / bm.width;
+					var s:Number = y / bm.height;
+					
+					var r:int = interpolate( r1, r2, r3, r4, t, s );
+					var g:int = interpolate( g1, g2, g3, g4, t, s );
+					var b:int = interpolate( b1, b2, b3, b4, t, s );
+					var a:int = interpolate( a1, a2, a3, a4, t, s );
+					
+					bm.setPixel32(x, y, argbToHex(a,r,g,b));
+				}
+			}
+			
+			return new Bitmap( bm );
+		}
+		
 		private function drawImage( item:CDItem ):DisplayObject {
 			var s:Sprite = new Sprite();
 

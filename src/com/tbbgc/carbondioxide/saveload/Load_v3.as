@@ -1,6 +1,7 @@
 package com.tbbgc.carbondioxide.saveload {
 	import com.tbbgc.carbondioxide.dialogues.PopupDialogue;
 	import com.tbbgc.carbondioxide.managers.ViewsManager;
+	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDResolution;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
@@ -110,11 +111,20 @@ package com.tbbgc.carbondioxide.saveload {
 				case CDItem.TYPE_TEXT:
 					item = new CDText(parent, name);
 				break;
+				
+				case CDItem.TYPE_GRADIENT:
+					item = new CDGradient(parent, name);
+				break;
 			}
 
 			if( type == CDItem.TYPE_TEXT ) {
 				(item as CDText).text  = text( ObjectEx.select(data, SLKeys.ITEM_TEXT, -1), (item as CDText).text, true );
 				(item as CDText).align = ObjectEx.select(data, SLKeys.ITEM_TEXT_ALIGN, CDText.ALIGN_LEFT);
+			}
+			
+			if( type == CDItem.TYPE_GRADIENT ) {
+				(item as CDGradient).colors = ObjectEx.select(data, SLKeys.ITEM_GRADIENT_COLORS, null);
+				(item as CDGradient).alphas = ObjectEx.select(data, SLKeys.ITEM_GRADIENT_ALPHAS, null);
 			}
 
 			item.note = text( ObjectEx.select(data, SLKeys.ITEM_NOTE, -1), (item as CDItem).note, true );

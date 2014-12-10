@@ -11,6 +11,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public static const TYPE_VIEW:int 		= 0;
 		public static const TYPE_ITEM:int 		= 1;
 		public static const TYPE_TEXT:int 		= 2;
+		public static const TYPE_GRADIENT:int 	= 3;
 
 		public static const DEFAULT_COLOR:uint = 0x000000;
 		public static const INVISIBLE_COLOR:uint = 0xff000000;
