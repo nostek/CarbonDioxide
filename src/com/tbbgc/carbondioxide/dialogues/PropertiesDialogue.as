@@ -6,6 +6,7 @@ package com.tbbgc.carbondioxide.dialogues {
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.ItemModel;
 	import com.tbbgc.carbondioxide.models.cd.CDAspectRatio;
+	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
 	import com.tbbgc.carbondioxide.utils.Drawer;
@@ -89,6 +90,10 @@ package com.tbbgc.carbondioxide.dialogues {
 				if( item is CDText ) {
 					_properties.addItem({data:[false, "text"],	label:"text: " + (item as CDText).text});
 					_properties.addItem({data:[false, "texta"],	label:"text align: " + CDText.getAlignAsString((item as CDText).align)});
+				}
+
+				if( item is CDGradient ) {
+					_properties.addItem({data:[false, "gradient"],	label:"change gradient"});
 				}
 			} else {
 				_properties.addItem({data:[false, "x"], label:"x: (-)"});
@@ -203,11 +208,15 @@ package com.tbbgc.carbondioxide.dialogues {
 
 					case "color":
 						var colorDlg:ColorDialogue = new ColorDialogue();
-						colorDlg.onSelect.addOnce( onColorSelected );
+						colorDlg.onSelect.add( onColorSelected );
 					break;
 
 					case "asset":
 						item.asset = null;
+					break;
+
+					case "gradient":
+						new GradientDialogue(item as CDGradient);
 					break;
 
 					default : break;

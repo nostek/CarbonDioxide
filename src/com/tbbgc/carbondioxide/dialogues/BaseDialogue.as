@@ -108,15 +108,15 @@ package com.tbbgc.carbondioxide.dialogues {
 				minimize();
 			}
 		}
-		
-		protected function clearDisable():void {
+
+		protected function transparentDisable():void {
 			with( _noclick.graphics ) {
 				clear();
 				beginFill( 0x000000, 1 );
 				drawRect(0, 0, stage.stageWidth, stage.stageHeight);
 				endFill();
 			}
-			_noclick.alpha = 0.1;
+			_noclick.alpha = 0.01;
 		}
 
 		private function saveDialogue():void {

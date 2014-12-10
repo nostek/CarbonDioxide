@@ -414,15 +414,9 @@ package com.tbbgc.carbondioxide.components {
 			var getB:Function = function( c:uint ):int {
 				return (c) & 0xFF;
 			};
-			var interpolate:Function = function( a:int, b:int, c:int, d:int, t:Number, s:Number ):int {
-				return (a*(1-t)*(1-s) + b*t*(1-s) + c*(1-t)*s + d*t*s);
-			};
-			var interpolateNumber:Function = function( a:Number, b:Number, c:Number, d:Number, t:Number, s:Number ):int {
-				return (a*(1-t)*(1-s) + b*t*(1-s) + c*(1-t)*s + d*t*s);
-			};
-			var argbToHex:Function = function( a:int, r:int, g:int, b:int ):uint {
-				return a << 24 | r << 16 | g << 8 | b;
-			};
+//			var interpolate:Function = function( a:int, b:int, c:int, d:int, t:Number, s:Number ):int {
+//				return (a*(1-t)*(1-s) + b*t*(1-s) + c*(1-t)*s + d*t*s);
+//			};
 
 			var bm:BitmapData = new BitmapData( Math.max(1,item.width), Math.max(1,item.height), true, 0xffffffff );
 
@@ -446,19 +440,42 @@ package com.tbbgc.carbondioxide.components {
 			var a3:int = 255 * item.getCornerAlpha(2);
 			var a4:int = 255 * item.getCornerAlpha(3);
 
-			for( var y:int = 0; y < bm.height; y++ ) {
-				for( var x:int = 0; x < bm.width; x++ ) {
-					var t:Number = x / bm.width;
-					var s:Number = y / bm.height;
+			var t:Number, s:Number;
+			var r:int, g:int, b:int, a:int;
 
-					var r:int = interpolate( r1, r2, r3, r4, t, s );
-					var g:int = interpolate( g1, g2, g3, g4, t, s );
-					var b:int = interpolate( b1, b2, b3, b4, t, s );
-					var a:int = interpolate( a1, a2, a3, a4, t, s );
+			var rect:Rectangle = bm.rect;
 
-					bm.setPixel32(x, y, argbToHex(a,r,g,b));
+			var data:Vector.<uint> = bm.getVector(rect);
+
+			var i:int = 0;
+			var x:int = 0;
+			var y:int = 0;
+			for( var c:int = data.length; c; c-- ) {
+				t = x / rect.width;
+				s = y / rect.height;
+
+//				r = interpolate( r1, r2, r3, r4, t, s );
+//				g = interpolate( g1, g2, g3, g4, t, s );
+//				b = interpolate( b1, b2, b3, b4, t, s );
+//				a = interpolate( a1, a2, a3, a4, t, s );
+
+				r = (r1*(1-t)*(1-s) + r2*t*(1-s) + r3*(1-t)*s + r4*t*s);
+				g = (g1*(1-t)*(1-s) + g2*t*(1-s) + g3*(1-t)*s + g4*t*s);
+				b = (b1*(1-t)*(1-s) + b2*t*(1-s) + b3*(1-t)*s + b4*t*s);
+				a = (a1*(1-t)*(1-s) + a2*t*(1-s) + a3*(1-t)*s + a4*t*s);
+
+				data[i] = a << 24 | r << 16 | g << 8 | b;
+
+				x++;
+				if( x == rect.width ) {
+					y++;
+					x = 0;
 				}
+
+				i++;
 			}
+
+			bm.setVector(rect, data);
 
 			return new Bitmap( bm );
 		}

@@ -369,7 +369,7 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onColor( e:Event ):void {
 			var dlg:ColorDialogue = new ColorDialogue();
-			dlg.onSelect.addOnce( _onSelectColor );
+			dlg.onSelect.add( _onSelectColor );
 		}
 		private function _onSelectColor( color:uint ):void {
 			DataModel.setBGColor( color );
@@ -514,7 +514,7 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onScreenSize( dlg:InputDialogue ):void {
 			var t:String = dlg.text;
-			
+
 			if( t != null && t != "" ) {
 				var n:Number = Number(t);
 				if( !isNaN(n) ) {
