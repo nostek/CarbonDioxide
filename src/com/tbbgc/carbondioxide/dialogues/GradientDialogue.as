@@ -146,7 +146,7 @@ package com.tbbgc.carbondioxide.dialogues {
 				break;
 			}
 
-			var dlg:ColorDialogue = new ColorDialogue();
+			var dlg:ColorDialogue = new ColorDialogue( _item.getCornerColor(_corner) );
 			dlg.onSelect.add( onColorSelect );
 		}
 

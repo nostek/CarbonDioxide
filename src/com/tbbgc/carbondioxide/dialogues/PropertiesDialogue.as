@@ -207,7 +207,7 @@ package com.tbbgc.carbondioxide.dialogues {
 					break;
 
 					case "color":
-						var colorDlg:ColorDialogue = new ColorDialogue();
+						var colorDlg:ColorDialogue = new ColorDialogue( item.color );
 						colorDlg.onSelect.add( onColorSelected );
 					break;
 

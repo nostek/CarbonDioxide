@@ -368,7 +368,7 @@ package com.tbbgc.carbondioxide.components {
 		}
 
 		private function onColor( e:Event ):void {
-			var dlg:ColorDialogue = new ColorDialogue();
+			var dlg:ColorDialogue = new ColorDialogue( DataModel.BG_COLOR );
 			dlg.onSelect.add( _onSelectColor );
 		}
 		private function _onSelectColor( color:uint ):void {
