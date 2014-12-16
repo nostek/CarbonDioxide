@@ -410,6 +410,9 @@ package com.tbbgc.carbondioxide.models.cd {
 				}
 				newwidth  *= sa;
 				newheight *= sa;
+				
+				if( newwidth > oldwidth ) newwidth = oldwidth;
+				if( newheight > oldheight ) newheight = oldheight;
 
 				_width 	= toPercent( newwidth, _parent.width );
 				_height = toPercent( newheight, _parent.height );
@@ -466,6 +469,8 @@ package com.tbbgc.carbondioxide.models.cd {
 				_children[i].updateDisplayProperties();
 			}
 		}
+		
+		private static const TABLET_SIZE:Number = 6.9; //7" but 6.9 for rounding errors.
 
 		private function getInterpolatedState():CDResolution {
 			//Check for single state
@@ -489,10 +494,10 @@ package com.tbbgc.carbondioxide.models.cd {
 				}
 			}
 
-			//Find.
-
-			var screenSize:Number = ResolutionsModel.getScreenSize(screenWidth, screenHeight, screenDPI);
-
+			//Sort.
+			const screenSize:Number = ResolutionsModel.getScreenSize(screenWidth, screenHeight, screenDPI);
+			const screenLandscape:Boolean = screenWidth > screenHeight;
+			
 			var s:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
 			var m:SortResolutionModel;
 
@@ -504,35 +509,59 @@ package com.tbbgc.carbondioxide.models.cd {
 
 				m.screenWidth 	= state.screenWidth;
 				m.screenHeight 	= state.screenHeight;
-				m.screenDPI 	= state.screenDPI;
+				m.screenSize	= ResolutionsModel.getScreenSize(m.screenWidth, m.screenHeight, state.screenDPI);
 
-				m.screenSizeDiff = Math.abs( ResolutionsModel.getScreenSize(m.screenWidth, m.screenHeight, m.screenDPI) - screenSize );
-				m.screenDPIDiff = Math.abs( m.screenDPI - screenDPI );
-
-				if( s.length == 0 ) {
-					s[0] = m;
-				} else {
-					if( m.screenSizeDiff < s[0].screenSizeDiff ) {
-						s.length = 0;
-						s[0] = m;
-					} else if( m.screenSizeDiff == s[0].screenSizeDiff ) {
-						s[ s.length ] = m;
-					}
-				}
+				m.screenSizeDiff = Math.abs( m.screenSize - screenSize );
+				
+				s[ s.length ] = m;
 			}
+			
+			s = s.sort(sortScreenSize);
+			
+			if( s.length == 1 ) {
+				return s[0].model;
+			}
+			
+			s = filterOrientation( screenLandscape, s );
 
-			if( s.length == 0 ) {
+			if( s.length == 1 ) {
 				return s[0].model;
 			}
 
-			s = s.sort(sortResolutionDPI);
+			s = filterDevice( screenSize >= TABLET_SIZE, s );
 
 			return s[0].model;
 		}
+		
+		private static function filterDevice( isTablet:Boolean, s:Vector.<SortResolutionModel> ):Vector.<SortResolutionModel> {
+			var ret:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
+			
+			const len:int = s.length;
+			for( var i:int = 0; i < len; i++ ) {
+				if( Boolean(s[i].screenSize >= TABLET_SIZE) == isTablet ) {
+					ret[ ret.length ] = s[i];
+				}
+			}
+			
+			return (ret.length > 0) ? ret : s;
+		}
 
-		private static function sortResolutionDPI( a:SortResolutionModel, b:SortResolutionModel ):int {
-			if( a.screenDPIDiff == b.screenDPIDiff ) return 0;
-			return ( a.screenDPIDiff > b.screenDPIDiff ) ? 1 : -1;
+		private static function filterOrientation( isLandscape:Boolean, s:Vector.<SortResolutionModel> ):Vector.<SortResolutionModel> {
+			var ret:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
+			
+			const len:int = s.length;
+			for( var i:int = 0; i < len; i++ ) {
+				if( Boolean(s[i].screenWidth > s[i].screenHeight) == isLandscape ) {
+					ret[ ret.length ] = s[i];
+				}
+			}
+			
+			return (ret.length > 0) ? ret : s;
+		}
+
+		private static function sortScreenSize( a:SortResolutionModel, b:SortResolutionModel ):int {
+			if( a.screenSizeDiff == b.screenSizeDiff ) return 0;
+			return ( a.screenSizeDiff > b.screenSizeDiff ) ? 1 : -1; 
 		}
 	}
 }
@@ -546,10 +575,9 @@ import com.tbbgc.carbondioxide.models.cd.CDResolution;
 internal final class SortResolutionModel {
 	public var screenWidth:int;
 	public var screenHeight:int;
-	public var screenDPI:int;
+	public var screenSize:Number;
 
 	public var screenSizeDiff:Number;
-	public var screenDPIDiff:int;
 
 	public var model:CDResolution;
 }

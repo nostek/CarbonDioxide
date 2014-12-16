@@ -10,20 +10,23 @@ package com.tbbgc.carbondioxide.models.resolutions {
 			{name:"iPhone4/4s", 			width:640, 	height:960,  status:40, dpi:326},
 			{name:"iPhone5/5s/5c",			width:640, 	height:1136, status:40, dpi:326},
 			{name:"iPhone6",				width:750, 	height:1334, status:40, dpi:326},
+			{name:"iPhone6 Plus",			width:1080,	height:1980, status:40, dpi:401},
 			{name:"iPad1/2", 				width:768, 	height:1024, status:20, dpi:132},
 			{name:"iPad3/4/Air", 			width:1536, height:2048, status:40, dpi:264},
 			{name:"iPad Mini", 				width:768,  height:1024,            dpi:163},
 			{name:"iPad Mini Air", 			width:1536, height:2048,            dpi:326},
 
 			//Android
+			{name:"SE Xperia Arc", 			width:480,   height:854,  dpi:233},
+			{name:"SE X10 Mini", 			width:240,   height:320,  dpi:157},
 			{name:"Samsung Galaxy S", 		width:480,   height:800,  dpi:233},
 			{name:"Samsung Galaxy S3", 		width:720,   height:1280, dpi:306},
 			{name:"Samsung Galaxy S4", 		width:1080,  height:1920, dpi:441},
 			{name:"Samsung Galaxy Nexus", 	width:720,   height:1280, dpi:316},
-			{name:"Samsung Galaxy Nexus 10",width:1600,  height:2560, dpi:300},
+			{name:"Google Nexus 6",			width:1440,  height:2560, dpi:493},
 			{name:"Samsung Galaxy Tab 10", 	width:800,   height:1280, dpi:149},
-			{name:"SE Xperia Arc", 			width:480,   height:854,  dpi:233},
-			{name:"SE X10 Mini", 			width:240,   height:320,  dpi:157},
+			{name:"Google Nexus 7",			width:1200,  height:1920, dpi:323},
+			{name:"Google Nexus 10",		width:1600,  height:2560, dpi:300},
 
 			//Amazon
 			{name:"Kindle Fire", 			width:600,   height:1024, dpi:169},
