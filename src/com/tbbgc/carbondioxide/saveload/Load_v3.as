@@ -111,7 +111,7 @@ package com.tbbgc.carbondioxide.saveload {
 				case CDItem.TYPE_TEXT:
 					item = new CDText(parent, name);
 				break;
-				
+
 				case CDItem.TYPE_GRADIENT:
 					item = new CDGradient(parent, name);
 				break;
@@ -121,7 +121,7 @@ package com.tbbgc.carbondioxide.saveload {
 				(item as CDText).text  = text( ObjectEx.select(data, SLKeys.ITEM_TEXT, -1), (item as CDText).text, true );
 				(item as CDText).align = ObjectEx.select(data, SLKeys.ITEM_TEXT_ALIGN, CDText.ALIGN_LEFT);
 			}
-			
+
 			if( type == CDItem.TYPE_GRADIENT ) {
 				(item as CDGradient).colors = ObjectEx.select(data, SLKeys.ITEM_GRADIENT_COLORS, null);
 				(item as CDGradient).alphas = ObjectEx.select(data, SLKeys.ITEM_GRADIENT_ALPHAS, null);
@@ -137,6 +137,7 @@ package com.tbbgc.carbondioxide.saveload {
 			item.visible = ObjectEx.select(data, SLKeys.ITEM_VISIBLE, true) as Boolean;
 
 			item.color = ObjectEx.select(data, SLKeys.ITEM_COLOR, item.color);
+			item.alpha = ObjectEx.select(data, SLKeys.ITEM_ALPHA, item.alpha);
 
 			var i:int;
 

@@ -13,8 +13,8 @@ package com.tbbgc.carbondioxide.models.cd {
 		public static const TYPE_TEXT:int 		= 2;
 		public static const TYPE_GRADIENT:int 	= 3;
 
-		public static const DEFAULT_COLOR:uint = 0x000000;
-		public static const INVISIBLE_COLOR:uint = 0xff000000;
+		public static const DEFAULT_COLOR:uint 	 = 0x000000;
+		public static const DEFAULT_ALPHA:Number = 0.5;
 
 		///
 
@@ -41,9 +41,9 @@ package com.tbbgc.carbondioxide.models.cd {
 		private var _visible:Boolean;
 
 		private var _color:uint;
+		private var _alpha:Number;
 
 		public function CDItem( parent:CDItem, name:String ) {
-
 			_parent = parent;
 
 			_name = name;
@@ -51,6 +51,7 @@ package com.tbbgc.carbondioxide.models.cd {
 			_note = null;
 
 			_color = DEFAULT_COLOR;
+			_alpha = DEFAULT_ALPHA;
 
 			_aspectRatioAlign = CDAspectRatio.NONE;
 			_aspectRatioType = CDAspectRatio.ALIGN_BOTH;
@@ -157,18 +158,24 @@ package com.tbbgc.carbondioxide.models.cd {
 			itemChanged( false );
 		}
 
-		public function get isColorDefined():Boolean {
-			return (_color!=DEFAULT_COLOR);
+		public function set color( value:uint ):void {
+			_color = value;
+
+			itemChanged( true );
 		}
 
 		public function get color():uint {
 			return _color;
 		}
 
-		public function set color( value:uint ):void {
-			_color = value;
+		public function set alpha( value:Number ):void {
+			_alpha = value;
 
 			itemChanged( true );
+		}
+
+		public function get alpha():Number {
+			return _alpha;
 		}
 
 		//////////////
@@ -410,7 +417,7 @@ package com.tbbgc.carbondioxide.models.cd {
 				}
 				newwidth  *= sa;
 				newheight *= sa;
-				
+
 				if( newwidth > oldwidth ) newwidth = oldwidth;
 				if( newheight > oldheight ) newheight = oldheight;
 
@@ -469,7 +476,7 @@ package com.tbbgc.carbondioxide.models.cd {
 				_children[i].updateDisplayProperties();
 			}
 		}
-		
+
 		private static const TABLET_SIZE:Number = 6.9; //7" but 6.9 for rounding errors.
 
 		private function getInterpolatedState():CDResolution {
@@ -497,7 +504,7 @@ package com.tbbgc.carbondioxide.models.cd {
 			//Sort.
 			const screenSize:Number = ResolutionsModel.getScreenSize(screenWidth, screenHeight, screenDPI);
 			const screenLandscape:Boolean = screenWidth > screenHeight;
-			
+
 			var s:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
 			var m:SortResolutionModel;
 
@@ -512,16 +519,16 @@ package com.tbbgc.carbondioxide.models.cd {
 				m.screenSize	= ResolutionsModel.getScreenSize(m.screenWidth, m.screenHeight, state.screenDPI);
 
 				m.screenSizeDiff = Math.abs( m.screenSize - screenSize );
-				
+
 				s[ s.length ] = m;
 			}
-			
+
 			s = s.sort(sortScreenSize);
-			
+
 			if( s.length == 1 ) {
 				return s[0].model;
 			}
-			
+
 			s = filterOrientation( screenLandscape, s );
 
 			if( s.length == 1 ) {
@@ -532,36 +539,36 @@ package com.tbbgc.carbondioxide.models.cd {
 
 			return s[0].model;
 		}
-		
+
 		private static function filterDevice( isTablet:Boolean, s:Vector.<SortResolutionModel> ):Vector.<SortResolutionModel> {
 			var ret:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
-			
+
 			const len:int = s.length;
 			for( var i:int = 0; i < len; i++ ) {
 				if( Boolean(s[i].screenSize >= TABLET_SIZE) == isTablet ) {
 					ret[ ret.length ] = s[i];
 				}
 			}
-			
+
 			return (ret.length > 0) ? ret : s;
 		}
 
 		private static function filterOrientation( isLandscape:Boolean, s:Vector.<SortResolutionModel> ):Vector.<SortResolutionModel> {
 			var ret:Vector.<SortResolutionModel> = new Vector.<SortResolutionModel>();
-			
+
 			const len:int = s.length;
 			for( var i:int = 0; i < len; i++ ) {
 				if( Boolean(s[i].screenWidth > s[i].screenHeight) == isLandscape ) {
 					ret[ ret.length ] = s[i];
 				}
 			}
-			
+
 			return (ret.length > 0) ? ret : s;
 		}
 
 		private static function sortScreenSize( a:SortResolutionModel, b:SortResolutionModel ):int {
 			if( a.screenSizeDiff == b.screenSizeDiff ) return 0;
-			return ( a.screenSizeDiff > b.screenSizeDiff ) ? 1 : -1; 
+			return ( a.screenSizeDiff > b.screenSizeDiff ) ? 1 : -1;
 		}
 	}
 }

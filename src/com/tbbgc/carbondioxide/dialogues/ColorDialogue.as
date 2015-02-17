@@ -1,14 +1,15 @@
 package com.tbbgc.carbondioxide.dialogues {
-	import flash.ui.Keyboard;
-	import flash.events.KeyboardEvent;
 	import fl.controls.TextInput;
+
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 
 	import org.osflash.signals.Signal;
 
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
 
 	/**
 	 * @author simonrodriguez
@@ -26,9 +27,10 @@ package com.tbbgc.carbondioxide.dialogues {
 		private var _r:TextInput;
 		private var _g:TextInput;
 		private var _b:TextInput;
+		private var _a:TextInput;
 		private var _hex:TextInput;
 
-		public function ColorDialogue( defaultColor:uint=0xffffff, closeOnSelect:Boolean=false ) {
+		public function ColorDialogue( defaultColor:uint=0xffffff, defaultAlpha:Number=1.0, closeOnSelect:Boolean=false ) {
 			const WIDTH:int = 199+EDGE+EDGE;
 			const HEIGHT:int = 272+HEADER+EDGE;
 
@@ -57,36 +59,49 @@ package com.tbbgc.carbondioxide.dialogues {
 
 			_r = new TextInput();
 			_r.y = s.height;
-			_r.width = s.width / 4;
+			_r.width = s.width / 5;
 			_r.text = tr;
 			_r.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
+			_r.addEventListener(MouseEvent.CLICK, onFocusChanged, false, 0, true);
 			container.addChild(_r);
 
 			_g = new TextInput();
 			_g.y = s.height;
-			_g.width = s.width / 4;
+			_g.width = s.width / 5;
 			_g.x = _g.width;
 			_g.text = tg;
 			_g.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
+			_g.addEventListener(MouseEvent.CLICK, onFocusChanged, false, 0, true);
 			container.addChild(_g);
 
 			_b = new TextInput();
 			_b.y = s.height;
-			_b.width = s.width / 4;
+			_b.width = s.width / 5;
 			_b.x = _b.width + _b.width;
 			_b.text = tb;
 			_b.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
+			_b.addEventListener(MouseEvent.CLICK, onFocusChanged, false, 0, true);
 			container.addChild(_b);
+
+			_a = new TextInput();
+			_a.y = s.height;
+			_a.width = s.width / 5;
+			_a.x = _a.width + _a.width + _a.width;
+			_a.text = defaultAlpha.toString();
+			_a.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
+			_a.addEventListener(MouseEvent.CLICK, onFocusChanged, false, 0, true);
+			container.addChild(_a);
 
 			_hex = new TextInput();
 			_hex.y = s.height;
-			_hex.width = s.width / 4;
-			_hex.x = _hex.width + _hex.width + _hex.width;
+			_hex.width = s.width / 5;
+			_hex.x = _hex.width + _hex.width + _hex.width + _hex.width;
 			_hex.text = tx;
 			_hex.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHex, false, 0, true);
+			_hex.addEventListener(MouseEvent.CLICK, onFocusChangedHex, false, 0, true);
 			container.addChild(_hex);
 
-			_onSelect = new Signal( uint );
+			_onSelect = new Signal( uint, Number );
 
 			_closeOnSelect = closeOnSelect;
 
@@ -108,90 +123,117 @@ package com.tbbgc.carbondioxide.dialogues {
 
 		private function onClick(e:MouseEvent):void {
 			var color:uint = 0;
+			var alpha:Number = Number( _a.text );
 
 			if( e.localX < 10 && e.localY < 10 ) {
-				color = CDItem.INVISIBLE_COLOR;
-				_onSelect.dispatch( CDItem.INVISIBLE_COLOR );
+				color = CDItem.DEFAULT_COLOR;
+				alpha = 0;
 			} else {
-				color = _colors.bitmapData.getPixel( e.localX, e.localY );
-				_onSelect.dispatch( color );
-
-				_r.text = int((color >> 16) & 0xFF ).toString();
-				_g.text = int((color >>  8) & 0xFF ).toString();
-				_b.text = int((color      ) & 0xFF ).toString();
-
-				var r:int = int( _r.text );
-				var g:int = int( _g.text );
-				var b:int = int( _b.text );
-
-				var sr:String = int(r).toString(16);
-				var sg:String = int(g).toString(16);
-				var sb:String = int(b).toString(16);
-
-				if( sr.length == 1 ) sr = "0" + sr;
-				if( sg.length == 1 ) sg = "0" + sg;
-				if( sb.length == 1 ) sb = "0" + sb;
-
-				_hex.text = sr + sg + sb;
+				color = _colors.bitmapData.getPixel32( e.localX, e.localY );
 			}
+
+			_r.text = int((color >> 16) & 0xFF ).toString();
+			_g.text = int((color >>  8) & 0xFF ).toString();
+			_b.text = int((color      ) & 0xFF ).toString();
+			_a.text = alpha.toString();
+
+			var r:int = int( _r.text );
+			var g:int = int( _g.text );
+			var b:int = int( _b.text );
+
+			var sr:String = int(r).toString(16);
+			var sg:String = int(g).toString(16);
+			var sb:String = int(b).toString(16);
+
+			if( sr.length == 1 ) sr = "0" + sr;
+			if( sg.length == 1 ) sg = "0" + sg;
+			if( sb.length == 1 ) sb = "0" + sb;
+
+			_hex.text = sr + sg + sb;
+
+			_onSelect.dispatch( color, alpha );
 
 			if( _closeOnSelect ) {
 				close();
 			}
 		}
 
+		private function onFocusChanged( e:MouseEvent ):void {
+			onUpdateARGB();
+		}
 		private function onKeyUp( e:KeyboardEvent ):void {
 			if( e.keyCode == Keyboard.ENTER ) {
-				var r:int = int( _r.text );
-				var g:int = int( _g.text );
-				var b:int = int( _b.text );
+				onUpdateARGB();
+			}
+		}
+		private function onUpdateARGB():void {
+			var a:Number = Number( _a.text );
+			var r:int = int( _r.text );
+			var g:int = int( _g.text );
+			var b:int = int( _b.text );
 
-				r = Math.max( 0, Math.min( 255, r ) );
-				g = Math.max( 0, Math.min( 255, g ) );
-				b = Math.max( 0, Math.min( 255, b ) );
+			if( isNaN(a) ) {
+				a = 0;
+			}
 
-				_r.text = r.toString();
-				_g.text = g.toString();
-				_b.text = b.toString();
+			a = Math.max( 0, Math.min( 1, a ) );
+			r = Math.max( 0, Math.min( 255, r ) );
+			g = Math.max( 0, Math.min( 255, g ) );
+			b = Math.max( 0, Math.min( 255, b ) );
 
-				var sr:String = int(r).toString(16);
-				var sg:String = int(g).toString(16);
-				var sb:String = int(b).toString(16);
+			_a.text = a.toString();
+			_r.text = r.toString();
+			_g.text = g.toString();
+			_b.text = b.toString();
 
-				if( sr.length == 1 ) sr = "0" + sr;
-				if( sg.length == 1 ) sg = "0" + sg;
-				if( sb.length == 1 ) sb = "0" + sb;
+			var sr:String = int(r).toString(16);
+			var sg:String = int(g).toString(16);
+			var sb:String = int(b).toString(16);
 
-				_hex.text = sr + sg + sb;
+			if( sr.length == 1 ) sr = "0" + sr;
+			if( sg.length == 1 ) sg = "0" + sg;
+			if( sb.length == 1 ) sb = "0" + sb;
 
-				var color:uint = 255 << 24 | r << 16 | g << 8 | b;
+			_hex.text = sr + sg + sb;
 
-				_onSelect.dispatch( color );
+			var color:uint = r << 16 | g << 8 | b;
 
-				if( _closeOnSelect ) {
-					close();
-				}
+			_onSelect.dispatch( color, a );
+
+			if( _closeOnSelect ) {
+				close();
 			}
 		}
 
+		private function onFocusChangedHex( e:MouseEvent ):void {
+			onUpdateHex();
+		}
 		private function onKeyUpHex( e:KeyboardEvent ):void {
 			if( e.keyCode == Keyboard.ENTER ) {
-				if( _hex.text.length != 6 ) {
-					_hex.text = "";
-					return;
-				}
+				onUpdateHex();
+			}
+		}
+		private function onUpdateHex():void {
+			if( _hex.text.length != 6 ) {
+				_hex.text = "";
+				return;
+			}
 
-				var color:uint = uint( "0x"+_hex.text );
+			var color:uint = uint( "0x"+_hex.text );
+			var alpha:Number = Number( _a.text );
 
-				_r.text = int( (color >> 16) & 0xFF).toString();
-				_g.text = int( (color >>  8) & 0xFF).toString();
-				_b.text = int( (color      ) & 0xFF).toString();
+			if( isNaN(alpha) ) {
+				alpha = 0;
+			}
 
-				_onSelect.dispatch( color );
+			_r.text = int((color >> 16) & 0xFF).toString();
+			_g.text = int((color >>  8) & 0xFF).toString();
+			_b.text = int((color      ) & 0xFF).toString();
 
-				if( _closeOnSelect ) {
-					close();
-				}
+			_onSelect.dispatch( color, alpha );
+
+			if( _closeOnSelect ) {
+				close();
 			}
 		}
 	}

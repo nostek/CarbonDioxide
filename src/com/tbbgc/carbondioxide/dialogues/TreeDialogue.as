@@ -108,7 +108,7 @@ package com.tbbgc.carbondioxide.dialogues {
 			_height = 2;
 
 			if( DataModel.currentView == null ) return;
-			
+
 			var resbuffer:Vector.<CDResolution> = new Vector.<CDResolution>();
 
 			buildNode( DataModel.currentView, 2, resbuffer );
@@ -141,7 +141,7 @@ package com.tbbgc.carbondioxide.dialogues {
 			_tree.addChild( i );
 
 			_height += i.height + 1;
-			
+
 			if( ExpandModel.isMaximized( node ) ) {
 				if( ExpandModel.isShowingResolutions ) {
 					for each( var res:CDResolution in node.resolutions ) {
@@ -159,9 +159,9 @@ package com.tbbgc.carbondioxide.dialogues {
 
 		private function buildResolution( buffer:Vector.<CDResolution>, res:CDResolution, node:CDItem, offset:int ):void {
 			var cindex:int = -1;
-			
+
 			var m:CDResolution;
-			
+
 			const len:int = buffer.length;
 			for( var x:int = 0; x < len; x++ ) {
 				m = buffer[x];
@@ -170,12 +170,12 @@ package com.tbbgc.carbondioxide.dialogues {
 					break;
 				}
 			}
-			
+
 			if( cindex == -1 ) {
 				buffer.push( res );
 				cindex = buffer.length-1;
 			}
-			
+
 			var color:uint = 0;
 			switch( cindex ) {
 				case 0: color = 0x0000ff; break;
@@ -189,7 +189,7 @@ package com.tbbgc.carbondioxide.dialogues {
 				case 8: color = 0xaaffff; break;
 				case 9: color = 0xffaaff; break;
 			}
-			
+
 			var i:ResolutionItem = new ResolutionItem( res, node, color );
 			i.x = offset;
 			i.y = _height;
@@ -302,7 +302,7 @@ internal class ResolutionItem extends Sprite {
 			beginFill(0x77bb77, 1);
 			drawRoundRect(16, 0, 300, HEIGHT, 16, 16);
 			endFill();
-			
+
 			beginFill(color, 1);
 			drawCircle(16+8, 8, 6);
 			endFill();
@@ -444,7 +444,7 @@ internal class TreeItem extends Sprite {
 			text += " (!)";
 		}
 
-		if( _model.isColorDefined && _model.color == CDItem.INVISIBLE_COLOR ) color = 0xdde20a;
+		if( _model.alpha == 0 ) color = 0xdde20a;
 		if( _model == DataModel.currentLayer ) color = 0xbb7777;
 		if( isSelected(_model) ) color = 0x7777bb;
 
@@ -586,7 +586,7 @@ internal class TreeItem extends Sprite {
 		_addType = ADD_TEXT;
 		onAddItem();
 	}
-	
+
 	private function onAddItemGradient(e:Event):void {
 		_addType = ADD_GRADIENT;
 		onAddItem();
@@ -616,7 +616,7 @@ internal class TreeItem extends Sprite {
 				case ADD_TEXT:
 					item = _model.addChild( new CDText(_model, input.text) );
 				break;
-				
+
 				case ADD_GRADIENT:
 					item = _model.addChild( new CDGradient(_model, input.text) );
 				break;

@@ -371,7 +371,7 @@ package com.tbbgc.carbondioxide.components {
 			var dlg:ColorDialogue = new ColorDialogue( DataModel.BG_COLOR );
 			dlg.onSelect.add( _onSelectColor );
 		}
-		private function _onSelectColor( color:uint ):void {
+		private function _onSelectColor( color:uint, alpha:Number ):void {
 			DataModel.setBGColor( color );
 		}
 

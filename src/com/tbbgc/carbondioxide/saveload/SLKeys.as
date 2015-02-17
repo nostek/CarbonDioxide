@@ -22,6 +22,7 @@ package com.tbbgc.carbondioxide.saveload {
 		public static const ITEM_ENABLED:String 		= "e";
 		public static const ITEM_VISIBLE:String 		= "v";
 		public static const ITEM_COLOR:String			= "cl";
+		public static const ITEM_ALPHA:String			= "ca";
 		public static const ITEM_NOTE:String			= "nt";
 		public static const ITEM_GRADIENT_COLORS:String	= "gc";
 		public static const ITEM_GRADIENT_ALPHAS:String	= "ga";

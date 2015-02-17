@@ -491,17 +491,19 @@ package com.tbbgc.carbondioxide.components {
 			return s;
 		}
 
-		private function drawShape( item:CDItem, color:uint=0x000000 ):DisplayObject {
+		private function drawShape( item:CDItem, error:Boolean=false ):DisplayObject {
 			var s:Shape = new Shape();
 
-			if( item.isColorDefined ) {
+			var alpha:Number = 0.5;
+			var color:uint = 0xff0000;
+
+			if( !error ) {
 				color = item.color;
+				alpha = item.alpha;
 			}
 
 			with( s.graphics ) {
-				var alpha:int = (color >> 24) & 0xff;
-				var a:Number = (alpha == 0) ? 0.5 : 0.0;
-				beginFill(color, a);
+				beginFill(color, alpha);
 				drawRect(0, 0, item.width, item.height);
 				endFill();
 			}
@@ -511,7 +513,7 @@ package com.tbbgc.carbondioxide.components {
 
 		private function drawGraphics( item:CDItem ):DisplayObject {
 			if( !Drawer.haveFrame(item.asset) ){
-				return drawShape( item, 0xff0000);
+				return drawShape( item, true);
 			}
 
 			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
@@ -519,7 +521,7 @@ package com.tbbgc.carbondioxide.components {
 
 		private function drawText( item:CDText ):DisplayObject {
 			if( !Drawer.haveFrame(item.asset) ){
-				return drawShape( item, 0xff0000);
+				return drawShape( item, true);
 			}
 
 			var fmt:TextFormat = new TextFormat( null, null, null, null, null, null, null, null, CDText.getAlignAsFormat(item.align) );

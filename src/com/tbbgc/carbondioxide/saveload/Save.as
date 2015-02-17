@@ -144,12 +144,12 @@ package com.tbbgc.carbondioxide.saveload {
 				data[ SLKeys.ITEM_TEXT ] = text( (item as CDText).text );
 				if( (item as CDText).align != CDText.ALIGN_LEFT) data[ SLKeys.ITEM_TEXT_ALIGN ] = (item as CDText).align;
 			}
-			
+
 			if( item is CDGradient ) {
 				data[ SLKeys.ITEM_GRADIENT_COLORS ] = (item as CDGradient).colors;
 				data[ SLKeys.ITEM_GRADIENT_ALPHAS ] = (item as CDGradient).alphas;
 			}
-			
+
 			if( item.note != null ) {
 				data[ SLKeys.ITEM_NOTE ] = text( item.note );
 			}
@@ -174,8 +174,12 @@ package com.tbbgc.carbondioxide.saveload {
 				data[ SLKeys.ITEM_VISIBLE ] = false;
 			}
 
-			if( item.isColorDefined ) {
+			if( item.color != CDItem.DEFAULT_COLOR ) {
 				data[ SLKeys.ITEM_COLOR ] = item.color;
+			}
+
+			if( item.alpha != CDItem.DEFAULT_ALPHA ) {
+				data[ SLKeys.ITEM_ALPHA ] = item.alpha;
 			}
 
 			var i:int;

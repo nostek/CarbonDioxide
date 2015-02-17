@@ -207,7 +207,7 @@ package com.tbbgc.carbondioxide.dialogues {
 					break;
 
 					case "color":
-						var colorDlg:ColorDialogue = new ColorDialogue( item.color );
+						var colorDlg:ColorDialogue = new ColorDialogue( item.color, item.alpha );
 						colorDlg.onSelect.add( onColorSelected );
 					break;
 
@@ -334,11 +334,12 @@ package com.tbbgc.carbondioxide.dialogues {
 			}
 		}
 
-		private function onColorSelected( color:uint ):void {
+		private function onColorSelected( color:uint, alpha:Number ):void {
 			var item:ItemModel;
 
 			for each( item in DataModel.SELECTED ) {
 				item.item.color = color;
+				item.item.alpha = alpha;
 			}
 		}
 	}
