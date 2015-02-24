@@ -168,7 +168,7 @@ package com.tbbgc.carbondioxide.saveload {
 			}
 
 			var ex:Object = ObjectEx.select( data, SLKeys.MAIN_EXTRA, null );
-			if (ex != null) {
+			if (ex != null && !(ex is String)) {
 				Drawer.NATIVE_RESOLUTION_WIDTH 	= ObjectEx.select( ex, SLKeys.EXTRA_NATIVE_WIDTH, Drawer.NATIVE_RESOLUTION_WIDTH );
 				Drawer.NATIVE_RESOLUTION_HEIGHT = ObjectEx.select( ex, SLKeys.EXTRA_NATIVE_HEIGHT, Drawer.NATIVE_RESOLUTION_HEIGHT );
 			}
