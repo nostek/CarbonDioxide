@@ -8,7 +8,12 @@ package com.tbbgc.carbondioxide.saveload {
 		public static const MAIN_VIEWS:String 			= "c";
 		public static const MAIN_TEXTS:String 			= "t";
 		public static const MAIN_RESOLUTIONS:String 	= "r";
-		public static const MAIN_RANDOM:String 			= "x";
+		public static const MAIN_EXTRA:String			= "x";
+
+		public static const EXTRA_RANDOM:String 		= "r";
+		public static const EXTRA_NATIVE_WIDTH:String	= "w";
+		public static const EXTRA_NATIVE_HEIGHT:String	= "h";
+		public static const EXTRA_VIEW:String			= "v";
 
 		public static const ITEM_TYPE:String 			= "t";
 		public static const ITEM_NAME:String 			= "n";

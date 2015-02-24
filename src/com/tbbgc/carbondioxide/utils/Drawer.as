@@ -25,6 +25,9 @@ package com.tbbgc.carbondioxide.utils {
 	 * @author simonrodriguez
 	 */
 	public class Drawer {
+		public static var NATIVE_RESOLUTION_WIDTH:int = 2048; //iPad3+
+		public static var NATIVE_RESOLUTION_HEIGHT:int = 1536;
+
 		private static const QUALITY:String = StageQuality.BEST;
 
 		private static var _matrix:Matrix;
@@ -441,10 +444,10 @@ package com.tbbgc.carbondioxide.utils {
 		}
 
 		private static function get scaleResolution():Number {
-			return (1536 / DataModel.SCREEN_HEIGHT);
+			return (NATIVE_RESOLUTION_HEIGHT / DataModel.SCREEN_HEIGHT);
 		}
 		private static function get scaleResolutionInv():Number {
-			return (DataModel.SCREEN_HEIGHT / 1536);
+			return (DataModel.SCREEN_HEIGHT / NATIVE_RESOLUTION_HEIGHT);
 		}
 
 		//////////////////////////////////////////

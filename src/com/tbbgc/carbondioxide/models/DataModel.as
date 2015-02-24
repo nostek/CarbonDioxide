@@ -104,6 +104,10 @@ package com.tbbgc.carbondioxide.models {
 
 		public static var onViewChanged:Signal = new Signal();
 
+		public static function redrawAll():void {
+			onViewChanged.dispatch();
+		}
+
 		public static function setView( view:CDView ):void {
 			SettingsManager.setItem(SettingsManager.SETTINGS_LAST_VIEW, view.name);
 

@@ -11,6 +11,7 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.dialogues.MissingDialogue;
 	import com.tbbgc.carbondioxide.dialogues.PopupDialogue;
 	import com.tbbgc.carbondioxide.dialogues.PropertiesDialogue;
+	import com.tbbgc.carbondioxide.dialogues.SelectResolutionDialogue;
 	import com.tbbgc.carbondioxide.dialogues.TreeDialogue;
 	import com.tbbgc.carbondioxide.dialogues.ZoomDialogue;
 	import com.tbbgc.carbondioxide.managers.ReportManager;
@@ -204,6 +205,10 @@ package com.tbbgc.carbondioxide.components {
 							name: "Wacom friendly copypaste",
 							callback: onWacomCopyPaste,
 							enabled: CutCopyPaste.WACOM_COPYPASTE
+						},
+						{
+							name: "Set asset resolution",
+							callback: onAssetResolution
 						},
 						{
 							name: "Original Width/Height",
@@ -582,6 +587,17 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onWacomCopyPaste( e:Event ):void {
 			CutCopyPaste.wacomCopyPaste = !CutCopyPaste.WACOM_COPYPASTE;
+		}
+
+		private function onAssetResolution( e:Event ):void {
+			var dlg:SelectResolutionDialogue = new SelectResolutionDialogue();
+			dlg.onSelect.addOnce( onAssetResolutionSelected );
+		}
+		private function onAssetResolutionSelected( data:Object ):void {
+			Drawer.NATIVE_RESOLUTION_WIDTH = int(data["width"]);
+			Drawer.NATIVE_RESOLUTION_HEIGHT = int(data["height"]);
+
+			DataModel.redrawAll();
 		}
 
 		private function onToggleScreen( e:Event ):void {

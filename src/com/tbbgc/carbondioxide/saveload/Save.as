@@ -7,7 +7,7 @@ package com.tbbgc.carbondioxide.saveload {
 	import com.tbbgc.carbondioxide.models.cd.CDResolution;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
 	import com.tbbgc.carbondioxide.models.cd.CDView;
-
+	import com.tbbgc.carbondioxide.utils.Drawer;
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -90,7 +90,7 @@ package com.tbbgc.carbondioxide.saveload {
 
 			data[ SLKeys.MAIN_KEY ] = "cbdd";
 			data[ SLKeys.MAIN_VERSION ] = CURRENT_VERSION;
-			data[ SLKeys.MAIN_RANDOM ] = getRandomCharacters();
+			data[ SLKeys.MAIN_EXTRA ] = saveExtra();
 
 			var v:Array = [];
 
@@ -111,6 +111,21 @@ package com.tbbgc.carbondioxide.saveload {
 			RESDB = null;
 
 			return JSON.stringify(data);
+		}
+
+		private static function saveExtra():Object {
+			var data:Object = {};
+
+			data[ SLKeys.EXTRA_RANDOM ] = getRandomCharacters();
+
+			data[ SLKeys.EXTRA_NATIVE_WIDTH ] 	= Drawer.NATIVE_RESOLUTION_WIDTH;
+			data[ SLKeys.EXTRA_NATIVE_HEIGHT ] 	= Drawer.NATIVE_RESOLUTION_HEIGHT;
+
+			if (DataModel.currentView != null) {
+				data[ SLKeys.EXTRA_VIEW ] = DataModel.currentView.name;
+			}
+
+			return data;
 		}
 
 		private static function saveView( view:CDView ):Object {
