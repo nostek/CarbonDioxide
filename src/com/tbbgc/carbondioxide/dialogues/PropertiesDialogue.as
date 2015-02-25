@@ -207,7 +207,7 @@ package com.tbbgc.carbondioxide.dialogues {
 					break;
 
 					case "color":
-						var colorDlg:ColorDialogue = new ColorDialogue( item.color, item.alphaCheckDefault );
+						var colorDlg:ColorDialogue = new ColorDialogue( item.color, (item.asset == null) ? item.alphaWoDefault : item.alphaCheckDefault );
 						colorDlg.onSelect.add( onColorSelected );
 					break;
 
@@ -338,6 +338,20 @@ package com.tbbgc.carbondioxide.dialogues {
 			var item:ItemModel;
 
 			for each( item in DataModel.SELECTED ) {
+				//Do not change if alpha isn't changed.
+				var d:Number;
+				if (item.item.alpha == CDItem.DEFAULT_ALPHA) {
+					d = (item.item.asset == null) ? item.item.alphaWoDefault : item.item.alphaCheckDefault;
+					if (alpha == d) {
+						alpha = CDItem.DEFAULT_ALPHA;
+					}
+				} else {
+					d = (item.item.asset == null) ? 0.5 : 1.0;
+					if (alpha == d) {
+						alpha = CDItem.DEFAULT_ALPHA;
+					}
+				}
+
 				item.item.color = color;
 				item.item.alpha = alpha;
 			}
