@@ -486,6 +486,7 @@ package com.tbbgc.carbondioxide.components {
 			var bm:Bitmap = new Bitmap( Images.getImage(item.asset) );
 			bm.width = item.width;
 			bm.height = item.height;
+			bm.alpha = item.alphaCheckDefault;
 			s.addChild(bm);
 
 			return s;
@@ -499,7 +500,7 @@ package com.tbbgc.carbondioxide.components {
 
 			if( !error ) {
 				color = item.color;
-				alpha = item.alpha;
+				alpha = item.alphaWoDefault;
 			}
 
 			with( s.graphics ) {
@@ -516,7 +517,10 @@ package com.tbbgc.carbondioxide.components {
 				return drawShape( item, true);
 			}
 
-			return new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
+			var bm:Bitmap = new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
+			bm.alpha = item.alphaCheckDefault;
+
+			return bm;
 		}
 
 		private function drawText( item:CDText ):DisplayObject {
@@ -526,7 +530,10 @@ package com.tbbgc.carbondioxide.components {
 
 			var fmt:TextFormat = new TextFormat( null, null, null, null, null, null, null, null, CDText.getAlignAsFormat(item.align) );
 
-			return new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ) );
+			var bm:Bitmap = new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ) );
+			bm.alpha = item.alphaCheckDefault;
+
+			return bm;
 		}
 
 		////////////

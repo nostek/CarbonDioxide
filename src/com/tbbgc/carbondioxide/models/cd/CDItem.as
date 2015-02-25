@@ -14,7 +14,7 @@ package com.tbbgc.carbondioxide.models.cd {
 		public static const TYPE_GRADIENT:int 	= 3;
 
 		public static const DEFAULT_COLOR:uint 	 = 0x000000;
-		public static const DEFAULT_ALPHA:Number = 0.5;
+		public static const DEFAULT_ALPHA:Number = 0.5000007;
 
 		///
 
@@ -176,6 +176,14 @@ package com.tbbgc.carbondioxide.models.cd {
 
 		public function get alpha():Number {
 			return _alpha;
+		}
+
+		public function get alphaWoDefault():Number {
+			return (_alpha == DEFAULT_ALPHA) ? 0.5 : _alpha;
+		}
+
+		public function get alphaCheckDefault():Number {
+			return (_alpha == DEFAULT_ALPHA) ? 1.0 : _alpha;
 		}
 
 		//////////////

@@ -60,6 +60,10 @@ package com.tbbgc.carbondioxide {
 
 			_blockSave = true;
 
+			setTimeout( init, 50 );
+		}
+
+		private function init():void {
 			loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtErrorHandler);
 
 			new SettingsManager();
@@ -98,10 +102,7 @@ package com.tbbgc.carbondioxide {
 			new TreeDialogue( false );
 			new PropertiesDialogue( false );
 
-			setTimeout( onFirst, 50);
-
-//			test();
-//			DataModel.setView( ViewsManager.getViewByName("main") );
+			setTimeout( onFirst, 50 );
 		}
 
 		private function getAppDescVersion( label:Boolean=false ):String {
