@@ -14,6 +14,7 @@ package com.tbbgc.carbondioxide.saveload {
 		public static const EXTRA_NATIVE_WIDTH:String	= "w";
 		public static const EXTRA_NATIVE_HEIGHT:String	= "h";
 		public static const EXTRA_VIEW:String			= "v";
+		public static const EXTRA_IMAGES:String			= "i";
 
 		public static const ITEM_TYPE:String 			= "t";
 		public static const ITEM_NAME:String 			= "n";

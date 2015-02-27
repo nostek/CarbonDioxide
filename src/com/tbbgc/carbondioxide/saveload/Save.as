@@ -8,6 +8,8 @@ package com.tbbgc.carbondioxide.saveload {
 	import com.tbbgc.carbondioxide.models.cd.CDText;
 	import com.tbbgc.carbondioxide.models.cd.CDView;
 	import com.tbbgc.carbondioxide.utils.Drawer;
+	import com.tbbgc.carbondioxide.utils.Images;
+
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -124,6 +126,8 @@ package com.tbbgc.carbondioxide.saveload {
 			if (DataModel.currentView != null) {
 				data[ SLKeys.EXTRA_VIEW ] = DataModel.currentView.name;
 			}
+
+			data[ SLKeys.EXTRA_IMAGES ] = Images.urls;
 
 			return data;
 		}

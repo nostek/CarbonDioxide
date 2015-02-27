@@ -24,6 +24,7 @@ package com.tbbgc.carbondioxide.utils {
 
 				var model:BitmapModel = new BitmapModel();
 				model.name = name;
+				model.url = url;
 				model.bmd = bmd;
 
 				_images.push( model );
@@ -77,6 +78,18 @@ package com.tbbgc.carbondioxide.utils {
 
 			return ret;
 		}
+
+		public static function get urls():Object {
+			var ret:Object = {};
+
+			if( _images != null ) {
+				for each( var model:BitmapModel in _images ) {
+					ret[model.name] = model.url;
+				}
+			}
+
+			return ret;
+		}
 	}
 }
 
@@ -85,5 +98,6 @@ package com.tbbgc.carbondioxide.utils {
 import flash.display.BitmapData;
 internal class BitmapModel {
 	public var name:String;
+	public var url:String;
 	public var bmd:BitmapData;
 }
