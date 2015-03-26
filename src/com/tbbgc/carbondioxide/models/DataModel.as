@@ -61,9 +61,6 @@ package com.tbbgc.carbondioxide.models {
 		private static var _SCREEN_HEIGHT:int = 768;
 		private static var _SCREEN_DPI:int = 300;
 
-		private static var _SCREEN_NAME:String = null;
-		public static var LAST_SCREEN_NAME:String = null;
-
 		public static var onResolutionChanged:Signal = new Signal();
 		public static var onChangeResolution:Signal = new Signal( String ); //Label
 		public static var onSetRealSize:Signal = new Signal();
@@ -81,12 +78,9 @@ package com.tbbgc.carbondioxide.models {
 		}
 
 		public static function setResolution( width:int, height:int, dpi:int, name:String ):void {
-			LAST_SCREEN_NAME = _SCREEN_NAME;
-
 			_SCREEN_WIDTH = width;
 			_SCREEN_HEIGHT = height;
 			_SCREEN_DPI = dpi;
-			_SCREEN_NAME = name;
 
 			if( currentView != null ) {
 				currentView.updateDisplayProperties();

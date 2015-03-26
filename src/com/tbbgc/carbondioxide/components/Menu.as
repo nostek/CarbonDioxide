@@ -225,11 +225,6 @@ package com.tbbgc.carbondioxide.components {
 							callback: onAlignItems,
 							shortcut: "a"
 						},
-						{
-							name: "Toggle last screen",
-							callback: onToggleScreen,
-							shortcut: "l"
-						},
 					]
 				},
 
@@ -598,16 +593,6 @@ package com.tbbgc.carbondioxide.components {
 			Drawer.NATIVE_RESOLUTION_HEIGHT = int(data["height"]);
 
 			DataModel.redrawAll();
-		}
-
-		private function onToggleScreen( e:Event ):void {
-			if( BaseDialogue.BLOCK_MENU || _stage.focus != null ) {
-				return;
-			}
-
-			if( DataModel.LAST_SCREEN_NAME != null ) {
-				DataModel.onChangeResolution.dispatch( DataModel.LAST_SCREEN_NAME );
-			}
 		}
 
 		private function onLoadLegacy( e:Event ):void {
