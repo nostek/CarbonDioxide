@@ -63,6 +63,7 @@ package com.tbbgc.carbondioxide.copypaste {
 					e: item.enabled,
 					v: item.visible,
 					c: item.color,
+					a: item.alpha,
 					note: item.note
 				};
 
@@ -70,7 +71,7 @@ package com.tbbgc.carbondioxide.copypaste {
 					o["text"] = (item as CDText).text;
 					o["texta"] = (item as CDText).align;
 				}
-				
+
 				if( item is CDGradient ) {
 					o["gcolors"] = (item as CDGradient).colors;
 					o["galphas"] = (item as CDGradient).alphas;
@@ -137,10 +138,10 @@ package com.tbbgc.carbondioxide.copypaste {
 						(item as CDText).text = obj["text"];
 						(item as CDText).align = obj["texta"];
 					break;
-					
+
 					case CDItem.TYPE_GRADIENT:
 						item = new CDGradient( parent, validName(obj["name"], parent) );
-						
+
 						(item as CDGradient).colors = obj["gcolors"];
 						(item as CDGradient).alphas = obj["galphas"];
 					break;
@@ -162,6 +163,7 @@ package com.tbbgc.carbondioxide.copypaste {
 				item.enabled = obj["e"] as Boolean;
 				item.visible = obj["v"] as Boolean;
 				item.color = obj["c"] as uint;
+				item.alpha = obj["a"] as Number;
 				item.note = obj["note"] as String;
 
 				for each( var child:Object in obj["children"] ) {
