@@ -611,6 +611,8 @@ package com.tbbgc.carbondioxide.components {
 
 		private function addToSelection( item:ItemModel, addToList:Boolean=false ):void {
 			if( item != null ) {
+				item.select();
+
 				if( addToList ) {
 					DataModel.SELECTED.push( item );
 				} else {

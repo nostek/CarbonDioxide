@@ -210,6 +210,12 @@ package com.tbbgc.carbondioxide.components {
 							name: "Set asset resolution",
 							callback: onAssetResolution
 						},
+					]
+				},
+
+				{
+					name: "Tools",
+					children: [
 						{
 							name: "Original Width/Height",
 							callback: onOrigWidthHeight,
@@ -225,6 +231,16 @@ package com.tbbgc.carbondioxide.components {
 							callback: onAlignItems,
 							shortcut: "a"
 						},
+						{
+							name: "Aspect scale width",
+							callback: onAspectScaleWidth,
+							shortcut: "9"
+						},
+						{
+							name: "Aspect scale height",
+							callback: onAspectScaleHeight,
+							shortcut: "0"
+						}
 					]
 				},
 
@@ -593,6 +609,30 @@ package com.tbbgc.carbondioxide.components {
 			Drawer.NATIVE_RESOLUTION_HEIGHT = int(data["height"]);
 
 			DataModel.redrawAll();
+		}
+
+		private function onAspectScaleWidth( e:Event ):void {
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				if( !item.isSaved ) {
+					item.save();
+				}
+
+				item.item.setXYWH(item.save_x, item.save_y, item.save_width, Math.round(item.save_width * item.item.primaryAspectRatio));
+			}
+		}
+
+		private function onAspectScaleHeight( e:Event ):void {
+			var item:ItemModel;
+
+			for each( item in DataModel.SELECTED ) {
+				if( !item.isSaved ) {
+					item.save();
+				}
+
+				item.item.setXYWH(item.save_x, item.save_y, Math.round(item.save_height * item.item.primaryAspectRatio), item.save_height);
+			}
 		}
 
 		private function onLoadLegacy( e:Event ):void {

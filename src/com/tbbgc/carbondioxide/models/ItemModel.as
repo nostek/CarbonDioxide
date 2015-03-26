@@ -13,6 +13,8 @@ package com.tbbgc.carbondioxide.models {
 		public function ItemModel( item:CDItem, child:DisplayObject ) {
 			super();
 
+			isSaved = false;
+
 			_item = item;
 
 			addChild( child );
@@ -20,7 +22,15 @@ package com.tbbgc.carbondioxide.models {
 
 		public function get item():CDItem { return _item; }
 
+		public function select():void {
+			isSaved = false;
+		}
+
+		public var isSaved:Boolean;
+
 		public function save():void {
+			isSaved = true;
+
 			save_x 		= _item.x;
 			save_y 		= _item.y;
 			save_width 	= _item.width;
@@ -36,20 +46,5 @@ package com.tbbgc.carbondioxide.models {
 
 		public var save_holder_width:Number;
 		public var save_holder_height:Number;
-
-	//	public function set selected( sel:Boolean ):void {
-	//		this.graphics.clear();
-	//
-	//		if( sel ) {
-	//			with( this.graphics ) {
-	//				lineStyle(2, 0x00ff00, 0.8);
-	//				moveTo(0, 0);
-	//				lineTo(_item.width, 0);
-	//				lineTo(_item.width, _item.height);
-	//				lineTo(0, _item.height);
-	//				lineTo(0, 0);
-	//			}
-	//		}
-	//	}
 	}
 }

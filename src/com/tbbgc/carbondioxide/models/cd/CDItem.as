@@ -232,6 +232,10 @@ package com.tbbgc.carbondioxide.models.cd {
 			return widthAsInt / heightAsInt;
 		}
 
+		public function get primaryAspectRatio():Number {
+			return _resolutions[0].aspectRatio;
+		}
+
 		public function setXYWH( x:int, y:int, width:int, height:int ):void {
 			saveUndo();
 
