@@ -33,6 +33,8 @@ package com.tbbgc.carbondioxide.dialogues {
 
 			this.addEventListener(MouseEvent.MOUSE_WHEEL, onScroll, false, 0, true);
 
+			GraphicsData.build();
+
 			_bg = new Sprite();
 			container.addChild( _bg );
 
@@ -64,7 +66,7 @@ package com.tbbgc.carbondioxide.dialogues {
 			_bg.graphics.clear();
 
 			with( _bg.graphics ) {
-				beginFill(0xffffff,1);
+				beginFill(0x929292,1);
 				drawRect(0, 0, width - _scrollV.width - 5, height - _scrollH.height - 5);
 				endFill();
 			}
@@ -77,7 +79,7 @@ package com.tbbgc.carbondioxide.dialogues {
 			_scrollH.y = height - _scrollH.height;
 			_scrollH.width = width - _scrollV.width;
 
-			update();
+			updateScrollbars();
 		}
 
 		private function onScroll(e:MouseEvent):void {
@@ -93,8 +95,6 @@ package com.tbbgc.carbondioxide.dialogues {
 		}
 
 		private function onItemUpdated( item:CDItem ):void {
-			item;
-
 			update();
 		}
 
@@ -113,8 +113,10 @@ package com.tbbgc.carbondioxide.dialogues {
 
 			buildNode( DataModel.currentView, 2, resbuffer );
 
-			////
+			updateScrollbars();
+		}
 
+		private function updateScrollbars():void {
 			const diffV:int = Math.max( 0, _tree.height - _bg.scrollRect.height );
 			const diffH:int = Math.max( 0, _tree.width - _bg.scrollRect.width );
 
@@ -214,11 +216,13 @@ import com.tbbgc.carbondioxide.models.cd.CDResolution;
 import com.tbbgc.carbondioxide.models.cd.CDText;
 import com.tbbgc.carbondioxide.models.cd.CDView;
 import com.tbbgc.carbondioxide.models.resolutions.ResolutionsModel;
-
 import org.osflash.signals.Signal;
-
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.NativeMenuItem;
+import flash.display.Shape;
 import flash.display.Sprite;
+import flash.display.StageQuality;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Point;
@@ -272,9 +276,89 @@ internal class ExpandModel {
 
 
 
-internal class ResolutionItem extends Sprite {
-	private static const HEIGHT:int = 16;
+internal class GraphicsData {
+	public static const ROW_HEIGHT:int = 16;
 
+	public static const COLOR_RESOLUTION:uint 	= 0x77bb77;
+	public static const COLOR_FOLDER:uint 		= 0xdde20a;
+	public static const COLOR_NORMAL:uint 		= 0xffffff;
+	public static const COLOR_PARENT:uint 		= 0xbb7777;
+	public static const COLOR_SELECTED:uint 	= 0x7777bb;
+
+	private static var _rows:Dictionary;
+	private static var _colors:Dictionary;
+	private static var _dots:Dictionary;
+
+	public static function build():void {
+		_rows 	= new Dictionary();
+		_colors = new Dictionary();
+		_dots 	= new Dictionary();
+	}
+
+	public static function getRowByColor( color:uint ):BitmapData {
+		if( _rows[color] != null) {
+			return _rows[color];
+		}
+
+		var s:Shape = new Shape();
+		with(s.graphics) {
+			beginFill(color, 1);
+			drawRoundRect(16, 0, 600, ROW_HEIGHT, 8, 8);
+			endFill();
+		}
+
+		var bm:BitmapData = new BitmapData(600+16, ROW_HEIGHT, true, 0x0);
+		bm.drawWithQuality(s, null, null, null, null, true, StageQuality.BEST);
+
+		_rows[ color ] = bm;
+
+		return bm;
+	}
+
+	public static function getColor( color:uint ):BitmapData {
+		if( _colors[color] != null ) {
+			return _colors[color];
+		}
+
+		var dot:Shape = new Shape();
+		with( dot.graphics ) {
+			beginFill(color, 0.7);
+			drawCircle(16+8, 8, 6);
+			endFill();
+		}
+
+		var bm:BitmapData = new BitmapData(32, 16, true, 0x0);
+		bm.drawWithQuality(dot, null, null, null, null, true, StageQuality.BEST);
+
+		_colors[ color ] = bm;
+
+		return bm;
+	}
+
+	public static function getDot( color:uint ):BitmapData {
+		if( _dots[color] != null ) {
+			return _dots[color];
+		}
+
+		var dot:Shape = new Shape();
+		with( dot.graphics ) {
+			beginFill(color, 1);
+			drawRoundRect(0, 0, ROW_HEIGHT, ROW_HEIGHT, 8);
+			endFill();
+		}
+
+		var bm:BitmapData = new BitmapData(ROW_HEIGHT, ROW_HEIGHT, true, 0x0);
+		bm.drawWithQuality(dot, null, null, null, null, true, StageQuality.BEST);
+
+		_dots[ color ] = bm;
+
+		return bm;
+	}
+}
+
+
+
+internal class ResolutionItem extends Sprite {
 	private var _name:Sprite;
 
 	private var _parent:CDItem;
@@ -287,39 +371,33 @@ internal class ResolutionItem extends Sprite {
 		_model = model;
 
 		_name = buildName( ResolutionsModel.getResolutionNameFromModel(model) + " (" + model.screenWidth + "x" + model.screenHeight + ")", color );
-		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
+		_name.x = GraphicsData.ROW_HEIGHT + GraphicsData.ROW_HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
 	}
 
 	private function buildName( text:String, color:uint ):Sprite {
-		var dot:Sprite = new Sprite();
-		dot.buttonMode = true;
-		dot.mouseChildren = false;
-		with( dot.graphics ) {
-			lineStyle(1, 0x000000, 1);
+		var con:Sprite = new Sprite();
+		con.buttonMode = true;
+		con.mouseChildren = false;
 
-			beginFill(0x77bb77, 1);
-			drawRoundRect(16, 0, 300, HEIGHT, 16, 16);
-			endFill();
+		con.addChild( new Bitmap(GraphicsData.getRowByColor(GraphicsData.COLOR_RESOLUTION)) );
 
-			beginFill(color, 1);
-			drawCircle(16+8, 8, 6);
-			endFill();
-		}
+		con.addChild( new Bitmap(GraphicsData.getColor(color)) );
 
-		var fmt:TextFormat = new TextFormat("Verdana", 10, 0xff000000, null, true);
+		var fmt:TextFormat = new TextFormat("Verdana", 9, 0xff000000);
 
 		var t:TextField = new TextField();
+		t.mouseEnabled = false;
 		t.autoSize = TextFieldAutoSize.LEFT;
 		t.selectable = false;
 		t.defaultTextFormat = fmt;
 		t.text = text;
 		t.x = 40;
-		t.y = (HEIGHT - t.height) / 2;
-		dot.addChild(t);
+		t.y = (GraphicsData.ROW_HEIGHT - t.height) / 2;
+		con.addChild(t);
 
-		return dot;
+		return con;
 	}
 
 	private function onSubMenu( e:MouseEvent ):void {
@@ -372,28 +450,28 @@ internal class TreeItem extends Sprite {
 
 		_model = model;
 
-		_minmax = buildDot( 0x000000, ExpandModel.isMaximized( _model) ? "-" : "+" );
-		_minmax.addEventListener(MouseEvent.CLICK, onMinMax);
-		addChild(_minmax);
-
-		if( !(model is CDView) ) {
-			_enabled = buildDot( model.enabled ? 0x00ff00 : 0xff0000, "E ");
-			_enabled.x = HEIGHT + 6;
-			_enabled.addEventListener(MouseEvent.CLICK, onEnabled);
-			addChild(_enabled);
-
-			_visible = buildDot( model.visible ? 0x00ff00 : 0xff0000, "V ");
-			_visible.x = HEIGHT + HEIGHT + 6 + 2;
-			_visible.addEventListener(MouseEvent.CLICK, onVisible);
-			addChild(_visible);
-		}
-
 		_name = buildName();
 		_name.x = HEIGHT + HEIGHT + 6 + 6 + 2;
 		_name.addEventListener(MouseEvent.CLICK, onName);
 		_name.addEventListener(MouseEvent.DOUBLE_CLICK, onDblClick);
 		_name.addEventListener(MouseEvent.RIGHT_CLICK, onSubMenu);
 		addChild(_name);
+
+		_minmax = buildDot( 0x262626, ExpandModel.isMaximized( _model) ? "-" : "+" );
+		_minmax.addEventListener(MouseEvent.CLICK, onMinMax);
+		addChild(_minmax);
+
+		if( !(model is CDView) ) {
+			_enabled = buildDot( model.enabled ? 0x44ee44 : 0x008800, "E ");
+			_enabled.x = HEIGHT + 6;
+			_enabled.addEventListener(MouseEvent.CLICK, onEnabled);
+			addChild(_enabled);
+
+			_visible = buildDot( model.visible ? 0x44ee44 : 0x008800, "V ");
+			_visible.x = HEIGHT + HEIGHT + 6 + 2;
+			_visible.addEventListener(MouseEvent.CLICK, onVisible);
+			addChild(_visible);
+		}
 
 		if( (model is CDView) ) {
 			_name.x = 6;
@@ -413,30 +491,26 @@ internal class TreeItem extends Sprite {
 		var dot:Sprite = new Sprite();
 		dot.buttonMode = true;
 		dot.mouseChildren = false;
-		with( dot.graphics ) {
-			lineStyle(1, 0x000000, 1);
 
-			beginFill(color, 1);
-			drawCircle(HEIGHT/2, HEIGHT/2, HEIGHT/2);
-			endFill();
-		}
+		dot.addChild( new Bitmap( GraphicsData.getDot(color)) );
 
-		var fmt:TextFormat = new TextFormat("Verdana", 10, 0xffffffff, null, true);
+		var fmt:TextFormat = new TextFormat("Verdana", 9, (text == "+" || text == "-" ) ? 0xffffffff : 0xff000000, true);
 
 		var t:TextField = new TextField();
+		t.mouseEnabled = false;
 		t.autoSize = TextFieldAutoSize.LEFT;
 		t.selectable = false;
 		t.defaultTextFormat = fmt;
 		t.text = text;
-		t.x = (HEIGHT - t.width) / 2;
-		t.y = (HEIGHT - t.height) / 2;
+		t.x = (HEIGHT - t.getBounds(t).width) / 2;
+		t.y = (HEIGHT - t.getBounds(t).height) / 2;
 		dot.addChild(t);
 
 		return dot;
 	}
 
 	private function buildName():Sprite {
-		var color:uint = 0xffffff;
+		var color:uint = GraphicsData.COLOR_NORMAL;
 
 		var text:String = _model.name;
 
@@ -444,34 +518,30 @@ internal class TreeItem extends Sprite {
 			text += " (!)";
 		}
 
-		if( _model.alpha == 0 ) color = 0xdde20a;
-		if( _model == DataModel.currentLayer ) color = 0xbb7777;
-		if( isSelected(_model) ) color = 0x7777bb;
+		if( _model.alpha == 0 ) color = GraphicsData.COLOR_FOLDER;
+		if( _model == DataModel.currentLayer ) color = GraphicsData.COLOR_PARENT;
+		if( isSelected(_model) ) color = GraphicsData.COLOR_SELECTED;
 
-		var dot:Sprite = new Sprite();
-		dot.buttonMode = true;
-		dot.mouseChildren = false;
-		dot.doubleClickEnabled = true;
-		with( dot.graphics ) {
-			lineStyle(1, 0x000000, 1);
+		var con:Sprite = new Sprite();
+		con.buttonMode = true;
+		con.mouseChildren = false;
+		con.doubleClickEnabled = true;
 
-			beginFill(color, 1);
-			drawRoundRect(16, 0, 300, HEIGHT, 16, 16);
-			endFill();
-		}
+		con.addChild( new Bitmap(GraphicsData.getRowByColor(color)) );
 
-		var fmt:TextFormat = new TextFormat("Verdana", 10, 0xff000000, null, true);
+		var fmt:TextFormat = new TextFormat("Verdana", 9, 0xff000000);
 
 		var t:TextField = new TextField();
+		t.mouseEnabled = false;
 		t.autoSize = TextFieldAutoSize.LEFT;
 		t.selectable = false;
 		t.defaultTextFormat = fmt;
 		t.text = text;
 		t.x = 20;
-		t.y = (HEIGHT - t.height) / 2;
-		dot.addChild(t);
+		t.y = (GraphicsData.ROW_HEIGHT - t.height) / 2;
+		con.addChild(t);
 
-		return dot;
+		return con;
 	}
 
 	private function onMinMax( e:MouseEvent ):void {

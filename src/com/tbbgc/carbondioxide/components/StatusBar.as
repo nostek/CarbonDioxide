@@ -12,14 +12,10 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.models.resolutions.ResolutionsModel;
 	import com.tbbgc.carbondioxide.utils.ObjectEx;
 
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -30,8 +26,6 @@ package com.tbbgc.carbondioxide.components {
 	public class StatusBar extends Sprite {
 		private static const HEIGHT:int = 40;
 
-		private var _bg:Bitmap;
-
 		private var _pathContainer:Sprite;
 
 		private var _resolutions:ComboBox;
@@ -41,9 +35,6 @@ package com.tbbgc.carbondioxide.components {
 		private var _manageViews:Button;
 
 		public function StatusBar( stage:Stage ) {
-			_bg = new Bitmap( DataModel.BG.bitmapData );
-			addChild(_bg);
-
 			_pathContainer = new Sprite();
 			_pathContainer.x = 10;
 			addChild(_pathContainer);
@@ -84,20 +75,10 @@ package com.tbbgc.carbondioxide.components {
 			this.y = stage.stageHeight - HEIGHT;
 			this.x = 0;
 
-			const min:int = Math.min( stage.stageWidth, DataModel.BG.bitmapData.width );
-			const max:int = Math.max( stage.stageWidth, DataModel.BG.bitmapData.width );
-
-			var bm:BitmapData = new BitmapData(min, HEIGHT, false, 0x0);
-			bm.copyPixels(DataModel.BG.bitmapData, new Rectangle(0, 0, bm.width, HEIGHT), new Point());
-
-			_bg.bitmapData = bm;
-			_bg.width = max;
-			_bg.height = HEIGHT;
-
 			with( this.graphics ) {
 				clear();
 
-				beginFill(0x999999, 1);
+				beginFill(0x525252, 1);
 				drawRect(0, 0, stage.stageWidth, HEIGHT);
 				endFill();
 

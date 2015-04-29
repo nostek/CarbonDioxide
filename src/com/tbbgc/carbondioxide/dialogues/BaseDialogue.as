@@ -5,6 +5,7 @@ package com.tbbgc.carbondioxide.dialogues {
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -29,6 +30,7 @@ package com.tbbgc.carbondioxide.dialogues {
 		private var _noclick:Sprite;
 		private var _topic:TextField;
 
+		private var _graphics:Sprite;
 		private var _container:Sprite;
 
 		private var _canClose:Boolean;
@@ -43,13 +45,13 @@ package com.tbbgc.carbondioxide.dialogues {
 		public function BaseDialogue( caption:String, canMinimize:Boolean, disableStage:Boolean, canScale:Boolean, canClose:Boolean ) {
 			super();
 
-			var stage:Stage = BaseDialogue.DIALOGUES.stage;
-
 			if( disableStage ) {
+				var s:Stage = BaseDialogue.DIALOGUES.stage;
+
 				_noclick = new Sprite();
 				with( _noclick.graphics ) {
 					beginFill( 0xffffff, 0.8 );
-					drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+					drawRect(0, 0, s.stageWidth, s.stageHeight);
 					endFill();
 				}
 				BaseDialogue.DIALOGUES.addChild(_noclick);
@@ -62,7 +64,14 @@ package com.tbbgc.carbondioxide.dialogues {
 
 			_realWidth = _realHeight = 200;
 
-			var fmt:TextFormat = new TextFormat("Verdana", 10, 0xffffffff, null, true);
+			_graphics = new Sprite();
+			_graphics.mouseEnabled = false;
+			_graphics.mouseChildren = false;
+			//_graphics.cacheAsBitmap = true;
+			//_graphics.cacheAsBitmapMatrix = new Matrix();
+			addChild( _graphics );
+
+			var fmt:TextFormat = new TextFormat("Verdana", 9, 0xdedede, true);
 
 			_topic = new TextField();
 			_topic.mouseEnabled = false;
@@ -70,7 +79,7 @@ package com.tbbgc.carbondioxide.dialogues {
 			_topic.selectable = false;
 			_topic.defaultTextFormat = fmt;
 			_topic.text = caption;
-			addChild(_topic);
+			_graphics.addChild(_topic);
 
 			_container = new Sprite();
 			addChild( _container );
@@ -159,27 +168,27 @@ package com.tbbgc.carbondioxide.dialogues {
 			_realWidth = width;
 			_realHeight = height;
 
-			with( this.graphics ) {
+			with( _graphics.graphics ) {
 				clear();
 
-				lineStyle(1,0xffffff,0.5,true,"normal",null,null,15);
-
-				beginFill(0x000000);
-					drawRoundRect(0, 0, width, height, 16);
+				beginFill(0x525252);
+					lineStyle(1,0x262626,1);
+					drawRoundRect(0, 0, width, height, 8);
 				endFill();
 
-				beginFill(0x000000);
-					drawRoundRect(0, 0, width, HEADER, 16);
+				beginFill(0x333333);
+					lineStyle(1,0x262626,0);
+					drawRoundRect(0, 0, width, HEADER, 8);
 
 					if( _canScale ) {
-						drawRoundRect(0, height-EDGE, width, EDGE, 16);
+						drawRoundRect(0, height-EDGE, width, EDGE, 8);
 					}
 				endFill();
 
 				if( _canClose ) {
-					lineStyle(1,0xff0000,0.5,true,"normal",null,null,15);
-					beginFill(0xff0000, 0.3);
-					drawRoundRect((width-HEADER)+1, 1, HEADER-2, HEADER-2, 16);
+					lineStyle(1,0x262626,0);
+					beginFill(0xbb0000, 0.3);
+					drawRoundRect((width-HEADER), 0, HEADER, HEADER, 8);
 					endFill();
 				}
 			}

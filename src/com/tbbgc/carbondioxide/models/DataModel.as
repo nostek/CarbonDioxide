@@ -6,20 +6,13 @@ package com.tbbgc.carbondioxide.models {
 
 	import org.osflash.signals.Signal;
 
-	import flash.display.Bitmap;
 	import flash.filesystem.File;
 	import flash.geom.Point;
 	/**
 	 * @author simonrodriguez
 	 */
 	public class DataModel {
-		[Embed(source="../../../../../assets/bg.jpg")]
-		private static var _BG:Class;
-		public static var BG:Bitmap;
-
 		public function DataModel() {
-			BG = new _BG();
-
 			BG_COLOR = ObjectEx.select(SettingsManager.getItem(SettingsManager.SETTINGS_BGCOLOR), "c", BG_COLOR);
 		}
 

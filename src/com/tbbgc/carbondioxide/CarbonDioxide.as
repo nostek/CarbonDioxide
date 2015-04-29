@@ -24,7 +24,6 @@ package com.tbbgc.carbondioxide {
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	import flash.desktop.NativeApplication;
-	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -42,8 +41,6 @@ package com.tbbgc.carbondioxide {
 	public class CarbonDioxide extends Sprite {
 		private var _blockSave:Boolean;
 
-		private var _bg:Bitmap;
-
 		private var _tree:TreeDisplay;
 		private var _status:StatusBar;
 
@@ -52,7 +49,7 @@ package com.tbbgc.carbondioxide {
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.BEST;
 			stage.frameRate = 31;
-			stage.color = 0x646464;
+			stage.color = 0x262626;
 
 			stage.nativeWindow.title += " " + getAppDescVersion();
 
@@ -74,11 +71,6 @@ package com.tbbgc.carbondioxide {
 			new Menu( stage );
 			new ViewsManager();
 			new Drawer();
-
-			_bg = new Bitmap( DataModel.BG.bitmapData );
-			_bg.width = stage.stageWidth;
-			_bg.height = stage.stageHeight;
-			addChild(_bg);
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 10000);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
@@ -167,9 +159,6 @@ package com.tbbgc.carbondioxide {
 		}
 
 		private function onSaveWindow(e:NativeWindowBoundsEvent):void {
-			_bg.width = stage.stageWidth;
-			_bg.height = stage.stageHeight;
-
 			if( _blockSave  ) {
 				return;
 			}
