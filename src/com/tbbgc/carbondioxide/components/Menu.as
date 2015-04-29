@@ -57,8 +57,8 @@ package com.tbbgc.carbondioxide.components {
 							callback: onOpenSilent
 						},
 						{
-							name: "Reopen",
-							callback: onReopen,
+							name: "Reload",
+							callback: onReload,
 							shortcut: "§"
 						},
 						{
@@ -423,7 +423,7 @@ package com.tbbgc.carbondioxide.components {
 			Load.run(true);
 		}
 
-		private function onReopen( e:Event ):void {
+		private function onReload( e:Event ):void {
 			if( BaseDialogue.BLOCK_MENU ) return;
 			Load.reopen();
 		}

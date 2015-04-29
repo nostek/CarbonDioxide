@@ -5,7 +5,6 @@ package com.tbbgc.carbondioxide.dialogues {
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
