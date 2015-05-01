@@ -1,13 +1,12 @@
 CarbonDioxide
 =============
 
-CarbonDioxide
+A tool for designing layouts for web & mobile in different resolutions.
+The data is exported to json and can be used for apps & games.
+The layout scales for different resolutions automatically and rules can be set for
+alignments and scales.
 
-This is a tool to design layouts for web & mobile.
-The data can be parsed via json and used in apps & games.
-The layout scales to different resolutions, custom positions and modifiers can be set.
+'And code never needs to set a X/Y/W/H again!'
 
-And code never needs to set a X/Y/W/H again!
-
-2014
+2015
 The Big Bad Game Company
