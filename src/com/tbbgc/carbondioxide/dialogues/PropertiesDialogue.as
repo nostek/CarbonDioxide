@@ -2,6 +2,7 @@ package com.tbbgc.carbondioxide.dialogues {
 	import fl.controls.List;
 	import fl.events.ListEvent;
 
+	import com.tbbgc.carbondioxide.managers.AssetsManager;
 	import com.tbbgc.carbondioxide.managers.SettingsManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.ItemModel;
@@ -9,8 +10,6 @@ package com.tbbgc.carbondioxide.dialogues {
 	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
-	import com.tbbgc.carbondioxide.utils.Drawer;
-	import com.tbbgc.carbondioxide.utils.Images;
 
 	import flash.geom.Rectangle;
 
@@ -60,10 +59,9 @@ package com.tbbgc.carbondioxide.dialogues {
 				const holder:ItemModel = DataModel.SELECTED[0];
 				const item:CDItem = holder.item;
 
-				var bounds:Rectangle = ( item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
-				if( item.asset != null && Images.haveImage(item.asset) ) {
-					bounds.width = Images.getImage(item.asset).width;
-					bounds.height = Images.getImage(item.asset).height;
+				var bounds:Rectangle = AssetsManager.getBounds(item.asset);
+				if( bounds == null ) {
+					bounds = new Rectangle();
 				}
 
 				_properties.addItem({data:[false, "name"], 	label:"name: " + item.name});
@@ -84,7 +82,7 @@ package com.tbbgc.carbondioxide.dialogues {
 				_properties.addItem({data:[false, "oh"], 	label:"original height: " + bounds.height.toString()});
 				_properties.addItem({data:[false, "ar"], 	label:"aspect ratio align: " + CDAspectRatio.toString( item.aspectRatioAlign )});
 				_properties.addItem({data:[false, "art"], 	label:"aspect ratio type: " + CDAspectRatio.toAlignString( item.aspectRatioType )});
-				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset + " [" + Drawer.getPackNameFromAsset(item.asset) + "]"});
+				_properties.addItem({data:[false, "asset"],	label:"asset: " + item.asset + " [" + AssetsManager.getPackNameFromAsset(item.asset) + "]"});
 				_properties.addItem({data:[false, "color"],	label:"color: " + item.color.toString()});
 
 				if( item is CDText ) {
@@ -126,10 +124,9 @@ package com.tbbgc.carbondioxide.dialogues {
 
 			const multiple:Boolean = (DataModel.SELECTED.length > 1);
 
-			var bounds:Rectangle = ( item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
-			if( item.asset != null && Images.haveImage(item.asset) ) {
-				bounds.width = Images.getImage(item.asset).width;
-				bounds.height = Images.getImage(item.asset).height;
+			var bounds:Rectangle = AssetsManager.getBounds(item.asset);
+			if( bounds == null ) {
+				bounds = new Rectangle();
 			}
 
 			if( data[0] == true ) {

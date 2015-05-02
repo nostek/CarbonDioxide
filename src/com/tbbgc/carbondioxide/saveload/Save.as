@@ -1,4 +1,5 @@
 package com.tbbgc.carbondioxide.saveload {
+	import com.tbbgc.carbondioxide.managers.AssetsManager;
 	import com.tbbgc.carbondioxide.managers.ViewsManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.cd.CDAspectRatio;
@@ -7,8 +8,7 @@ package com.tbbgc.carbondioxide.saveload {
 	import com.tbbgc.carbondioxide.models.cd.CDResolution;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
 	import com.tbbgc.carbondioxide.models.cd.CDView;
-	import com.tbbgc.carbondioxide.utils.Drawer;
-	import com.tbbgc.carbondioxide.utils.Images;
+	import com.tbbgc.carbondioxide.utils.SWFDrawer;
 
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -120,14 +120,14 @@ package com.tbbgc.carbondioxide.saveload {
 
 			data[ SLKeys.EXTRA_RANDOM ] = getRandomCharacters();
 
-			data[ SLKeys.EXTRA_NATIVE_WIDTH ] 	= Drawer.NATIVE_RESOLUTION_WIDTH;
-			data[ SLKeys.EXTRA_NATIVE_HEIGHT ] 	= Drawer.NATIVE_RESOLUTION_HEIGHT;
+			data[ SLKeys.EXTRA_NATIVE_WIDTH ] 	= SWFDrawer.NATIVE_RESOLUTION_WIDTH;
+			data[ SLKeys.EXTRA_NATIVE_HEIGHT ] 	= SWFDrawer.NATIVE_RESOLUTION_HEIGHT;
 
 			if (DataModel.currentView != null) {
 				data[ SLKeys.EXTRA_VIEW ] = DataModel.currentView.name;
 			}
 
-			data[ SLKeys.EXTRA_IMAGES ] = Images.urls;
+			data[ SLKeys.EXTRA_IMAGES ] = AssetsManager.images.urls;
 
 			return data;
 		}

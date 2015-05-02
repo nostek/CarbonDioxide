@@ -132,5 +132,8 @@ package com.tbbgc.carbondioxide.models {
 
 		//Asset filter
 		public static var onFilterAssets:Signal = new Signal( String );
+
+		//Assets
+		public static var onAssetsUpdated:Signal = new Signal();
 	}
 }

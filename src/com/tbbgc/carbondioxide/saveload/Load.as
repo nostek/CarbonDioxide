@@ -5,7 +5,7 @@ package com.tbbgc.carbondioxide.saveload {
 	import com.tbbgc.carbondioxide.managers.ViewsManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.models.cd.CDView;
-	import com.tbbgc.carbondioxide.utils.Drawer;
+	import com.tbbgc.carbondioxide.utils.SWFDrawer;
 	import com.tbbgc.carbondioxide.utils.ObjectEx;
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -36,9 +36,9 @@ package com.tbbgc.carbondioxide.saveload {
 
 		public static function runLast():void {
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_LAYOUT) ) {
-				var dlg3:YesNoDialogue = new YesNoDialogue("Load layout ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_LAYOUT )[0]);
-				dlg3.onYes.addOnce( onRestore );
-				dlg3.onNo.addOnce( onNoRestore );
+				var dlg:YesNoDialogue = new YesNoDialogue("Load layout ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_LAYOUT )[0]);
+				dlg.onYes.addOnce( onRestore );
+				dlg.onNo.addOnce( onNoRestore );
 			}
 		}
 
@@ -169,8 +169,8 @@ package com.tbbgc.carbondioxide.saveload {
 
 			var ex:Object = ObjectEx.select( data, SLKeys.MAIN_EXTRA, null );
 			if (ex != null && !(ex is String)) {
-				Drawer.NATIVE_RESOLUTION_WIDTH 	= ObjectEx.select( ex, SLKeys.EXTRA_NATIVE_WIDTH, Drawer.NATIVE_RESOLUTION_WIDTH );
-				Drawer.NATIVE_RESOLUTION_HEIGHT = ObjectEx.select( ex, SLKeys.EXTRA_NATIVE_HEIGHT, Drawer.NATIVE_RESOLUTION_HEIGHT );
+				SWFDrawer.NATIVE_RESOLUTION_WIDTH 	= ObjectEx.select( ex, SLKeys.EXTRA_NATIVE_WIDTH, SWFDrawer.NATIVE_RESOLUTION_WIDTH );
+				SWFDrawer.NATIVE_RESOLUTION_HEIGHT = ObjectEx.select( ex, SLKeys.EXTRA_NATIVE_HEIGHT, SWFDrawer.NATIVE_RESOLUTION_HEIGHT );
 			}
 
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_VIEW) ) {

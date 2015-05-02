@@ -1,4 +1,5 @@
 package com.tbbgc.carbondioxide.components {
+	import com.tbbgc.carbondioxide.managers.AssetsManager;
 	import com.tbbgc.carbondioxide.managers.EventManager;
 	import com.tbbgc.carbondioxide.managers.UndoManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
@@ -6,8 +7,6 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.models.cd.CDGradient;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDText;
-	import com.tbbgc.carbondioxide.utils.Drawer;
-	import com.tbbgc.carbondioxide.utils.Images;
 
 	import org.osflash.signals.Signal;
 
@@ -50,6 +49,7 @@ package com.tbbgc.carbondioxide.components {
 			DataModel.onLayerChanged.add( onViewChanged );
 			DataModel.onItemChanged.add( onItemChanged );
 			DataModel.onBGColorChanged.add( onViewChanged );
+			DataModel.onAssetsUpdated.add( onViewChanged );
 			DataModel.onSetRealSize.add( onRealViewSize );
 
 			_doSelectItems = new Signal( Array );
@@ -383,25 +383,24 @@ package com.tbbgc.carbondioxide.components {
 		}
 
 		private function drawFromData( item:CDItem ):DisplayObject {
-			if( item.asset != null && Images.haveImage(item.asset) ) {
-				return drawImage( item );
-			}
-
-			if( (item.asset == null || item.asset == "") ) {
+			if( item.asset != null && item.asset != "" ) {
+				if( AssetsManager.isImage(item.asset) ) {
+					return drawImage( item );
+				}
+				if( AssetsManager.isSWF(item.asset) ) {
+					if( item is CDText ) {
+						return drawText( item as CDText );
+					}
+					return drawGraphics( item );
+				}
+			} else {
 				if( item is CDGradient ) {
 					return drawGradient( item as CDGradient );
 				}
 				return drawShape( item );
-			} else {
-				if( item is CDText ) {
-					return drawText( item as CDText );
-				}
-				return drawGraphics( item );
 			}
 
-			/*FDT_IGNORE*/
-			return null;
-			/*FDT_IGNORE*/
+			return drawShape( item, true);
 		}
 
 		private function drawGradient( item:CDGradient ):DisplayObject {
@@ -483,7 +482,7 @@ package com.tbbgc.carbondioxide.components {
 		private function drawImage( item:CDItem ):DisplayObject {
 			var s:Sprite = new Sprite();
 
-			var bm:Bitmap = new Bitmap( Images.getImage(item.asset) );
+			var bm:Bitmap = new Bitmap( AssetsManager.images.getImage(item.asset) );
 			bm.width = item.width;
 			bm.height = item.height;
 			bm.alpha = item.alphaCheckDefault;
@@ -513,24 +512,16 @@ package com.tbbgc.carbondioxide.components {
 		}
 
 		private function drawGraphics( item:CDItem ):DisplayObject {
-			if( !Drawer.haveFrame(item.asset) ){
-				return drawShape( item, true);
-			}
-
-			var bm:Bitmap = new Bitmap( Drawer.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
+			var bm:Bitmap = new Bitmap( AssetsManager.swfs.draw( item.asset, Math.max(1,item.width), Math.max(1,item.height) ) );
 			bm.alpha = item.alphaCheckDefault;
 
 			return bm;
 		}
 
 		private function drawText( item:CDText ):DisplayObject {
-			if( !Drawer.haveFrame(item.asset) ){
-				return drawShape( item, true);
-			}
-
 			var fmt:TextFormat = new TextFormat( null, null, null, null, null, null, null, null, CDText.getAlignAsFormat(item.align) );
 
-			var bm:Bitmap = new Bitmap( Drawer.drawText( item.text, item.asset, item.height, item.width, fmt ) );
+			var bm:Bitmap = new Bitmap( AssetsManager.swfs.drawText( item.text, item.asset, item.height, item.width, fmt ) );
 			bm.alpha = item.alphaCheckDefault;
 
 			return bm;

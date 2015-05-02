@@ -4,7 +4,7 @@
 <booleanAttribute key="ADVANCED_TELEMTRY" value="false"/>
 <intAttribute key="AIR_VIEWER_CONF" value="1"/>
 <stringAttribute key="APP_ARGUMENTS" value=""/>
-<stringAttribute key="ARGUMENTS" value="-static-link-runtime-shared-libraries=true&#10;-target-player={playerVersion}&#10;-library-path+=&quot;{flexSDK}/frameworks/locale/en_US&quot;&#10;-default-size=1024,768&#10;-swf-version=26"/>
+<stringAttribute key="ARGUMENTS" value="-static-link-runtime-shared-libraries=true&#10;-target-player={playerVersion}&#10;-library-path+=&quot;{flexSDK}/frameworks/locale/en_US&quot;&#10;-default-size=1024,768&#10;-swf-version=29"/>
 <listAttribute key="COMPILER_CONSTANTS"/>
 <stringAttribute key="COMPILER_TECHNOLOGY" value="ASC"/>
 <booleanAttribute key="CREATE_APP_ROOT" value="false"/>

@@ -14,6 +14,7 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.dialogues.SelectResolutionDialogue;
 	import com.tbbgc.carbondioxide.dialogues.TreeDialogue;
 	import com.tbbgc.carbondioxide.dialogues.ZoomDialogue;
+	import com.tbbgc.carbondioxide.managers.AssetsManager;
 	import com.tbbgc.carbondioxide.managers.ReportManager;
 	import com.tbbgc.carbondioxide.managers.UndoManager;
 	import com.tbbgc.carbondioxide.models.DataModel;
@@ -22,8 +23,7 @@ package com.tbbgc.carbondioxide.components {
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.saveload.Load;
 	import com.tbbgc.carbondioxide.saveload.Save;
-	import com.tbbgc.carbondioxide.utils.Drawer;
-	import com.tbbgc.carbondioxide.utils.Images;
+	import com.tbbgc.carbondioxide.utils.SWFDrawer;
 	import com.tbbgc.carbondioxide.utils.Legacy;
 
 	import flash.desktop.NativeApplication;
@@ -69,6 +69,23 @@ package com.tbbgc.carbondioxide.components {
 						{
 							name: "Save As",
 							callback: onSaveNew
+						},
+						{
+							name: "Import",
+							children: [
+								{
+									name: "Fonts",
+									callback: onImportFonts
+								},
+								{
+									name: "Images",
+									callback: onImportImages
+								},
+								{
+									name: "SWFs",
+									callback: onImportSWFs
+								}
+							]
 						},
 						{
 							name: "Close",
@@ -500,16 +517,17 @@ package com.tbbgc.carbondioxide.components {
 				return;
 			}
 
-			for each( var holder:ItemModel in DataModel.SELECTED ) {
-				var item:CDItem = holder.item;
-				if( item != null ) {
-					var bounds:Rectangle = ( item.asset != null ) ? (Drawer.haveFrame(item.asset) ? Drawer.getBounds(item.asset) : new Rectangle()) : new Rectangle();
-					if( item.asset != null && Images.haveImage(item.asset) ) {
-						bounds.width = Images.getImage(item.asset).width;
-						bounds.height = Images.getImage(item.asset).height;
-					}
+			var item:CDItem;
+			var bounds:Rectangle;
 
-					item.setXYWH(item.x, item.y, Math.round(bounds.width), Math.round(bounds.height));
+			for each( var holder:ItemModel in DataModel.SELECTED ) {
+				item = holder.item;
+
+				if( item != null ) {
+					bounds = AssetsManager.getBounds( item.asset );
+					if( bounds != null ) {
+						item.setXYWH(item.x, item.y, Math.round(bounds.width), Math.round(bounds.height));
+					}
 				}
 			}
 		}
@@ -605,8 +623,8 @@ package com.tbbgc.carbondioxide.components {
 			dlg.onSelect.addOnce( onAssetResolutionSelected );
 		}
 		private function onAssetResolutionSelected( data:Object ):void {
-			Drawer.NATIVE_RESOLUTION_WIDTH = int(data["width"]);
-			Drawer.NATIVE_RESOLUTION_HEIGHT = int(data["height"]);
+			SWFDrawer.NATIVE_RESOLUTION_WIDTH = int(data["width"]);
+			SWFDrawer.NATIVE_RESOLUTION_HEIGHT = int(data["height"]);
 
 			DataModel.redrawAll();
 		}
@@ -637,6 +655,18 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onLoadLegacy( e:Event ):void {
 			Legacy.load();
+		}
+
+		private function onImportFonts( e:Event ):void {
+			AssetsManager.importFonts();
+		}
+
+		private function onImportImages( e:Event ):void {
+			AssetsManager.importImages;
+		}
+
+		private function onImportSWFs( e:Event ):void {
+			AssetsManager.importSWFs();
 		}
 	}
 }

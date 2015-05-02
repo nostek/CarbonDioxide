@@ -4,17 +4,13 @@ package com.tbbgc.carbondioxide.utils {
 	 * @author simonrodriguez
 	 */
 	public class Images {
-		private static var _images:Vector.<BitmapModel>;
+		private var _images:Vector.<BitmapModel>;
 
 		public function Images() {
-
+			_images = new Vector.<BitmapModel>();
 		}
 
-		public static function addImage( url:String, bmd:BitmapData ):void {
-			if( _images == null ) {
-				_images = new Vector.<BitmapModel>();
-			}
-
+		public function addImage( url:String, bmd:BitmapData ):void {
 			if( url != null ) {
 				var name:String = nameFromURL(url);
 
@@ -31,7 +27,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		public static function getImage( url:String ):BitmapData {
+		public function getImage( url:String ):BitmapData {
 			for each( var model:BitmapModel in _images ) {
 				if( model.name == url ) {
 					return model.bmd;
@@ -40,18 +36,16 @@ package com.tbbgc.carbondioxide.utils {
 			return null;
 		}
 
-		public static function haveImage( url:String ):Boolean {
-			if( _images != null ) {
-				for each( var model:BitmapModel in _images ) {
-					if( model.name == url ) {
-						return true;
-					}
+		public function haveImage( url:String ):Boolean {
+			for each( var model:BitmapModel in _images ) {
+				if( model.name == url ) {
+					return true;
 				}
 			}
 			return false;
 		}
 
-		private static function removeImage( url:String ):void {
+		private function removeImage( url:String ):void {
 			for each( var model:BitmapModel in _images ) {
 				if( model.name == url ) {
 					_images.splice( _images.indexOf(model), 1);
@@ -67,25 +61,25 @@ package com.tbbgc.carbondioxide.utils {
 			return url;
 		}
 
-		public static function get names():Vector.<String> {
-			var ret:Vector.<String> = new Vector.<String>();
+		public function get names():Vector.<Object> {
+			var ret:Vector.<Object> = new Vector.<Object>();
 
-			if( _images != null ) {
-				for each( var model:BitmapModel in _images ) {
-					ret[ret.length] = model.name;
-				}
+			for each( var model:BitmapModel in _images ) {
+				ret[ret.length] = {
+					name: model.name,
+					frame: model.name,
+					type: "image"
+				};
 			}
 
 			return ret;
 		}
 
-		public static function get urls():Object {
+		public function get urls():Object {
 			var ret:Object = {};
 
-			if( _images != null ) {
-				for each( var model:BitmapModel in _images ) {
-					ret[model.name] = model.url;
-				}
+			for each( var model:BitmapModel in _images ) {
+				ret[model.name] = model.url;
 			}
 
 			return ret;
@@ -96,6 +90,9 @@ package com.tbbgc.carbondioxide.utils {
 
 
 import flash.display.BitmapData;
+
+
+
 internal class BitmapModel {
 	public var name:String;
 	public var url:String;
