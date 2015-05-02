@@ -4,11 +4,9 @@ package com.tbbgc.carbondioxide.managers {
 	import com.tbbgc.carbondioxide.utils.Images;
 	import com.tbbgc.carbondioxide.utils.SWFDrawer;
 
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
-	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.FileListEvent;
 	import flash.filesystem.File;
@@ -231,7 +229,7 @@ package com.tbbgc.carbondioxide.managers {
 		private static function onRestoreImage( url:String ):void {
 			addToSaveList( SettingsManager.SETTINGS_IMAGES, url );
 
-			doLoadImage( url );
+			_images.load( url );
 		}
 
 		public static function importImages():void {
@@ -247,25 +245,8 @@ package com.tbbgc.carbondioxide.managers {
 			for each( var target:File in e.files ) {
 				addToSaveList( SettingsManager.SETTINGS_IMAGES, target.url );
 
-				doLoadImage( target.url );
+				_images.load( target.url );
 			}
-		}
-
-		private static function doLoadImage( url:String ):void {
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadImageComplete);
-			loader.load( new URLRequest(url) );
-		}
-
-		private static function onLoadImageComplete(e:Event):void {
-			var info:LoaderInfo = e.target as LoaderInfo;
-			info.removeEventListener(Event.COMPLETE, onLoadImageComplete);
-
-			var bm:Bitmap = info.loader.content as Bitmap;
-
-			_images.addImage(info.url, bm.bitmapData);
-
-			DataModel.onAssetsUpdated.dispatch();
 		}
 
 		//SWF
@@ -278,7 +259,7 @@ package com.tbbgc.carbondioxide.managers {
 		private static function onRestoreAssets( url:String ):void {
 			addToSaveList( SettingsManager.SETTINGS_LAST_ASSETS, url );
 
-			doLoadSWF( url );
+			_swfs.load( url );
 		}
 
 		public static function importSWFs():void {
@@ -294,26 +275,8 @@ package com.tbbgc.carbondioxide.managers {
 			for each( var target:File in e.files ) {
 				addToSaveList( SettingsManager.SETTINGS_LAST_ASSETS, target.url );
 
-				doLoadSWF( target.url );
+				_swfs.load( target.url );
 			}
-		}
-
-		private static function doLoadSWF( url:String ):void {
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadSWFComplete);
-			loader.load( new URLRequest(url) );
-		}
-
-		private static function onLoadSWFComplete(e:Event):void {
-			var info:LoaderInfo = e.target as LoaderInfo;
-			info.removeEventListener(Event.COMPLETE, onLoadSWFComplete);
-
-			var mc:MovieClip = info.loader.content as MovieClip;
-			mc.gotoAndStop(1);
-
-			_swfs.addPack( nameFromURL(info.url), mc );
-
-			DataModel.onAssetsUpdated.dispatch();
 		}
 
 		//Utils
@@ -350,13 +313,6 @@ package com.tbbgc.carbondioxide.managers {
 					SettingsManager.setItem(id, list);
 				}
 			}
-		}
-
-		private static function nameFromURL( url:String ):String {
-			if( url.lastIndexOf("/") ) {
-				return url.substr( url.lastIndexOf("/")+1 );
-			}
-			return url;
 		}
 	}
 }
