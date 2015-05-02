@@ -118,11 +118,14 @@ package com.tbbgc.carbondioxide.dialogues {
 			if( frame == null ) return;
 
 			if( AssetsManager.isImage( frame ) ) {
-				return;
+				_bitmap.bitmapData = AssetsManager.images.getImage( frame );
+				_bitmap.width = _bitmapSize;
+				_bitmap.height = _bitmapSize;
 			}
-
-			_bitmap.bitmapData = AssetsManager.swfs.drawCenter( frame, _bitmapSize, _bitmapSize );
-			_bitmap.scaleX = _bitmap.scaleY = 1;
+			if( AssetsManager.isSWF( frame) ) {
+				_bitmap.bitmapData = AssetsManager.swfs.drawCenter( frame, _bitmapSize, _bitmapSize );
+				_bitmap.scaleX = _bitmap.scaleY = 1;
+			}
 		}
 
 		private function onKeyUp(e:KeyboardEvent):void {
