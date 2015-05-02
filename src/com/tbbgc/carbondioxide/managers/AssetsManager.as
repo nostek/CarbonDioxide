@@ -316,6 +316,13 @@ package com.tbbgc.carbondioxide.managers {
 			DataModel.onAssetsUpdated.dispatch();
 		}
 
+		//TexturePacker
+		///////
+
+		public static function importTexturePacker():void {
+
+		}
+
 		//Utils
 		///////
 

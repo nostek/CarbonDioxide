@@ -84,6 +84,10 @@ package com.tbbgc.carbondioxide.components {
 								{
 									name: "SWFs",
 									callback: onImportSWFs
+								},
+								{
+									name: "TexturePacker (JSON Hash)",
+									callback: onImportTexturePacker
 								}
 							]
 						},
@@ -667,6 +671,10 @@ package com.tbbgc.carbondioxide.components {
 
 		private function onImportSWFs( e:Event ):void {
 			AssetsManager.importSWFs();
+		}
+
+		private function onImportTexturePacker( e:Event ):void {
+			AssetsManager.importTexturePacker();
 		}
 	}
 }
