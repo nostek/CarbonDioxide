@@ -1,5 +1,12 @@
 package com.tbbgc.carbondioxide.utils {
+	import com.tbbgc.carbondioxide.models.DataModel;
+
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
 	/**
 	 * @author simonrodriguez
 	 */
@@ -10,7 +17,24 @@ package com.tbbgc.carbondioxide.utils {
 			_images = new Vector.<BitmapModel>();
 		}
 
-		public function addImage( url:String, bmd:BitmapData ):void {
+		public function load( url:String ):void {
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
+			loader.load( new URLRequest(url) );
+		}
+
+		private function onLoadComplete(e:Event):void {
+			var info:LoaderInfo = e.target as LoaderInfo;
+			info.removeEventListener(Event.COMPLETE, onLoadComplete);
+
+			var bm:Bitmap = info.loader.content as Bitmap;
+
+			addImage(info.url, bm.bitmapData);
+
+			DataModel.onAssetsUpdated.dispatch();
+		}
+
+		private function addImage( url:String, bmd:BitmapData ):void {
 			if( url != null ) {
 				var name:String = nameFromURL(url);
 

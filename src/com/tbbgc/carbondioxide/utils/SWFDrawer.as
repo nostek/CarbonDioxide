@@ -5,9 +5,12 @@ package com.tbbgc.carbondioxide.utils {
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
+	import flash.events.Event;
 	import flash.filters.BlurFilter;
 	import flash.filters.ColorMatrixFilter;
 	import flash.filters.DropShadowFilter;
@@ -15,6 +18,7 @@ package com.tbbgc.carbondioxide.utils {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLRequest;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -131,7 +135,31 @@ package com.tbbgc.carbondioxide.utils {
 			return r;
 		}
 
-		public function addPack( name:String, mc:MovieClip ):void {
+		public function load( url:String ):void {
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
+			loader.load( new URLRequest(url) );
+		}
+
+		private function onLoadComplete(e:Event):void {
+			var info:LoaderInfo = e.target as LoaderInfo;
+			info.removeEventListener(Event.COMPLETE, onLoadComplete);
+
+			var mc:MovieClip = info.loader.content as MovieClip;
+
+			addPack( nameFromURL(info.url), mc );
+
+			DataModel.onAssetsUpdated.dispatch();
+		}
+
+		private static function nameFromURL( url:String ):String {
+			if( url.lastIndexOf("/") ) {
+				return url.substr( url.lastIndexOf("/")+1 );
+			}
+			return url;
+		}
+
+		private function addPack( name:String, mc:MovieClip ):void {
 			var pack:PackModel = getPack( name );
 
 			exportFramesInit( mc, pack );
