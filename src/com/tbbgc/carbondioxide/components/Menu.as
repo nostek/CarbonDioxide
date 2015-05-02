@@ -662,7 +662,7 @@ package com.tbbgc.carbondioxide.components {
 		}
 
 		private function onImportImages( e:Event ):void {
-			AssetsManager.importImages;
+			AssetsManager.importImages();
 		}
 
 		private function onImportSWFs( e:Event ):void {
