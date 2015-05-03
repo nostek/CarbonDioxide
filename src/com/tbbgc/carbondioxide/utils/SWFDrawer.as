@@ -5,9 +5,12 @@ package com.tbbgc.carbondioxide.utils {
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
+	import flash.events.Event;
 	import flash.filters.BlurFilter;
 	import flash.filters.ColorMatrixFilter;
 	import flash.filters.DropShadowFilter;
@@ -15,6 +18,7 @@ package com.tbbgc.carbondioxide.utils {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLRequest;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -24,22 +28,22 @@ package com.tbbgc.carbondioxide.utils {
 	/**
 	 * @author simonrodriguez
 	 */
-	public class Drawer {
+	public class SWFDrawer {
 		public static var NATIVE_RESOLUTION_WIDTH:int = 2048; //iPad3+
 		public static var NATIVE_RESOLUTION_HEIGHT:int = 1536;
 
 		private static const QUALITY:String = StageQuality.BEST;
 
-		private static var _matrix:Matrix;
-		private static var _point:Point;
+		private var _matrix:Matrix;
+		private var _point:Point;
 
-		private static var _textField:TextField;
+		private var _textField:TextField;
 
-		private static var _packs:Vector.<PackModel>;
+		private var _packs:Vector.<PackModel>;
 
-		private static var _effects:EffectModel;
+		private var _effects:EffectModel;
 
-		public function Drawer() {
+		public function SWFDrawer() {
 			_matrix = new Matrix();
 			_point = new Point();
 
@@ -53,7 +57,7 @@ package com.tbbgc.carbondioxide.utils {
 			_effects = new EffectModel();
 		}
 
-		public static function get names():Vector.<Object> {
+		public function get names():Vector.<Object> {
 			var ret:Vector.<Object> = new Vector.<Object>();
 
 			var len:int;
@@ -67,7 +71,8 @@ package com.tbbgc.carbondioxide.utils {
 						ret[ret.length] = {
 							name: model.name + ((model.scale9) ? ((model.scale9inside==null) ? " [9scale]" : " [9scale][OLD SETUP]") : ""),
 							frame: model.name,
-							pack: _packs[y].name
+							pack: _packs[y].name,
+							type: "swf"
 						};
 					}
 				}
@@ -76,7 +81,7 @@ package com.tbbgc.carbondioxide.utils {
 			return ret;
 		}
 
-		public static function get analyze():String {
+		public function get analyze():String {
 			var r:String = "";
 
 			var pack:PackModel;
@@ -130,13 +135,37 @@ package com.tbbgc.carbondioxide.utils {
 			return r;
 		}
 
-		public static function addPack( name:String, mc:MovieClip ):void {
+		public function load( url:String ):void {
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
+			loader.load( new URLRequest(url) );
+		}
+
+		private function onLoadComplete(e:Event):void {
+			var info:LoaderInfo = e.target as LoaderInfo;
+			info.removeEventListener(Event.COMPLETE, onLoadComplete);
+
+			var mc:MovieClip = info.loader.content as MovieClip;
+
+			addPack( nameFromURL(info.url), mc );
+
+			DataModel.onAssetsUpdated.dispatch();
+		}
+
+		private static function nameFromURL( url:String ):String {
+			if( url.lastIndexOf("/") ) {
+				return url.substr( url.lastIndexOf("/")+1 );
+			}
+			return url;
+		}
+
+		private function addPack( name:String, mc:MovieClip ):void {
 			var pack:PackModel = getPack( name );
 
 			exportFramesInit( mc, pack );
 		}
 
-		private static function getPack( name:String ):PackModel {
+		private function getPack( name:String ):PackModel {
 			for( var i:int = 0; i < _packs.length; i++ ) {
 				if( _packs[i].name == name ) {
 					return _packs[i];
@@ -152,7 +181,7 @@ package com.tbbgc.carbondioxide.utils {
 			return model;
 		}
 
-		private static function optimizePacks():void {
+		private function optimizePacks():void {
 			for( var i:int = 1; i < _packs.length; i++ ) {
 				if( _packs[i].name.indexOf("_") < 0 ) {
 					var model:PackModel = _packs[i];
@@ -163,7 +192,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		public static function getPackNameFromAsset( asset:String ):String {
+		public function getPackNameFromAsset( asset:String ):String {
 			if( asset == null ) return null;
 
 			for( var i:int = 0; i < _packs.length; i++ ) {
@@ -175,7 +204,7 @@ package com.tbbgc.carbondioxide.utils {
 			return null;
 		}
 
-		private static function exportFramesInit( mc:MovieClip, pack:PackModel ):void {
+		private function exportFramesInit( mc:MovieClip, pack:PackModel ):void {
 			const len:int = mc.numChildren;
 
 			mc.gotoAndStop(1);
@@ -189,7 +218,7 @@ package com.tbbgc.carbondioxide.utils {
 			exportEffects( pack );
 		}
 
-		private static function exportEffects( pack:PackModel ):void {
+		private function exportEffects( pack:PackModel ):void {
 			var model:FrameModel;
 			var con:Sprite;
 
@@ -207,7 +236,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		private static function exportEffectsRecursive( o:DisplayObject, bm:BitmapData, model:FrameModel ):BitmapData {
+		private function exportEffectsRecursive( o:DisplayObject, bm:BitmapData, model:FrameModel ):BitmapData {
 			var r:Boolean;
 
 			if( o.filters != null && o.filters.length > 0 ) {
@@ -235,7 +264,7 @@ package com.tbbgc.carbondioxide.utils {
 					} else if( x is ColorMatrixFilter ) {
 						//Nothing
 					} else {
-						ReportManager.add(Drawer, "MISSING EFFECT:", x);
+						ReportManager.add(SWFDrawer, "MISSING EFFECT:", x);
 					}
 
 					if( r == true ) {
@@ -259,7 +288,7 @@ package com.tbbgc.carbondioxide.utils {
 			return bm;
 		}
 
-		private static function exportFrames( mc:MovieClip, pack:PackModel ):void {
+		private function exportFrames( mc:MovieClip, pack:PackModel ):void {
 			var model:FrameModel;
 			var d:DisplayObject;
 
@@ -271,7 +300,7 @@ package com.tbbgc.carbondioxide.utils {
 				d = mc.getChildAt(frame);
 
 				if( (d as Sprite) == null ) {
-					ReportManager.add(Drawer, "Dead object! Pack:", pack.name, "Frame:", frame, "Name:", d.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y );
+					ReportManager.add(SWFDrawer, "Dead object! Pack:", pack.name, "Frame:", frame, "Name:", d.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y );
 				} else {
 					model = new FrameModel();
 
@@ -279,7 +308,7 @@ package com.tbbgc.carbondioxide.utils {
 					model.name = d.name;
 
 					if( model.name.substr(0, "instance".length) == "instance" ) {
-						ReportManager.add(Drawer, "Bad asset Pack:", pack.name, "Name:", model.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y);
+						ReportManager.add(SWFDrawer, "Bad asset Pack:", pack.name, "Name:", model.name, "Type:", getQualifiedClassName(d), "Position:", d.x, d.y);
 					}
 
 					pack.frames[frame] = model;
@@ -292,7 +321,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		private static function exportOptionsMultiple( pack:PackModel ):void {
+		private function exportOptionsMultiple( pack:PackModel ):void {
 			var model:FrameModel;
 			var con:Sprite;
 			var masker:DisplayObject;
@@ -343,7 +372,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		private static function exportTextMultiple( pack:PackModel ):void {
+		private function exportTextMultiple( pack:PackModel ):void {
 			var con:Sprite;
 			var tf:TextField;
 			var filters:Array;
@@ -364,7 +393,7 @@ package com.tbbgc.carbondioxide.utils {
 					if( mc.numChildren > 0 ) {
 						tf = (mc.getChildAt(0) as TextField);
 						if( tf != null ) {
-							ReportManager.add(Drawer, "Wrong text setting: Should be a TextField only. Name:", pack.frames[i].name);
+							ReportManager.add(SWFDrawer, "Wrong text setting: Should be a TextField only. Name:", pack.frames[i].name);
 
 							tf = null;
 						}
@@ -401,7 +430,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		private static function getFrame( frame:Object ):FrameModel {
+		private function getFrame( frame:Object ):FrameModel {
 			var model:FrameModel;
 
 			for( var i:int = 0; i < _packs.length; i++ ) {
@@ -419,7 +448,7 @@ package com.tbbgc.carbondioxide.utils {
 			return null;
 		}
 
-		public static function getMovieclip(frame:String):* {
+		public function getMovieclip(frame:String):* {
 			var model:FrameModel = getFrame(frame);
 
 			if( model != null ) {
@@ -429,7 +458,7 @@ package com.tbbgc.carbondioxide.utils {
 			return null;
 		}
 
-		public static function getBounds(frame:String):Rectangle {
+		public function getBounds(frame:String):Rectangle {
 			var model:FrameModel = getFrame(frame);
 
 			if( model != null ) {
@@ -439,7 +468,7 @@ package com.tbbgc.carbondioxide.utils {
 			return null;
 		}
 
-		public static function haveFrame( frame:Object ):Boolean {
+		public function haveFrame( frame:Object ):Boolean {
 			return (getFrame( frame )!=null);
 		}
 
@@ -452,13 +481,13 @@ package com.tbbgc.carbondioxide.utils {
 
 		//////////////////////////////////////////
 
-		public static function draw( frame:Object, width:Number, height:Number, transparent:Boolean=true, background:uint=0x00000000 ):BitmapData {
+		public function draw( frame:Object, width:Number, height:Number, transparent:Boolean=true, background:uint=0x00000000 ):BitmapData {
 			var bmp:BitmapData = new BitmapData(Math.ceil(width), Math.ceil(height), transparent, background);
 				drawOnEx( bmp, frame, 0, 0, width, height );
 			return bmp;
 		}
 
-		public static function drawCenter( frame:Object, width:Number, height:Number, transparent:Boolean=true, background:uint=0x00000000 ):BitmapData {
+		public function drawCenter( frame:Object, width:Number, height:Number, transparent:Boolean=true, background:uint=0x00000000 ):BitmapData {
 			var bmp:BitmapData = new BitmapData(Math.ceil(width), Math.ceil(height), transparent, background);
 
 			drawOnExCenter( bmp, frame, 0, 0, width, height );
@@ -466,7 +495,7 @@ package com.tbbgc.carbondioxide.utils {
 			return bmp;
 		}
 
-		public static function drawOnEx( target:BitmapData, frame:Object, x:Number, y:Number, width:Number, height:Number ):void {
+		public function drawOnEx( target:BitmapData, frame:Object, x:Number, y:Number, width:Number, height:Number ):void {
 			var model:FrameModel = getFrame(frame);
 
 			if( model != null ) {
@@ -508,7 +537,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		public static function drawOnExCenter( target:BitmapData, frame:Object, x:Number, y:Number, width:Number, height:Number ):void {
+		public function drawOnExCenter( target:BitmapData, frame:Object, x:Number, y:Number, width:Number, height:Number ):void {
 			var model:FrameModel = getFrame(frame);
 
 			if( model != null ) {
@@ -574,7 +603,7 @@ package com.tbbgc.carbondioxide.utils {
 
 		///////
 
-		private static function changeEffects( model:FrameModel, sx:Number, sy:Number ):void {
+		private function changeEffects( model:FrameModel, sx:Number, sy:Number ):void {
 			_effects.sx = sx;
 			_effects.sy = sy;
 			_effects.sa = (sx < sy) ? sx : sy;
@@ -614,7 +643,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		private static function restoreEffects( model:FrameModel ):void {
+		private function restoreEffects( model:FrameModel ):void {
 			_effects.index = 0;
 
 			var a:Array;
@@ -643,7 +672,7 @@ package com.tbbgc.carbondioxide.utils {
 
 		///////
 
-		public static function applyFont( t:TextField, frame:Object, fmtoptions:TextFormat=null ):void {
+		private function applyFont( t:TextField, frame:Object, fmtoptions:TextFormat=null ):void {
 			var model:FrameModel = getFrame( frame );
 			if( model != null ) {
 				if( model.text != null ) {
@@ -667,14 +696,7 @@ package com.tbbgc.carbondioxide.utils {
 			}
 		}
 
-		public function drawTextFieldOn( target:BitmapData, draw:TextField, x:int, y:int):void {
-			_matrix.identity();
-			_matrix.translate(x, y);
-
-			target.drawWithQuality(draw, _matrix, null, null, null, true, QUALITY);
-		}
-
-		private static function getTextField( frame:Object, fmt:TextFormat ):TextField {
+		private function getTextField( frame:Object, fmt:TextFormat ):TextField {
 			if( frame == null ) {
 				var tf:TextField = new TextField();
 				tf.autoSize = TextFieldAutoSize.LEFT;
@@ -690,7 +712,14 @@ package com.tbbgc.carbondioxide.utils {
 			return _textField;
 		}
 
-		public static function drawText( text:String, frame:Object, height:int, width:int=0, fmt:TextFormat=null ):BitmapData {
+		public function drawTextFieldOn( target:BitmapData, draw:TextField, x:int, y:int):void {
+			_matrix.identity();
+			_matrix.translate(x, y);
+
+			target.drawWithQuality(draw, _matrix, null, null, null, true, QUALITY);
+		}
+
+		public function drawText( text:String, frame:Object, height:int, width:int=0, fmt:TextFormat=null ):BitmapData {
 			const hasAlign:Boolean = (fmt != null && fmt.align != null);
 
 			var tf:TextField = getTextField(frame, fmt);
@@ -733,7 +762,7 @@ import flash.text.TextField;
 
 
 
-internal class FrameModel {
+internal final class FrameModel {
 	public var name:String;
 
 	public var data:DisplayObjectContainer;

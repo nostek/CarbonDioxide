@@ -1,11 +1,11 @@
 package com.tbbgc.carbondioxide.dialogues {
 	import fl.controls.List;
 
+	import com.tbbgc.carbondioxide.managers.AssetsManager;
 	import com.tbbgc.carbondioxide.managers.SettingsManager;
 	import com.tbbgc.carbondioxide.managers.ViewsManager;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDView;
-	import com.tbbgc.carbondioxide.utils.Drawer;
 
 	/**
 	 * @author simonrodriguez
@@ -59,7 +59,7 @@ package com.tbbgc.carbondioxide.dialogues {
 				}
 			}
 
-			var names:Vector.<Object> = Drawer.names;
+			var names:Vector.<Object> = AssetsManager.names;
 
 			for each( var o:Object in names ) {
 				if( needed.indexOf(o["frame"]) >= 0 ) {

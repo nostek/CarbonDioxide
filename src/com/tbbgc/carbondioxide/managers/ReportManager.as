@@ -2,7 +2,6 @@ package com.tbbgc.carbondioxide.managers {
 	import com.tbbgc.carbondioxide.dialogues.ReportDialogue;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.models.cd.CDView;
-	import com.tbbgc.carbondioxide.utils.Drawer;
 	import com.tbbgc.carbondioxide.utils.Legacy;
 	/**
 	 * @author Simon
@@ -67,7 +66,7 @@ package com.tbbgc.carbondioxide.managers {
 				}
 			}
 
-			var names:Vector.<Object> = Drawer.names;
+			var names:Vector.<Object> = AssetsManager.names;
 
 			for each( var o:Object in names ) {
 				if( needed.indexOf(o["frame"]) >= 0 ) {
@@ -142,7 +141,7 @@ package com.tbbgc.carbondioxide.managers {
 				}
 			}
 
-			var names:Vector.<Object> = Drawer.names;
+			var names:Vector.<Object> = AssetsManager.names;
 
 			for each( var s:String in needed ) {
 				for( var k:Object in names ) {
@@ -164,7 +163,7 @@ package com.tbbgc.carbondioxide.managers {
 		private static function compileDepth():void {
 			add("_= Draw calls =_");
 
-			add( Drawer.analyze );
+			add( AssetsManager.swfs.analyze );
 
 			add("");
 		}

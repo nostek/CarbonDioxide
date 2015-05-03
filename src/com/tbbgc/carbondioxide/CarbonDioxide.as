@@ -11,6 +11,7 @@ package com.tbbgc.carbondioxide {
 	import com.tbbgc.carbondioxide.dialogues.PropertiesDialogue;
 	import com.tbbgc.carbondioxide.dialogues.TreeDialogue;
 	import com.tbbgc.carbondioxide.dialogues.ZoomDialogue;
+	import com.tbbgc.carbondioxide.managers.AssetsManager;
 	import com.tbbgc.carbondioxide.managers.EventManager;
 	import com.tbbgc.carbondioxide.managers.SettingsManager;
 	import com.tbbgc.carbondioxide.managers.UndoManager;
@@ -19,7 +20,6 @@ package com.tbbgc.carbondioxide {
 	import com.tbbgc.carbondioxide.models.ItemModel;
 	import com.tbbgc.carbondioxide.models.cd.CDItem;
 	import com.tbbgc.carbondioxide.saveload.Load;
-	import com.tbbgc.carbondioxide.utils.Drawer;
 
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
@@ -70,7 +70,7 @@ package com.tbbgc.carbondioxide {
 			new UndoManager();
 			new Menu( stage );
 			new ViewsManager();
-			new Drawer();
+			new AssetsManager();
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true, 10000);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, true, 10000);
@@ -93,6 +93,7 @@ package com.tbbgc.carbondioxide {
 
 			new TreeDialogue( false );
 			new PropertiesDialogue( false );
+			new AssetsDialogue( false );
 
 			setTimeout( onFirst, 50 );
 		}
@@ -123,11 +124,8 @@ package com.tbbgc.carbondioxide {
 				stage.nativeWindow.height = data["h"] as Number;
 			}
 
-			var assets:AssetsDialogue = new AssetsDialogue( false );
-
 			Load.runLast();
-
-			assets.initSettings();
+			AssetsManager.load();
 
 			_blockSave = false;
 		}
