@@ -387,6 +387,9 @@ package com.tbbgc.carbondioxide.components {
 				if( AssetsManager.isImage(item.asset) ) {
 					return drawImage( item );
 				}
+				if( AssetsManager.isTexturePacker(item.asset) ) {
+					return drawTexturePacker( item );
+				}
 				if( AssetsManager.isSWF(item.asset) ) {
 					if( item is CDText ) {
 						return drawText( item as CDText );
@@ -477,6 +480,18 @@ package com.tbbgc.carbondioxide.components {
 			bm.setVector(rect, data);
 
 			return new Bitmap( bm );
+		}
+
+		private function drawTexturePacker( item:CDItem ):DisplayObject {
+			var s:Sprite = new Sprite();
+
+			var bm:Bitmap = new Bitmap( AssetsManager.texturePacker.getImage(item.asset) );
+			bm.width = item.width;
+			bm.height = item.height;
+			bm.alpha = item.alphaCheckDefault;
+			s.addChild(bm);
+
+			return s;
 		}
 
 		private function drawImage( item:CDItem ):DisplayObject {

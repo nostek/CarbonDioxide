@@ -3,6 +3,7 @@ package com.tbbgc.carbondioxide.managers {
 	import com.tbbgc.carbondioxide.models.DataModel;
 	import com.tbbgc.carbondioxide.utils.Images;
 	import com.tbbgc.carbondioxide.utils.SWFDrawer;
+	import com.tbbgc.carbondioxide.utils.TexturePacker;
 
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -26,16 +27,19 @@ package com.tbbgc.carbondioxide.managers {
 	public class AssetsManager {
 		private static var _images:Images;
 		private static var _swfs:SWFDrawer;
+		private static var _texturePacker:TexturePacker;
 
 		public function AssetsManager() {
 			_images = new Images();
 			_swfs = new SWFDrawer();
+			_texturePacker = new TexturePacker();
 		}
 
 		public static function load():void {
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_FONTS) ||
 				SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_ASSETS) ||
-				SettingsManager.haveItem(SettingsManager.SETTINGS_IMAGES) ) {
+				SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_IMAGES) ||
+				SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_TP)) {
 				var dlg:YesNoDialogue = new YesNoDialogue("Load ALL assets ? ", "Without asking");
 				dlg.onYes.addOnce( onInitDontAsk );
 				dlg.onNo.addOnce( onInitAsk );
@@ -47,6 +51,7 @@ package com.tbbgc.carbondioxide.managers {
 
 			r = r.concat( _swfs.names );
 			r = r.concat( _images.names );
+			r = r.concat( _texturePacker.names );
 
 			return r;
 		}
@@ -59,6 +64,10 @@ package com.tbbgc.carbondioxide.managers {
 			return _swfs;
 		}
 
+		public static function get texturePacker():TexturePacker {
+			return _texturePacker;
+		}
+
 		public static function isImage(url:String):Boolean {
 			return _images.haveImage(url);
 		}
@@ -67,14 +76,25 @@ package com.tbbgc.carbondioxide.managers {
 			return _swfs.haveFrame(frame);
 		}
 
+		public static function isTexturePacker(frame:String):Boolean {
+			return _texturePacker.haveFrame(frame);
+		}
+
 		public static function getBounds(asset:String):Rectangle {
 			if( asset == null ) {
 				return null;
 			}
 
+			var bm:BitmapData;
+
 			if( _images.haveImage(asset) ) {
-				var img:BitmapData = _images.getImage(asset);
-				return new Rectangle(0, 0, img.width, img.height);
+				bm = _images.getImage(asset);
+				return new Rectangle(0, 0, bm.width, bm.height);
+			}
+
+			if( _texturePacker.haveFrame(asset) ) {
+				bm = _texturePacker.getImage(asset);
+				return new Rectangle(0, 0, bm.width, bm.height);
 			}
 
 			if( _swfs.haveFrame(asset) ) {
@@ -87,6 +107,10 @@ package com.tbbgc.carbondioxide.managers {
 		public static function getPackNameFromAsset(asset:String):String {
 			if( asset == null ) {
 				return "";
+			}
+
+			if( _texturePacker.haveFrame(asset) ) {
+				return _texturePacker.getPackNameFromAsset(asset);
 			}
 
 			if( _swfs.haveFrame(asset) ) {
@@ -117,17 +141,17 @@ package com.tbbgc.carbondioxide.managers {
 				for( i = 0; i < files.length; i++ ) {
 					if( ask ) {
 						dlg = new YesNoDialogue("Load assets ? ", "Load file? " + files[i], files[i]);
-						dlg.onYes.addOnce( onRestoreAssets );
-						dlg.onNo.addOnce( onNoRestoreAssets );
+						dlg.onYes.addOnce( onRestoreSWFs );
+						dlg.onNo.addOnce( onNoRestoreSWFs );
 					} else {
-						onRestoreAssets(files[i]);
+						onRestoreSWFs(files[i]);
 					}
 				}
 			}
 
 			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_FONTS) ) {
 				if( ask ) {
-					dlg = new YesNoDialogue("Load fonts ? ", "Load file? " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0], SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0]);
+					dlg = new YesNoDialogue("Load fonts ? ", "Load file: " + SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0], SettingsManager.getItem( SettingsManager.SETTINGS_LAST_FONTS )[0]);
 					dlg.onYes.addOnce( onRestoreFonts );
 					dlg.onNo.addOnce( onNoRestoreFonts );
 				} else {
@@ -135,16 +159,30 @@ package com.tbbgc.carbondioxide.managers {
 				}
 			}
 
-			if( SettingsManager.haveItem(SettingsManager.SETTINGS_IMAGES) ) {
-				files = SettingsManager.getItem( SettingsManager.SETTINGS_IMAGES ) as Array;
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_IMAGES) ) {
+				files = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_IMAGES ) as Array;
 
 				for( i = 0; i < files.length; i++ ) {
 					if( ask ) {
-						dlg = new YesNoDialogue("Load image ? ", "Load image? " + files[i], files[i]);
+						dlg = new YesNoDialogue("Load image ? ", "Load file: " + files[i], files[i]);
 						dlg.onYes.addOnce( onRestoreImage );
 						dlg.onNo.addOnce( onNoRestoreImage );
 					} else {
 						onRestoreImage(files[i]);
+					}
+				}
+			}
+
+			if( SettingsManager.haveItem(SettingsManager.SETTINGS_LAST_TP) ) {
+				files = SettingsManager.getItem( SettingsManager.SETTINGS_LAST_TP ) as Array;
+
+				for( i = 0; i < files.length; i++ ) {
+					if( ask ) {
+						dlg = new YesNoDialogue("Load TexturePacker ? ", "Load file: " + files[i], files[i]);
+						dlg.onYes.addOnce( onRestoreTexturePacker );
+						dlg.onNo.addOnce( onNoRestoreTexturePacker );
+					} else {
+						onRestoreTexturePacker(files[i]);
 					}
 				}
 			}
@@ -223,11 +261,11 @@ package com.tbbgc.carbondioxide.managers {
 		///////
 
 		private static function onNoRestoreImage( url:String ):void {
-			removeFromSaveList(SettingsManager.SETTINGS_IMAGES, url);
+			removeFromSaveList(SettingsManager.SETTINGS_LAST_IMAGES, url);
 		}
 
 		private static function onRestoreImage( url:String ):void {
-			addToSaveList( SettingsManager.SETTINGS_IMAGES, url );
+			addToSaveList( SettingsManager.SETTINGS_LAST_IMAGES, url );
 
 			_images.load( url );
 		}
@@ -243,7 +281,7 @@ package com.tbbgc.carbondioxide.managers {
 			(e.target as File).removeEventListener(FileListEvent.SELECT_MULTIPLE, onFileImageSelected);
 
 			for each( var target:File in e.files ) {
-				addToSaveList( SettingsManager.SETTINGS_IMAGES, target.url );
+				addToSaveList( SettingsManager.SETTINGS_LAST_IMAGES, target.url );
 
 				_images.load( target.url );
 			}
@@ -252,11 +290,11 @@ package com.tbbgc.carbondioxide.managers {
 		//SWF
 		///////
 
-		private static function onNoRestoreAssets( url:String ):void {
+		private static function onNoRestoreSWFs( url:String ):void {
 			removeFromSaveList(SettingsManager.SETTINGS_LAST_ASSETS, url);
 		}
 
-		private static function onRestoreAssets( url:String ):void {
+		private static function onRestoreSWFs( url:String ):void {
 			addToSaveList( SettingsManager.SETTINGS_LAST_ASSETS, url );
 
 			_swfs.load( url );
@@ -282,8 +320,31 @@ package com.tbbgc.carbondioxide.managers {
 		//TexturePacker
 		///////
 
-		public static function importTexturePacker():void {
+		private static function onNoRestoreTexturePacker( url:String ):void {
+			removeFromSaveList(SettingsManager.SETTINGS_LAST_TP, url);
+		}
 
+		private static function onRestoreTexturePacker( url:String ):void {
+			addToSaveList( SettingsManager.SETTINGS_LAST_TP, url );
+
+			_texturePacker.load( url );
+		}
+
+		public static function importTexturePacker():void {
+			var f:File = new File();
+
+			f.browseForOpenMultiple("Load TexturePacker(JSON Hash)", [ new FileFilter("JSON File", "*.json") ]);
+			f.addEventListener(FileListEvent.SELECT_MULTIPLE, onFileTexturePackerSelected);
+		}
+
+		private static function onFileTexturePackerSelected(e:FileListEvent):void {
+			(e.target as File).removeEventListener(FileListEvent.SELECT_MULTIPLE, onFileTexturePackerSelected);
+
+			for each( var target:File in e.files ) {
+				addToSaveList( SettingsManager.SETTINGS_LAST_TP, target.url );
+
+				_texturePacker.load( target.url );
+			}
 		}
 
 		//Utils

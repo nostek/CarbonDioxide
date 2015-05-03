@@ -15,10 +15,11 @@ package com.tbbgc.carbondioxide.managers {
 		public static const SETTINGS_LAST_ASSETS:String = "last_assets";
 		public static const SETTINGS_LAST_FONTS:String 	= "last_fonts";
 		public static const SETTINGS_LAST_LAYOUT:String = "last_layout";
+		public static const SETTINGS_LAST_TP:String 	= "last_tp";
+		public static const SETTINGS_LAST_IMAGES:String = "images";
 		public static const SETTINGS_WINDOW:String 		= "window";
 		public static const SETTINGS_BGCOLOR:String 	= "bgcolor";
 		public static const SETTINGS_RESOLUTION:String 	= "resolution";
-		public static const SETTINGS_IMAGES:String 		= "images";
 		public static const SETTINGS_COPYPASTE:String 	= "copypaste";
 		public static const SETTINGS_MISSING:String 	= "missing";
 		public static const SETTINGS_LAST_VIEW:String 	= "last_view";

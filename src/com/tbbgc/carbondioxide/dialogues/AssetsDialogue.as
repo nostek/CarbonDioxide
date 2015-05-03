@@ -122,6 +122,11 @@ package com.tbbgc.carbondioxide.dialogues {
 				_bitmap.width = _bitmapSize;
 				_bitmap.height = _bitmapSize;
 			}
+			if( AssetsManager.isTexturePacker( frame ) ) {
+				_bitmap.bitmapData = AssetsManager.texturePacker.getImage( frame );
+				_bitmap.width = _bitmapSize;
+				_bitmap.height = _bitmapSize;
+			}
 			if( AssetsManager.isSWF( frame) ) {
 				_bitmap.bitmapData = AssetsManager.swfs.drawCenter( frame, _bitmapSize, _bitmapSize );
 				_bitmap.scaleX = _bitmap.scaleY = 1;
