@@ -31,8 +31,8 @@ com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.48x48=icons/CarbonIcon_48.
 com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.72x72=icons/CarbonIcon_72.png
 com.powerflasher.fdt.core.mobile.AirDesktop.MOBILE.DESCRIPTOR=bin/CarbonDioxide-app.xml
 com.powerflasher.fdt.core.mobile.AirDesktop.PACKAGE.CONTENT=bin/CarbonDioxide-app.xml > CarbonDioxide-app.xml;bin/CarbonDioxide.swf > CarbonDioxide.swf;
-com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.CERTIFICATE=certs/UIDesigner.p12
-com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.PWD=3ggzdJ3TujCNf9kKiRiorw\=\=
+com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.CERTIFICATE=certs/cert.p12
+com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.PWD=K4WBzdOL/ao\=
 com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.PWD.RELEASE=
 com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.REMEMBER.PWD=true
 com.powerflasher.fdt.core.mobile.AirDesktop.SWFPATH=

@@ -3,7 +3,6 @@
 bin/CarbonDioxide.swf
 .settings/*
 
-certs/UIDesigner.p12
+certs/cert.p12
 
-certs/password.txt
 bin/.CarbonDioxide.swf.stamp
