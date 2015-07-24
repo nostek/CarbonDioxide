@@ -4,14 +4,14 @@
 <booleanAttribute key="ADVANCED_TELEMTRY" value="false"/>
 <intAttribute key="AIR_VIEWER_CONF" value="1"/>
 <stringAttribute key="APP_ARGUMENTS" value=""/>
-<stringAttribute key="ARGUMENTS" value="-static-link-runtime-shared-libraries=true&#10;-target-player={playerVersion}&#10;-library-path+=&quot;{flexSDK}/frameworks/locale/en_US&quot;&#10;-default-size=1024,768&#10;-swf-version=26"/>
+<stringAttribute key="ARGUMENTS" value="-static-link-runtime-shared-libraries=true&#10;-target-player={playerVersion}&#10;-library-path+=&quot;{flexSDK}/frameworks/locale/en_US&quot;&#10;-default-size=1024,768&#10;-swf-version=29"/>
 <listAttribute key="COMPILER_CONSTANTS"/>
 <stringAttribute key="COMPILER_TECHNOLOGY" value="ASC"/>
 <booleanAttribute key="CREATE_APP_ROOT" value="false"/>
 <booleanAttribute key="CUSTOMIZE_ADL_ARGS" value="false"/>
 <stringAttribute key="CUSTOM_ADL_CMD_LINE" value="${nodebug} ${profile} ${screensize} ${anesdir} ${desc} ${rootdir} ${appargs}"/>
 <booleanAttribute key="DISABLE_COMPILE_PROCESS" value="false"/>
-<booleanAttribute key="FORCE_FRESH_COMPILATION" value="false"/>
+<booleanAttribute key="FORCE_FRESH_COMPILATION" value="true"/>
 <stringAttribute key="LAUNCHER_DEPENDENCIES" value="[Self]"/>
 <intAttribute key="LAUNCH_METHOD" value="0"/>
 <stringAttribute key="MAIN_CLASS" value="src/com/tbbgc/carbondioxide/CarbonDioxide.as"/>
